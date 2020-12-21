@@ -188,7 +188,6 @@ void EXTI9_5_IRQHandler(void)
     uint16_t pin = system_control_get_state();
 	if (pin) 
 	{ 
-
 		if (bit_istrue(pin,CONTROL_PIN_INDEX_RESET))
 		{
 			mc_reset();
@@ -262,7 +261,6 @@ uint8_t system_execute_line(char *line)
 {
   uint8_t char_counter = 1;
   uint8_t helper_var = 0; // Helper variable
-  //float rc;
 
   float parameter, value;
   switch( line[char_counter] ) {
