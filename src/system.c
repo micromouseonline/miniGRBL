@@ -432,7 +432,7 @@ void system_flag_wco_change()
 // Returns machine position of axis 'idx'. Must be sent a 'step' array.
 // NOTE: If motor steps and machine position are not in the same coordinate frame, this function
 //   serves as a central place to compute the transformation.
-float system_convert_axis_steps_to_mpos(int32_t *steps, uint16_t idx) //Paul float system_convert_axis_steps_to_mpos(int32_t *steps, uint8_t idx)
+float system_convert_axis_steps_to_mpos(int32_t *steps, uint8_t idx)
 {
   float pos;
   #ifdef COREXY
