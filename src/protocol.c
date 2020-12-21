@@ -579,7 +579,7 @@ static void protocol_exec_rt_suspend()
               retract_waypoint = min(retract_waypoint,PARKING_TARGET);
             }
 
-            // Execute slow pull-out parking retract motion. Parking requires homing enab++++++++++++++++++++++++++++++++++++++++++++++++., the
+            // Execute slow pull-out parking retract motion. Parking requires homing enabled, the
             // current location not exceeding the parking target location, and laser mode disabled.
             // NOTE: State is will remain DOOR, until the de-energizing and retract is complete.
 						#ifdef ENABLE_PARKING_OVERRIDE_CONTROL
@@ -762,7 +762,8 @@ static void protocol_exec_rt_suspend()
 
       }
     }
-    protocol_exec_rt_system();
+
+	protocol_exec_rt_system();
 
   }
 }
