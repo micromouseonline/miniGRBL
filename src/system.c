@@ -208,6 +208,7 @@ void EXTI9_5_IRQHandler(void)
 #else
 		else if (bit_istrue(pin, CONTROL_PIN_INDEX_SAFETY_DOOR))
 		{
+			//TODO: PJH - this seems to be an unnecessary additional check. Possibly switch bounce in safety switch?
 			if (system_check_safety_door_ajar()) { //Paul, Safety door triggers of rising & falling edge
 				//check whether the door was truly opened
 				bit_true(sys_rt_exec_state, EXEC_SAFETY_DOOR);
@@ -280,6 +281,7 @@ uint8_t system_execute_line(char *line)
           break;
         case 'G' : // Prints gcode parser state
           // TODO: Move this to real time commands for GUIs to request this data during suspend-state.
+        	// TODO: PJH - default behaviour is to always report. Consider reverting this AT change
         	//Paul, made changes here. Gcode modes Message is popping up all times
           if (sys.state != STATE_IDLE){ //Paul,13/01/19 moved this out of the idle state since it's annoying
             report_gcode_modes(); //PAul, might have to add a $ setting for this feature
