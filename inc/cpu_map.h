@@ -167,6 +167,7 @@
 #define PROBE_MASK                    (1<<PROBE_BIT)
 
 // Define USB/UART switch INPUT PIN
+//FIXME: PJH - this is wrong. GPIO_Pin_14 is a mask not a pin number
 #define SERIALSWITCH_PORT                    GPIOC // moved to GPIOB from A 6/08/2018
 #define RCC_SERIALSWITCH_PORT                RCC_APB2Periph_GPIOC //moved to GPIO B
 #define SERIALSWITCH_BIT                     GPIO_Pin_14
