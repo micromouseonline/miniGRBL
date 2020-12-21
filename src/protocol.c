@@ -20,7 +20,7 @@
 */
 
 #include "grbl.h"
-#include <stbool.h> // added by Paul
+
 // Define line flags. Includes comment type tracking and line overflow detection.
 #define LINE_FLAG_OVERFLOW bit(0)
 #define LINE_FLAG_COMMENT_PARENTHESES bit(1)
