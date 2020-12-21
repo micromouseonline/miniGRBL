@@ -174,7 +174,7 @@
 #define SERIALSWITCH_MASK                    (1<<SERIALSWITCH_BIT)
 
   // Start of PWM & Stepper Enabled Spindle
-//#ifdef VARIABLE_SPINDLE
+#ifdef VARIABLE_SPINDLE
 
   // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
 #define SPINDLE_PWM_FREQUENCY       10000                  // KHz
@@ -182,7 +182,8 @@
 #define SPINDLE_PWM_PORT            GPIOB //B
 #define RCC_SPINDLE_PWM_PORT        RCC_APB2Periph_GPIOB //RCC_APB2Periph_GPIOB
 #define SPINDLE_PWM_BIT	            GPIO_Pin_9 // PB9 is PWM output, was 8 in conflict with USB port
-//#endif // End of VARIABLE_SPINDLE
+#endif // End of VARIABLE_SPINDLE
+
 #define SPINDLE_PWM_MAX_VALUE       (1000000 / SPINDLE_PWM_FREQUENCY)
 
 #ifndef SPINDLE_PWM_MIN_VALUE
