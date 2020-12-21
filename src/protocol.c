@@ -414,7 +414,7 @@ void protocol_exec_rt_system()
   if (rt_exec) {
     system_clear_exec_motion_overrides(); // Clear all motion override flags.
 
-    uint16_t new_f_override =  sys.f_override;
+    uint8_t new_f_override =  sys.f_override;
     if (rt_exec & EXEC_FEED_OVR_RESET) { new_f_override = DEFAULT_FEED_OVERRIDE; }
     if (rt_exec & EXEC_FEED_OVR_COARSE_PLUS) { new_f_override += FEED_OVERRIDE_COARSE_INCREMENT; }
     if (rt_exec & EXEC_FEED_OVR_COARSE_MINUS) { new_f_override -= FEED_OVERRIDE_COARSE_INCREMENT; }
