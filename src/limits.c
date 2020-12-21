@@ -29,7 +29,7 @@
 #ifndef HOMING_AXIS_LOCATE_SCALAR
   #define HOMING_AXIS_LOCATE_SCALAR  5.0f // Must be > 1 to ensure limit switch is cleared.
 #endif
-
+//TODO: PJH - this function just calls system_init. Is that what is best?
 void limits_init()
 {
 #ifdef AVRTARGET
@@ -73,6 +73,7 @@ void limits_init()
      * End
      */
 
+    //TODO: PJH - does this call mean system_init() gets called twice?
     system_init(); // Take over the limits_init() routine
 
 //	if (bit_istrue(settings.flags, BITFLAG_HARD_LIMIT_ENABLE))

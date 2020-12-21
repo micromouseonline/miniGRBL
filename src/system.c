@@ -104,6 +104,7 @@ void system_init()
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //Enable external interrupt channel
   NVIC_Init(&NVIC_InitStructure);
 
+  //TODO: PJH - is this section an AT add-on? IRQ service is in limits.c
   //Added limits init code
   if (bit_istrue(settings.flags, BITFLAG_HARD_LIMIT_ENABLE)){
     NVIC_InitTypeDef NVIC_InitStructure;
