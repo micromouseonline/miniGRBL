@@ -446,8 +446,6 @@ uint8_t plan_buffer_line(float *target, plan_line_data_t *pl_data)
         convert_delta_vector_to_unit_vector(junction_unit_vec);
         float junction_acceleration = limit_value_by_axis_maximum(settings.acceleration, junction_unit_vec);
         float sin_theta_d2 = sqrt(0.5f*(1.0f-junction_cos_theta)); // Trig half angle identity. Always positive.
-        //double sin_theta_d4 = sqrt(0.5f*(1.0f-junction_cos_theta)); // Paul; Here we try to improve the precision. Just replace sqrtf with sqrt
-        //float sin_theta_d2 = (float)sin_theta_d4;
         block->max_junction_speed_sqr = max( MINIMUM_JUNCTION_SPEED*MINIMUM_JUNCTION_SPEED,
                        (junction_acceleration * settings.junction_deviation * sin_theta_d2)/(1.0f-sin_theta_d2) );
       }
