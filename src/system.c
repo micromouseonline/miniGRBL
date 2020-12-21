@@ -452,7 +452,7 @@ float system_convert_axis_steps_to_mpos(int32_t *steps, uint16_t idx) //Paul flo
 
 void system_convert_array_steps_to_mpos(float *position, int32_t *steps)
 {
-  uint16_t idx; //uint8_t Paul
+  uint8_t idx;
   for (idx=0; idx<N_AXIS; idx++) {
     position[idx] = system_convert_axis_steps_to_mpos(steps, idx);
   }
