@@ -329,6 +329,7 @@ void protocol_exec_rt_system()
         if (sys.state == STATE_ALARM) { sys.suspend |= (SUSPEND_RETRACT_COMPLETE|SUSPEND_HOLD_COMPLETE); }
         sys.state = STATE_SLEEP; 
       }
+      //TODO: PJH - why is this a fix? What does rt_exec add to the game?
       //fix Paul 12/01/19
       system_clear_exec_state_flag(rt_exec & (EXEC_MOTION_CANCEL | EXEC_FEED_HOLD | EXEC_SAFETY_DOOR | EXEC_SLEEP));
       //system_clear_exec_state_flag((EXEC_MOTION_CANCEL | EXEC_FEED_HOLD | EXEC_SAFETY_DOOR | EXEC_SLEEP));
