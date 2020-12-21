@@ -32,18 +32,16 @@ void coolant_init()
 #ifdef STM32F103C8
 	GPIO_InitTypeDef GPIO_InitStructure;
 	RCC_APB2PeriphClockCmd(RCC_COOLANT_FLOOD_PORT, ENABLE);
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_InitStructure.GPIO_Pin = 1 << COOLANT_FLOOD_BIT |1 << COOLANT_MIST_BIT;
+	GPIO_InitStructure.GPIO_Pin = 1 << COOLANT_FLOOD_BIT;
 	GPIO_Init(COOLANT_FLOOD_PORT, &GPIO_InitStructure);
 
-//	RCC_APB2PeriphClockCmd(RCC_COOLANT_MIST_PORT, ENABLE);
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-//	GPIO_InitStructure.GPIO_Pin =  1 << COOLANT_MIST_BIT;
-
-//	GPIO_Init(COOLANT_MIST_PORT, &GPIO_InitStructure);
-
+	RCC_APB2PeriphClockCmd(RCC_COOLANT_MIST_PORT, ENABLE);
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStructure.GPIO_Pin = 1 << COOLANT_MIST_BIT;
+	GPIO_Init(COOLANT_MIST_PORT, &GPIO_InitStructure);
 	ResetFloodEnablebit();
 	ResetMistEnablebit();
 #endif
