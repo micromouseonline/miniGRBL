@@ -60,10 +60,12 @@ void system_init()
    *
    * All AFIO GPIO pins are initialised together to prevent none working
    * interrupts on the controls or limit switches or probe or DC motor fault feedback
+   *
+   * PH - note that the probe pin would normally be initialised in
+   * probe.c:29 but the code there is commented out.
    */
   GPIO_InitStructure.GPIO_Pin = CONTROL_MASK|LIMIT_MASK|PROBE_MASK; // Paul, Limit Mask includes the Controls and CONTROL_FAULT_BIT pin!
   GPIO_Init(CONTROL_PORT, &GPIO_InitStructure);
-  //GPIO_PinLockConfig(CONTROL_PORT,CONTROL_MASK|LIMIT_MASK|PROBE_MASK );
 
   GPIO_EXTILineConfig(GPIO_CONTROL_PORT, CONTROL_RESET_BIT); //abort
   GPIO_EXTILineConfig(GPIO_CONTROL_PORT, CONTROL_FEED_HOLD_BIT); //pause

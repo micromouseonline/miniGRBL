@@ -36,6 +36,11 @@ void probe_init()
     PROBE_PORT |= PROBE_MASK;    // Enable internal pull-up resistors. Normal high operation.
   #endif
 #endif
+    /*
+     * PH: note that probe pin initialisation is done in system.c:67
+     * so that all these control pins are initialised together.
+     * Possibly to make sure interrupts work properly
+     */
 #ifdef STM32F103C8
 //	GPIO_InitTypeDef GPIO_InitStructure;
 //	RCC_APB2PeriphClockCmd(RCC_PROBE_PORT, ENABLE);
@@ -47,10 +52,6 @@ void probe_init()
 #endif
 //	GPIO_InitStructure.GPIO_Pin = PROBE_MASK;
 //	GPIO_Init(PROBE_PORT, &GPIO_InitStructure);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-	//debug
-	  //GPIO_PinLockConfig(PROBE_PORT,PROBE_MASK);
-	  //
 #endif
   probe_configure_invert_mask(false); // Initialize invert mask.
 }
