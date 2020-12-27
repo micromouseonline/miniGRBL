@@ -19,13 +19,12 @@
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
-typedef struct
-{
+typedef struct {
   uint32_t bitrate;
   uint8_t format;
   uint8_t paritytype;
   uint8_t datatype;
-}LINE_CODING;
+} LINE_CODING;
 
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
@@ -55,13 +54,13 @@ typedef struct
 void Virtual_Com_Port_init(void);
 void Virtual_Com_Port_Reset(void);
 void Virtual_Com_Port_SetConfiguration(void);
-void Virtual_Com_Port_SetDeviceAddress (void);
-void Virtual_Com_Port_Status_In (void);
-void Virtual_Com_Port_Status_Out (void);
+void Virtual_Com_Port_SetDeviceAddress(void);
+void Virtual_Com_Port_Status_In(void);
+void Virtual_Com_Port_Status_Out(void);
 RESULT Virtual_Com_Port_Data_Setup(uint8_t);
 RESULT Virtual_Com_Port_NoData_Setup(uint8_t);
 RESULT Virtual_Com_Port_Get_Interface_Setting(uint8_t Interface, uint8_t AlternateSetting);
-uint8_t *Virtual_Com_Port_GetDeviceDescriptor(uint16_t );
+uint8_t *Virtual_Com_Port_GetDeviceDescriptor(uint16_t);
 uint8_t *Virtual_Com_Port_GetConfigDescriptor(uint16_t);
 uint8_t *Virtual_Com_Port_GetStringDescriptor(uint16_t);
 bool Virtual_Com_Port_IsHostPortOpen(void);

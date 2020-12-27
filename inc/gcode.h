@@ -49,9 +49,9 @@
 
 // Define command actions for within execution-type modal groups (motion, stopping, non-modal). Used
 // internally by the parser to know which command to execute.
-// NOTE: Some macro values are assigned specific values to make g-code state reporting and parsing 
+// NOTE: Some macro values are assigned specific values to make g-code state reporting and parsing
 // compile a litte smaller. Necessary due to being completely out of flash on the 328p. Although not
-// ideal, just be careful with values that state 'do not alter' and check both report.c and gcode.c 
+// ideal, just be careful with values that state 'do not alter' and check both report.c and gcode.c
 // to see how they are used, if you need to alter them.
 
 // Modal Group G0: Non-modal actions
@@ -155,11 +155,11 @@
 
 // Modal Group M9: Override control
 #ifdef DEACTIVATE_PARKING_UPON_INIT
-	#define OVERRIDE_DISABLED  0 // (Default: Must be zero)
-	#define OVERRIDE_PARKING_MOTION 1 // M56
+  #define OVERRIDE_DISABLED  0 // (Default: Must be zero)
+  #define OVERRIDE_PARKING_MOTION 1 // M56
 #else
-	#define OVERRIDE_PARKING_MOTION 0 // M56 (Default: Must be zero)
-	#define OVERRIDE_DISABLED  1 // Parking disabled.
+  #define OVERRIDE_PARKING_MOTION 0 // M56 (Default: Must be zero)
+  #define OVERRIDE_DISABLED  1 // Parking disabled.
 #endif
 
 // Modal Group G12: Active work coordinate system
@@ -198,7 +198,7 @@
 #define GC_PROBE_FAIL_INIT  GC_UPDATE_POS_NONE
 #define GC_PROBE_FAIL_END   GC_UPDATE_POS_TARGET
 #ifdef SET_CHECK_MODE_PROBE_TO_START
-  #define GC_PROBE_CHECK_MODE   GC_UPDATE_POS_NONE  
+  #define GC_PROBE_CHECK_MODE   GC_UPDATE_POS_NONE
 #else
   #define GC_PROBE_CHECK_MODE   GC_UPDATE_POS_TARGET
 #endif
@@ -269,9 +269,9 @@ typedef struct {
   float position[N_AXIS];       // Where the interpreter considers the tool to be at this point in the code
 
   float coord_system[N_AXIS];    // Current work coordinate system (G54+). Stores offset from absolute machine
-                                 // position in mm. Loaded from EEPROM when called.
+  // position in mm. Loaded from EEPROM when called.
   float coord_offset[N_AXIS];    // Retains the G92 coordinate offset (work coordinates) relative to
-                                 // machine zero in mm. Non-persistent. Cleared upon reset and boot.
+  // machine zero in mm. Non-persistent. Cleared upon reset and boot.
   float tool_length_offset;      // Tracks tool length offset value when enabled.
 } parser_state_t;
 extern parser_state_t gc_state;

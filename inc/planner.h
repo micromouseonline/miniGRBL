@@ -25,15 +25,15 @@
 
 // The number of linear motions that can be in the plan at any give time
 #ifndef BLOCK_BUFFER_SIZE
-#ifdef AVRTARGET
-  #ifdef USE_LINE_NUMBERS
-    #define BLOCK_BUFFER_SIZE 15
+  #ifdef AVRTARGET
+    #ifdef USE_LINE_NUMBERS
+      #define BLOCK_BUFFER_SIZE 15
+    #else
+      #define BLOCK_BUFFER_SIZE 32
+    #endif
   #else
-    #define BLOCK_BUFFER_SIZE 32
+    #define BLOCK_BUFFER_SIZE 16
   #endif
-#else
-#define BLOCK_BUFFER_SIZE 16
-#endif
 #endif
 
 // Returned status message from planner.
@@ -64,28 +64,28 @@ typedef struct {
 
   // Block condition data to ensure correct execution depending on states and overrides.
   uint8_t condition;      // Block bitflag variable defining block run conditions. Copied from pl_line_data.
-  #ifdef USE_LINE_NUMBERS
-    int32_t line_number;  // Block line number for real-time reporting. Copied from pl_line_data.
-  #endif
+#ifdef USE_LINE_NUMBERS
+  int32_t line_number;  // Block line number for real-time reporting. Copied from pl_line_data.
+#endif
 
   // Fields used by the motion planner to manage acceleration. Some of these values may be updated
   // by the stepper module during execution of special motion cases for replanning purposes.
   float entry_speed_sqr;     // The current planned entry speed at block junction in (mm/min)^2
   float max_entry_speed_sqr; // Maximum allowable entry speed based on the minimum of junction limit and
-                             //   neighboring nominal speeds with overrides in (mm/min)^2
+  //   neighboring nominal speeds with overrides in (mm/min)^2
   float acceleration;        // Axis-limit adjusted line acceleration in (mm/min^2). Does not change.
   float millimeters;         // The remaining distance for this block to be executed in (mm).
-                             // NOTE: This value may be altered by stepper algorithm during execution.
+  // NOTE: This value may be altered by stepper algorithm during execution.
 
   // Stored rate limiting data used by planner when changes occur.
   float max_junction_speed_sqr; // Junction entry speed limit based on direction vectors in (mm/min)^2
   float rapid_rate;             // Axis-limit adjusted maximum rate for this block direction in (mm/min)
   float programmed_rate;        // Programmed rate of this block (mm/min).
 
-  #ifdef VARIABLE_SPINDLE
-    // Stored spindle speed data used by spindle overrides and resuming methods.
-    float spindle_speed;    // Block spindle speed. Copied from pl_line_data.
-  #endif
+#ifdef VARIABLE_SPINDLE
+  // Stored spindle speed data used by spindle overrides and resuming methods.
+  float spindle_speed;    // Block spindle speed. Copied from pl_line_data.
+#endif
 } plan_block_t;
 
 
@@ -94,9 +94,9 @@ typedef struct {
   float feed_rate;          // Desired feed rate for line motion. Value is ignored, if rapid motion.
   float spindle_speed;      // Desired spindle speed through line motion.
   uint8_t condition;        // Bitflag variable to indicate planner conditions. See defines above.
-  #ifdef USE_LINE_NUMBERS
-    int32_t line_number;    // Desired line number to report when executing.
-  #endif
+#ifdef USE_LINE_NUMBERS
+  int32_t line_number;    // Desired line number to report when executing.
+#endif
 } plan_line_data_t;
 
 

@@ -21,7 +21,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /*  The number of current endpoint, it will be used to specify an endpoint */
- uint8_t	EPindex;
+uint8_t	EPindex;
 /*  The number of current device, it is an index to the Device_Table */
 /* uint8_t	Device_no; */
 /*  Points to the DEVICE_INFO structure of current device */
@@ -50,8 +50,7 @@ USER_STANDARD_REQUESTS  *pUser_Standard_Requests;
 * Output         : None.
 * Return         : None.
 *******************************************************************************/
-void USB_Init(void)
-{
+void USB_Init(void) {
   pInformation = &Device_Info;
   pInformation->ControlState = 2;
   pProperty = &Device_Property;

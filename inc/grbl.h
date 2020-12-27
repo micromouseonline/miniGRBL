@@ -35,71 +35,71 @@
 
 // Define standard libraries used by Grbl.
 #ifdef AVRTARGET
-#include <avr/io.h>
-#include <avr/pgmspace.h>
-#include <avr/interrupt.h>
-#include <avr/wdt.h>
-#include <util/delay.h>
-#include <inttypes.h>
-#include <stdbool.h>
-#define PORTPINDEF uint8_t
+  #include <avr/io.h>
+  #include <avr/pgmspace.h>
+  #include <avr/interrupt.h>
+  #include <avr/wdt.h>
+  #include <util/delay.h>
+  #include <inttypes.h>
+  #include <stdbool.h>
+  #define PORTPINDEF uint8_t
 #endif
 #include <math.h>
 #ifdef WIN32
-#include <Windows.h>
-typedef signed char  int8_t;
-typedef signed short int16_t;
-typedef signed int   int32_t;
-typedef unsigned char  uint8_t;
-typedef unsigned short uint16_t;
-typedef unsigned int   uint32_t;
-typedef signed long long   int64_t;
-typedef unsigned long long uint64_t;
-typedef int bool;
-#define false 0
-#define true 1
-#define truncf(x) (int32_t)x
-#define PSTR(x) x
-#define pgm_read_byte_near(x) *(x)
-#define _delay_ms(x) Sleep(x)
-#define M_PI 3.1415926f
-#define LOG(x,y)
-#define PORTPINDEF uint8_t
-#define printPgmString printString
-//#define NOEEPROMSUPPORT
+  #include <Windows.h>
+  typedef signed char  int8_t;
+  typedef signed short int16_t;
+  typedef signed int   int32_t;
+  typedef unsigned char  uint8_t;
+  typedef unsigned short uint16_t;
+  typedef unsigned int   uint32_t;
+  typedef signed long long   int64_t;
+  typedef unsigned long long uint64_t;
+  typedef int bool;
+  #define false 0
+  #define true 1
+  #define truncf(x) (int32_t)x
+  #define PSTR(x) x
+  #define pgm_read_byte_near(x) *(x)
+  #define _delay_ms(x) Sleep(x)
+  #define M_PI 3.1415926f
+  #define LOG(x,y)
+  #define PORTPINDEF uint8_t
+  #define printPgmString printString
+  //#define NOEEPROMSUPPORT
 #endif
 #ifdef STM32F103C8
-#include "stm32f10x.h"
-#include "stm32f10x_conf.h"
-#include "system_stm32f10x.h"
-#include "stm32f10x_gpio.h"
-#include "stm32f10x_exti.h"
-#include "stm32f10x_tim.h"
-#include "misc.h"
-#include "stm32f10x_rcc.h" //place holder to add sd card libs
-#include "stm32f10x_rtc.h"
-/*
-#include "ff.h"
-#include "diskio.h"
-#include "ffconf.h"
-#include "integer.h"
-#include "xprintf.h" //end of the SD card libs
-#include "mmcb.h"
-#include "ST7735.h"
-#include "integer.h"
-*/
+  #include "stm32f10x.h"
+  #include "stm32f10x_conf.h"
+  #include "system_stm32f10x.h"
+  #include "stm32f10x_gpio.h"
+  #include "stm32f10x_exti.h"
+  #include "stm32f10x_tim.h"
+  #include "misc.h"
+  #include "stm32f10x_rcc.h" //place holder to add sd card libs
+  #include "stm32f10x_rtc.h"
+  /*
+  #include "ff.h"
+  #include "diskio.h"
+  #include "ffconf.h"
+  #include "integer.h"
+  #include "xprintf.h" //end of the SD card libs
+  #include "mmcb.h"
+  #include "ST7735.h"
+  #include "integer.h"
+  */
 
-#define PSTR(x) x
-#define pgm_read_byte_near(x) *(x)
-void _delay_ms(uint32_t x);
-void _delay_us(uint32_t x);
-#define false 0
-#define true 1
-//#define PORTPINDEF uint16_t
-#define PORTPINDEF uint32_t //Paul
-typedef int bool;
-//#define NOEEPROMSUPPORT
-#define printPgmString printString
+  #define PSTR(x) x
+  #define pgm_read_byte_near(x) *(x)
+  void _delay_ms(uint32_t x);
+  void _delay_us(uint32_t x);
+  #define false 0
+  #define true 1
+  //#define PORTPINDEF uint16_t
+  #define PORTPINDEF uint32_t //Paul
+  typedef int bool;
+  //#define NOEEPROMSUPPORT
+  #define printPgmString printString
 #endif
 #include <string.h>
 #include <stdlib.h>
@@ -153,7 +153,7 @@ typedef int bool;
 #endif
 
 #if !defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) && defined(SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED)
-	#error "SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED may only be used with USE_SPINDLE_DIR_AS_ENABLE_PIN enabled"
+  #error "SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED may only be used with USE_SPINDLE_DIR_AS_ENABLE_PIN enabled"
 #endif
 
 #if defined(PARKING_ENABLE)
@@ -163,9 +163,9 @@ typedef int bool;
 #endif
 
 #if defined(ENABLE_PARKING_OVERRIDE_CONTROL)
-	#if !defined(PARKING_ENABLE)
-		#error "ENABLE_PARKING_OVERRIDE_CONTROL must be enabled with PARKING_ENABLE."
-	#endif
+  #if !defined(PARKING_ENABLE)
+    #error "ENABLE_PARKING_OVERRIDE_CONTROL must be enabled with PARKING_ENABLE."
+  #endif
 #endif
 
 #if defined(SPINDLE_PWM_MIN_VALUE)

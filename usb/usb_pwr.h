@@ -19,8 +19,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
-typedef enum _RESUME_STATE
-{
+typedef enum _RESUME_STATE {
   RESUME_EXTERNAL,
   RESUME_INTERNAL,
   RESUME_LATER,
@@ -31,8 +30,7 @@ typedef enum _RESUME_STATE
   RESUME_ESOF
 } RESUME_STATE;
 
-typedef enum _DEVICE_STATE
-{
+typedef enum _DEVICE_STATE {
   UNCONNECTED,
   ATTACHED,
   POWERED,

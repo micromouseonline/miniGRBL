@@ -110,7 +110,7 @@
   #define CONTROL_PIN_INDEX_RESET         bit(1)
   #define CONTROL_PIN_INDEX_FEED_HOLD     bit(2)
   #define CONTROL_PIN_INDEX_CYCLE_START   bit(3)
-//Pauls addon for DC motor fault handling
+  //Pauls addon for DC motor fault handling
   #define CONTROL_PIN_INDEX_FAULT         bit(4) // the fifth control pin for the dc motor fault
 #else
   #define N_CONTROL_PIN 4
@@ -131,7 +131,7 @@
 // Define global system variables
 typedef struct {
   uint8_t state;               // Tracks the current system state of Grbl.
-  uint8_t abort;               // System abort flag. Forces exit back to main loop for reset.             
+  uint8_t abort;               // System abort flag. Forces exit back to main loop for reset.
   uint8_t suspend;             // System suspend bitflag variable that manages holds, cancels, and safety door.
   uint8_t soft_limit;          // Tracks soft limit errors for the state machine. (boolean)
   uint8_t step_control;        // Governs the step segment generator depending on system state.
@@ -143,12 +143,12 @@ typedef struct {
   uint8_t spindle_stop_ovr;    // Tracks spindle stop override states
   uint8_t report_ovr_counter;  // Tracks when to add override data to status reports.
   uint8_t report_wco_counter;  // Tracks when to add work coordinate offset data to status reports.
-	#ifdef ENABLE_PARKING_OVERRIDE_CONTROL
-		uint8_t override_ctrl;     // Tracks override control states.
-	#endif
-	#ifdef VARIABLE_SPINDLE
-    float spindle_speed;
-    #endif
+#ifdef ENABLE_PARKING_OVERRIDE_CONTROL
+  uint8_t override_ctrl;     // Tracks override control states.
+#endif
+#ifdef VARIABLE_SPINDLE
+  float spindle_speed;
+#endif
   uint32_t tool_counter;        // Tracks the pulse duration for the Tn toggle
   uint32_t m6_counter;          // Tracks the pulse duration for the M6 pin
 } system_t;
@@ -174,7 +174,7 @@ extern volatile uint8_t sys_rt_exec_accessory_override; // Global realtime execu
 
 #ifdef DEBUG
   #define EXEC_DEBUG_REPORT  bit(0)
-	extern volatile uint8_t sys_rt_exec_debug;
+  extern volatile uint8_t sys_rt_exec_debug;
 #endif
 
 // Initialize the serial protocol

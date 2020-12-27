@@ -22,19 +22,19 @@
 #include "grbl.h"
 
 
-void printString(const char *s)
-{
-  while (*s)
+void printString(const char *s) {
+  while (*s) {
     serial_write(*s++);
+  }
 }
 
 #ifdef AVRTARGET
 // Print a string stored in PGM-memory
-void printPgmString(const char *s)
-{
+void printPgmString(const char *s) {
   char c;
-  while ((c = pgm_read_byte_near(s++)))
+  while ((c = pgm_read_byte_near(s++))) {
     serial_write(c);
+  }
 }
 #endif
 
@@ -61,8 +61,7 @@ void printPgmString(const char *s)
 
 
 // Prints an uint8 variable in base 10.
-void print_uint8_base10(uint8_t n)
-{
+void print_uint8_base10(uint8_t n) {
   uint8_t digit_a = 0;
   uint8_t digit_b = 0;
   if (n >= 100) { // 100-255
@@ -74,33 +73,37 @@ void print_uint8_base10(uint8_t n)
     n /= 10;
   }
   serial_write('0' + n);
-  if (digit_b) { serial_write(digit_b); }
-  if (digit_a) { serial_write(digit_a); }
+  if (digit_b) {
+    serial_write(digit_b);
+  }
+  if (digit_a) {
+    serial_write(digit_a);
+  }
 }
 
 
 // Prints an uint8 variable in base 2 with desired number of desired digits.
 void print_uint8_base2_ndigit(uint8_t n, uint8_t digits) {
 #if defined(AVRTARGET) || defined(STM32F103C8)
-	unsigned char buf[digits];
+  unsigned char buf[digits];
 #endif
 #ifdef WIN32
-	unsigned char buf[20];
+  unsigned char buf[20];
 #endif
   uint8_t i = 0;
 
   for (; i < digits; i++) {
-      buf[i] = n % 2 ;
-      n /= 2;
+    buf[i] = n % 2 ;
+    n /= 2;
   }
 
-  for (; i > 0; i--)
-      serial_write('0' + buf[i - 1]);
+  for (; i > 0; i--) {
+    serial_write('0' + buf[i - 1]);
+  }
 }
 
 
-void print_uint32_base10(uint32_t n)
-{
+void print_uint32_base10(uint32_t n) {
   if (n == 0) {
     serial_write('0');
     return;
@@ -114,13 +117,13 @@ void print_uint32_base10(uint32_t n)
     n /= 10;
   }
 
-  for (; i > 0; i--)
-    serial_write('0' + buf[i-1]);
+  for (; i > 0; i--) {
+    serial_write('0' + buf[i - 1]);
+  }
 }
 
 
-void printInteger(long n)
-{
+void printInteger(long n) {
   if (n < 0) {
     serial_write('-');
     print_uint32_base10(-n);
@@ -135,8 +138,7 @@ void printInteger(long n)
 // may be set by the user. The integer is then efficiently converted to a string.
 // NOTE: AVR '%' and '/' integer operations are very efficient. Bitshifting speed-up
 // techniques are actually just slightly slower. Found this out the hard way.
-void printFloat(float n, uint8_t decimal_places)
-{
+void printFloat(float n, uint8_t decimal_places) {
   if (n < 0) {
     serial_write('-');
     n = -n;
@@ -147,19 +149,21 @@ void printFloat(float n, uint8_t decimal_places)
     n *= 100;
     decimals -= 2;
   }
-  if (decimals) { n *= 10; }
+  if (decimals) {
+    n *= 10;
+  }
   n += 0.5; // Add rounding factor. Ensures carryover through entire value.
 
   // Generate digits backwards and store in string.
   unsigned char buf[13];
   uint8_t i = 0;
   uint32_t a = (long)n;
-  while(a > 0) {
+  while (a > 0) {
     buf[i++] = (a % 10) + '0'; // Get digit
     a /= 10;
   }
   while (i < decimal_places) {
-     buf[i++] = '0'; // Fill in zeros to decimal point for (n < 1)
+    buf[i++] = '0'; // Fill in zeros to decimal point for (n < 1)
   }
   if (i == decimal_places) { // Fill in leading zero, if needed.
     buf[i++] = '0';
@@ -167,8 +171,10 @@ void printFloat(float n, uint8_t decimal_places)
 
   // Print the generated string.
   for (; i > 0; i--) {
-    if (i == decimal_places) { serial_write('.'); } // Insert decimal point in right place.
-    serial_write(buf[i-1]);
+    if (i == decimal_places) {
+      serial_write('.');  // Insert decimal point in right place.
+    }
+    serial_write(buf[i - 1]);
   }
 }
 
@@ -178,18 +184,18 @@ void printFloat(float n, uint8_t decimal_places)
 //  - CoordValue: Handles all position or coordinate values in inches or mm reporting.
 //  - RateValue: Handles feed rate and current velocity in inches or mm reporting.
 void printFloat_CoordValue(float n) {
-  if (bit_istrue(settings.flags,BITFLAG_REPORT_INCHES)) {
-    printFloat(n*INCH_PER_MM,N_DECIMAL_COORDVALUE_INCH);
+  if (bit_istrue(settings.flags, BITFLAG_REPORT_INCHES)) {
+    printFloat(n * INCH_PER_MM, N_DECIMAL_COORDVALUE_INCH);
   } else {
-    printFloat(n,N_DECIMAL_COORDVALUE_MM);
+    printFloat(n, N_DECIMAL_COORDVALUE_MM);
   }
 }
 
 void printFloat_RateValue(float n) {
-  if (bit_istrue(settings.flags,BITFLAG_REPORT_INCHES)) {
-    printFloat(n*INCH_PER_MM,N_DECIMAL_RATEVALUE_INCH);
+  if (bit_istrue(settings.flags, BITFLAG_REPORT_INCHES)) {
+    printFloat(n * INCH_PER_MM, N_DECIMAL_RATEVALUE_INCH);
   } else {
-    printFloat(n,N_DECIMAL_RATEVALUE_MM);
+    printFloat(n, N_DECIMAL_RATEVALUE_MM);
   }
 }
 

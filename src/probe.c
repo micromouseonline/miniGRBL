@@ -26,32 +26,31 @@ uint8_t probe_invert_mask;
 
 
 // Probe pin initialization routine.
-void probe_init()
-{
+void probe_init() {
 #ifdef AVRTARGET
   PROBE_DDR &= ~(PROBE_MASK); // Configure as input pins
-  #ifdef DISABLE_PROBE_PIN_PULL_UP
-    PROBE_PORT &= ~(PROBE_MASK); // Normal low operation. Requires external pull-down.
-  #else
-    PROBE_PORT |= PROBE_MASK;    // Enable internal pull-up resistors. Normal high operation.
-  #endif
-#endif
-    /*
-     * PH: note that probe pin initialisation is done in system.c:67
-     * so that all these control pins are initialised together.
-     * Possibly to make sure interrupts work properly
-     */
-#ifdef STM32F103C8
-//	GPIO_InitTypeDef GPIO_InitStructure;
-//	RCC_APB2PeriphClockCmd(RCC_PROBE_PORT, ENABLE);
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
 #ifdef DISABLE_PROBE_PIN_PULL_UP
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  PROBE_PORT &= ~(PROBE_MASK); // Normal low operation. Requires external pull-down.
 #else
-//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+  PROBE_PORT |= PROBE_MASK;    // Enable internal pull-up resistors. Normal high operation.
 #endif
-//	GPIO_InitStructure.GPIO_Pin = PROBE_MASK;
-//	GPIO_Init(PROBE_PORT, &GPIO_InitStructure);
+#endif
+  /*
+   * PH: note that probe pin initialisation is done in system.c:67
+   * so that all these control pins are initialised together.
+   * Possibly to make sure interrupts work properly
+   */
+#ifdef STM32F103C8
+  //	GPIO_InitTypeDef GPIO_InitStructure;
+  //	RCC_APB2PeriphClockCmd(RCC_PROBE_PORT, ENABLE);
+  //	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+#ifdef DISABLE_PROBE_PIN_PULL_UP
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+#else
+  //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+#endif
+  //	GPIO_InitStructure.GPIO_Pin = PROBE_MASK;
+  //	GPIO_Init(PROBE_PORT, &GPIO_InitStructure);
 #endif
   probe_configure_invert_mask(false); // Initialize invert mask.
 }
@@ -60,26 +59,28 @@ void probe_init()
 // Called by probe_init() and the mc_probe() routines. Sets up the probe pin invert mask to
 // appropriately set the pin logic according to setting for normal-high/normal-low operation
 // and the probing cycle modes for toward-workpiece/away-from-workpiece.
-void probe_configure_invert_mask(uint8_t is_probe_away)
-{
+void probe_configure_invert_mask(uint8_t is_probe_away) {
   probe_invert_mask = 0; // Initialize as zero.
-  if (bit_isfalse(settings.flags,BITFLAG_INVERT_PROBE_PIN)) { probe_invert_mask ^= PROBE_MASK; }
-  if (is_probe_away) { probe_invert_mask ^= PROBE_MASK; }
+  if (bit_isfalse(settings.flags, BITFLAG_INVERT_PROBE_PIN)) {
+    probe_invert_mask ^= PROBE_MASK;
+  }
+  if (is_probe_away) {
+    probe_invert_mask ^= PROBE_MASK;
+  }
 }
 
 
 // Returns the probe pin state. Triggered = true. Called by gcode parser and probe state monitor.
 // Use G38.2 Z-5 F1 to engage the probe , Paul
-uint8_t probe_get_state() 
-{ 
+uint8_t probe_get_state() {
 #ifdef AVRTARGET
-	return((PROBE_PIN & PROBE_MASK) ^ probe_invert_mask); 
+  return ((PROBE_PIN & PROBE_MASK) ^ probe_invert_mask);
 #endif
 #ifdef WIN32
-	return 0;
+  return 0;
 #endif
 #ifdef STM32F103C8
-	return ((GPIO_ReadInputData(PROBE_PORT) & PROBE_MASK) ^ probe_invert_mask) != 0;
+  return ((GPIO_ReadInputData(PROBE_PORT) & PROBE_MASK) ^ probe_invert_mask) != 0;
 #endif
 }
 
@@ -87,8 +88,7 @@ uint8_t probe_get_state()
 // Monitors probe pin state and records the system position when detected. Called by the
 // stepper ISR per ISR tick.
 // NOTE: This function must be extremely efficient as to not bog down the stepper ISR.
-void probe_state_monitor()
-{
+void probe_state_monitor() {
   if (probe_get_state()) {
     sys_probe_state = PROBE_OFF;
     memcpy(sys_probe_position, sys_position, sizeof(sys_position));

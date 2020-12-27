@@ -98,7 +98,7 @@ typedef struct {
   float rpm_max;
   float rpm_min;
   uint8_t soft_start; // Contains default boolean setting for soft start spindle
- // uint8_t flags;  // Contains default boolean settings
+  // uint8_t flags;  // Contains default boolean settings
   uint16_t flags;
 
   uint8_t homing_dir_mask;

@@ -30,96 +30,94 @@
   #define HOMING_AXIS_LOCATE_SCALAR  5.0f // Must be > 1 to ensure limit switch is cleared.
 #endif
 //TODO: PJH - this function just calls system_init. Is that what is best?
-void limits_init()
-{
+void limits_init() {
 #ifdef AVRTARGET
   LIMIT_DDR &= ~(LIMIT_MASK); // Set as input pins
 
-  #ifdef DISABLE_LIMIT_PIN_PULL_UP
-    LIMIT_PORT &= ~(LIMIT_MASK); // Normal low operation. Requires external pull-down.
-  #else
-    LIMIT_PORT |= (LIMIT_MASK);  // Enable internal pull-up resistors. Normal high operation.
-  #endif
+#ifdef DISABLE_LIMIT_PIN_PULL_UP
+  LIMIT_PORT &= ~(LIMIT_MASK); // Normal low operation. Requires external pull-down.
+#else
+  LIMIT_PORT |= (LIMIT_MASK);  // Enable internal pull-up resistors. Normal high operation.
+#endif
 
-  if (bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE)) {
+  if (bit_istrue(settings.flags, BITFLAG_HARD_LIMIT_ENABLE)) {
     LIMIT_PCMSK |= LIMIT_MASK; // Enable specific pins of the Pin Change Interrupt
     PCICR |= (1 << LIMIT_INT); // Enable Pin Change Interrupt
   } else {
     limits_disable();
   }
 
-  #ifdef ENABLE_SOFTWARE_DEBOUNCE
-    MCUSR &= ~(1<<WDRF);
-    WDTCSR |= (1<<WDCE) | (1<<WDE);
-    WDTCSR = (1<<WDP0); // Set time-out at ~32msec.
-  #endif
+#ifdef ENABLE_SOFTWARE_DEBOUNCE
+  MCUSR &= ~(1 << WDRF);
+  WDTCSR |= (1 << WDCE) | (1 << WDE);
+  WDTCSR = (1 << WDP0); // Set time-out at ~32msec.
+#endif
 #endif
 #ifdef STM32F103C8
-    /*
-     * Author Paul All AFIO GPIO pins are initialised together in one action to prevent
-     * IO issues. Apparently you cannot initialise pins on one port separately like Arduino
-     * Limits init is now performed in system_init()
-     *
-     */
-//	GPIO_InitTypeDef GPIO_InitStructure;
-//	RCC_APB2PeriphClockCmd(RCC_LIMIT_PORT | RCC_APB2Periph_AFIO, ENABLE);
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;//GPIO_Speed_50MHz;
-//	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-//	GPIO_InitStructure.GPIO_Pin = LIMIT_MASK;
-//	GPIO_Init(LIMIT_PORT, &GPIO_InitStructure);
-	// debug
-	 // GPIO_PinLockConfig(LIMIT_PORT,LIMIT_MASK);
-    /*
-     * End
-     */
+  /*
+   * Author Paul All AFIO GPIO pins are initialised together in one action to prevent
+   * IO issues. Apparently you cannot initialise pins on one port separately like Arduino
+   * Limits init is now performed in system_init()
+   *
+   */
+  //	GPIO_InitTypeDef GPIO_InitStructure;
+  //	RCC_APB2PeriphClockCmd(RCC_LIMIT_PORT | RCC_APB2Periph_AFIO, ENABLE);
+  //	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;//GPIO_Speed_50MHz;
+  //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+  //	GPIO_InitStructure.GPIO_Pin = LIMIT_MASK;
+  //	GPIO_Init(LIMIT_PORT, &GPIO_InitStructure);
+  // debug
+  // GPIO_PinLockConfig(LIMIT_PORT,LIMIT_MASK);
+  /*
+   * End
+   */
 
-    //TODO: PJH - does this call mean system_init() gets called twice?
-    system_init(); // Take over the limits_init() routine
+  //TODO: PJH - does this call mean system_init() gets called twice?
+  system_init(); // Take over the limits_init() routine
 
-//	if (bit_istrue(settings.flags, BITFLAG_HARD_LIMIT_ENABLE))
-//	{
-//		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, X_LIMIT_BIT);
-//		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, Y_LIMIT_BIT);
-//		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, Z_LIMIT_BIT);
-//		/*
-//		 * Author Paul
-//		 */
-//		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, A_LIMIT_BIT); // added 13/08/2018 Paul
-//		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, B_LIMIT_BIT); //
-//
-//		/* The EXTI line config is already done in the system.c routine sys_init() */
-//
-//		EXTI_InitTypeDef EXTI_InitStructure;
-//		EXTI_InitStructure.EXTI_Line = LIMIT_MASK;    // includes CONTROL_FAULT_BIT for DC Motor fault feedback
-//		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt; //Interrupt mode, optional values for the interrupt EXTI_Mode_Interrupt and event EXTI_Mode_Event.
-//		//EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling; //Trigger mode, can be a falling edge trigger EXTI_Trigger_Falling, the rising edge triggered EXTI_Trigger_Rising, or any level (rising edge and falling edge trigger EXTI_Trigger_Rising_Falling)
-//		if (bit_istrue(settings.flags, BITFLAG_INVERT_LIMIT_PINS )) { // for normally closed switches, we need to interrupt on the rising edge
-//			EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising ; //Trigger mode, can be a falling edge trigger EXTI_Trigger_Falling, the rising edge triggered EXTI_Trigger_Rising, or any level (rising edge and falling edge trigger EXTI_Trigger_Rising_Falling)
-//		} else {
-//			EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; //Trigger mode, can be a falling edge trigger EXTI_Trigger_Falling, the rising edge triggered EXTI_Trigger_Rising, or any level (rising edge and falling edge trigger EXTI_Trigger_Rising_Falling)
-//		}
-//		EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-//		EXTI_Init(&EXTI_InitStructure);
-//
-//		NVIC_InitTypeDef NVIC_InitStructure;
-//		NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn; //Enable keypad external interrupt channel and DC motor fault feed back
-//		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02; //Priority 2,
-//		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03; //was Sub priority 2, now 3 since controls are 2
-//		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //Enable external interrupt channel
-//		NVIC_Init(&NVIC_InitStructure);
-//
-//	}
-//	else
-//	{
-//		limits_disable();
-//	}
+  //	if (bit_istrue(settings.flags, BITFLAG_HARD_LIMIT_ENABLE))
+  //	{
+  //		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, X_LIMIT_BIT);
+  //		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, Y_LIMIT_BIT);
+  //		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, Z_LIMIT_BIT);
+  //		/*
+  //		 * Author Paul
+  //		 */
+  //		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, A_LIMIT_BIT); // added 13/08/2018 Paul
+  //		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, B_LIMIT_BIT); //
+  //
+  //		/* The EXTI line config is already done in the system.c routine sys_init() */
+  //
+  //		EXTI_InitTypeDef EXTI_InitStructure;
+  //		EXTI_InitStructure.EXTI_Line = LIMIT_MASK;    // includes CONTROL_FAULT_BIT for DC Motor fault feedback
+  //		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt; //Interrupt mode, optional values for the interrupt EXTI_Mode_Interrupt and event EXTI_Mode_Event.
+  //		//EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling; //Trigger mode, can be a falling edge trigger EXTI_Trigger_Falling, the rising edge triggered EXTI_Trigger_Rising, or any level (rising edge and falling edge trigger EXTI_Trigger_Rising_Falling)
+  //		if (bit_istrue(settings.flags, BITFLAG_INVERT_LIMIT_PINS )) { // for normally closed switches, we need to interrupt on the rising edge
+  //			EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising ; //Trigger mode, can be a falling edge trigger EXTI_Trigger_Falling, the rising edge triggered EXTI_Trigger_Rising, or any level (rising edge and falling edge trigger EXTI_Trigger_Rising_Falling)
+  //		} else {
+  //			EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; //Trigger mode, can be a falling edge trigger EXTI_Trigger_Falling, the rising edge triggered EXTI_Trigger_Rising, or any level (rising edge and falling edge trigger EXTI_Trigger_Rising_Falling)
+  //		}
+  //		EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  //		EXTI_Init(&EXTI_InitStructure);
+  //
+  //		NVIC_InitTypeDef NVIC_InitStructure;
+  //		NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn; //Enable keypad external interrupt channel and DC motor fault feed back
+  //		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02; //Priority 2,
+  //		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03; //was Sub priority 2, now 3 since controls are 2
+  //		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //Enable external interrupt channel
+  //		NVIC_Init(&NVIC_InitStructure);
+  //
+  //	}
+  //	else
+  //	{
+  //		limits_disable();
+  //	}
 #endif
 }
 
 
 // Disables hard limits.
-void limits_disable()
-{
+void limits_disable() {
 #ifdef AVRTARGET
   LIMIT_PCMSK &= ~LIMIT_MASK;  // Disable specific pins of the Pin Change Interrupt
   PCICR &= ~(1 << LIMIT_INT);  // Disable Pin Change Interrupt
@@ -133,8 +131,7 @@ void limits_disable()
 // Returns limit state as a bit-wise uint8 variable. Each bit indicates an axis limit, where
 // triggered is 1 and not triggered is 0. Invert mask is applied. Axes are defined by their
 // number in bit position, i.e. Z_AXIS is (1<<2) or bit 2, and Y_AXIS is (1<<1) or bit 1.
-uint8_t limits_get_state()
-{
+uint8_t limits_get_state() {
   uint8_t limit_state = 0;
 #if defined(AVRTARGET) || defined(STM32F103C8)
 #if defined(AVRTARGET)
@@ -143,18 +140,22 @@ uint8_t limits_get_state()
 #if defined(STM32F103C8)
   uint16_t pin = GPIO_ReadInputData(LIMIT_PIN);
 #endif
-  #ifdef INVERT_LIMIT_PIN_MASK
-    pin ^= INVERT_LIMIT_PIN_MASK;
-  #endif
-  if (bit_isfalse(settings.flags,BITFLAG_INVERT_LIMIT_PINS)) { pin ^= LIMIT_MASK; }
+#ifdef INVERT_LIMIT_PIN_MASK
+  pin ^= INVERT_LIMIT_PIN_MASK;
+#endif
+  if (bit_isfalse(settings.flags, BITFLAG_INVERT_LIMIT_PINS)) {
+    pin ^= LIMIT_MASK;
+  }
   if (pin) {
     uint8_t idx;
-    for (idx=0; idx<N_AXIS; idx++) {
-      if (pin & limit_pin_mask[idx]) { limit_state |= (1 << idx); }
+    for (idx = 0; idx < N_AXIS; idx++) {
+      if (pin & limit_pin_mask[idx]) {
+        limit_state |= (1 << idx);
+      }
     }
   }
 #endif
-  return(limit_state);
+  return (limit_state);
 }
 
 
@@ -163,7 +164,7 @@ uint8_t limits_get_state()
 // If a switch is triggered at all, something bad has happened and treat it as such, regardless
 // if a limit switch is being disengaged. It's impossible to reliably tell the state of a
 // bouncing pin because the Arduino microcontroller does not retain any state information when
-// detecting a pin change. If we poll the pins in the ISR, you can miss the correct reading if the 
+// detecting a pin change. If we poll the pins in the ISR, you can miss the correct reading if the
 // switch is bouncing.
 // NOTE: Do not attach an e-stop to the limit pins, because this interrupt is disabled during
 // homing cycles and will not respond correctly. Upon user request or need, there may be a
@@ -171,42 +172,36 @@ uint8_t limits_get_state()
 // your e-stop switch to the Arduino reset pin, since it is the most correct way to do this.
 #ifndef ENABLE_SOFTWARE_DEBOUNCE
 #if defined(AVRTARGET) || defined (STM32F103C8)
-#if defined(AVRTARGET) 
-ISR(LIMIT_INT_vect) // DEFAULT: Limit pin change interrupt process.
+#if defined(AVRTARGET)
+  ISR(LIMIT_INT_vect) // DEFAULT: Limit pin change interrupt process.
 #else
-void EXTI15_10_IRQHandler(void)
+  void EXTI15_10_IRQHandler(void)
 #endif
 {
 #if defined (STM32F103C8)
-	bool flag_fault = 0;
-	if (EXTI_GetITStatus(1 << X_LIMIT_BIT) != RESET)
-	{
-		EXTI_ClearITPendingBit(1 << X_LIMIT_BIT);
-	}
-	if (EXTI_GetITStatus(1 << Y_LIMIT_BIT) != RESET)
-	{
-		EXTI_ClearITPendingBit(1 << Y_LIMIT_BIT);
-	}
-	if (EXTI_GetITStatus(1 << Z_LIMIT_BIT) != RESET)
-	{
-		EXTI_ClearITPendingBit(1 << Z_LIMIT_BIT);
-	}
-	if (EXTI_GetITStatus(1 << A_LIMIT_BIT) != RESET) // added limit switches for additional axis 13/08/2018
-	{
-		EXTI_ClearITPendingBit(1 << A_LIMIT_BIT);
-	}
-	if (EXTI_GetITStatus(1 << B_LIMIT_BIT) != RESET) // Test A, B axis
-	{
-		EXTI_ClearITPendingBit(1 << B_LIMIT_BIT);
-	}
-	if (bit_istrue(settings.flags,BITFLAG_FAULT_PIN)) {
-	  if (EXTI_GetITStatus(1 << CONTROL_FAULT_BIT) != RESET) // Test DC Motor Faults
-	  {
-		  EXTI_ClearITPendingBit(1 << CONTROL_FAULT_BIT);
-		  flag_fault = 1;
-	  }
-	}
-	NVIC_ClearPendingIRQ(EXTI15_10_IRQn);
+  bool flag_fault = 0;
+  if (EXTI_GetITStatus(1 << X_LIMIT_BIT) != RESET) {
+    EXTI_ClearITPendingBit(1 << X_LIMIT_BIT);
+  }
+  if (EXTI_GetITStatus(1 << Y_LIMIT_BIT) != RESET) {
+    EXTI_ClearITPendingBit(1 << Y_LIMIT_BIT);
+  }
+  if (EXTI_GetITStatus(1 << Z_LIMIT_BIT) != RESET) {
+    EXTI_ClearITPendingBit(1 << Z_LIMIT_BIT);
+  }
+  if (EXTI_GetITStatus(1 << A_LIMIT_BIT) != RESET) { // added limit switches for additional axis 13/08/2018
+    EXTI_ClearITPendingBit(1 << A_LIMIT_BIT);
+  }
+  if (EXTI_GetITStatus(1 << B_LIMIT_BIT) != RESET) { // Test A, B axis
+    EXTI_ClearITPendingBit(1 << B_LIMIT_BIT);
+  }
+  if (bit_istrue(settings.flags, BITFLAG_FAULT_PIN)) {
+    if (EXTI_GetITStatus(1 << CONTROL_FAULT_BIT) != RESET) { // Test DC Motor Faults
+      EXTI_ClearITPendingBit(1 << CONTROL_FAULT_BIT);
+      flag_fault = 1;
+    }
+  }
+  NVIC_ClearPendingIRQ(EXTI15_10_IRQn);
 #endif
   // Ignore limit switches if already in an alarm state or in-process of executing an alarm.
   // When in the alarm state, Grbl should have been reset or will force a reset, so any pending
@@ -224,9 +219,8 @@ void EXTI15_10_IRQHandler(void)
 #else
       mc_reset(); // Initiate system kill.
       if (flag_fault) {
-    	system_set_exec_alarm(EXEC_ALARM_HARD_FAULT);
-      }
-      else {
+        system_set_exec_alarm(EXEC_ALARM_HARD_FAULT);
+      } else {
         system_set_exec_alarm(EXEC_ALARM_HARD_LIMIT); // Indicate hard limit critical event
       }
 #endif
@@ -236,14 +230,17 @@ void EXTI15_10_IRQHandler(void)
 #endif
 #else // OPTIONAL: Software debounce limit pin routine.
 #if defined(AVRTARGET)
-// Upon limit pin change, enable watchdog timer to create a short delay. 
-ISR(LIMIT_INT_vect) { if (!(WDTCSR & (1 << WDIE))) { WDTCSR |= (1 << WDIE); } }
-ISR(WDT_vect) // Watchdog timer ISR
-{
-  WDTCSR &= ~(1 << WDIE); // Disable watchdog timer. 
-  if (sys.state != STATE_ALARM) {  // Ignore if already in alarm state. 
+// Upon limit pin change, enable watchdog timer to create a short delay.
+ISR(LIMIT_INT_vect) {
+  if (!(WDTCSR & (1 << WDIE))) {
+    WDTCSR |= (1 << WDIE);
+  }
+}
+ISR(WDT_vect) { // Watchdog timer ISR
+  WDTCSR &= ~(1 << WDIE); // Disable watchdog timer.
+  if (sys.state != STATE_ALARM) {  // Ignore if already in alarm state.
     if (!(sys_rt_exec_alarm)) {
-      // Check limit pin state. 
+      // Check limit pin state.
       if (limits_get_state()) {
         mc_reset(); // Initiate system kill.
         system_set_exec_alarm(EXEC_ALARM_HARD_LIMIT); // Indicate hard limit critical event
@@ -263,36 +260,39 @@ ISR(WDT_vect) // Watchdog timer ISR
 // circumvent the processes for executing motions in normal operation.
 // NOTE: Only the abort realtime command can interrupt this process.
 // TODO: Move limit pin-specific calls to a general function for portability.
-void limits_go_home(uint8_t cycle_mask)
-{
-  if (sys.abort) { return; } // Block if system reset has been issued.
+void limits_go_home(uint8_t cycle_mask) {
+  if (sys.abort) {
+    return;  // Block if system reset has been issued.
+  }
 
   // Initialize plan data struct for homing motion. Spindle and coolant are disabled.
   plan_line_data_t plan_data;
   plan_line_data_t *pl_data = &plan_data;
-  memset(pl_data,0,sizeof(plan_line_data_t));
-  pl_data->condition = (PL_COND_FLAG_SYSTEM_MOTION|PL_COND_FLAG_NO_FEED_OVERRIDE);
-  #ifdef USE_LINE_NUMBERS
-    pl_data->line_number = HOMING_CYCLE_LINE_NUMBER;
-  #endif
+  memset(pl_data, 0, sizeof(plan_line_data_t));
+  pl_data->condition = (PL_COND_FLAG_SYSTEM_MOTION | PL_COND_FLAG_NO_FEED_OVERRIDE);
+#ifdef USE_LINE_NUMBERS
+  pl_data->line_number = HOMING_CYCLE_LINE_NUMBER;
+#endif
 
   // Initialize variables used for homing computations.
-  uint8_t n_cycle = (2*N_HOMING_LOCATE_CYCLE+1);
+  uint8_t n_cycle = (2 * N_HOMING_LOCATE_CYCLE + 1);
   uint8_t step_pin[N_AXIS];
   float target[N_AXIS];
   float max_travel = 0.0f;
   uint8_t idx;
-  for (idx=0; idx<N_AXIS; idx++) {
+  for (idx = 0; idx < N_AXIS; idx++) {
     // Initialize step pin masks
     step_pin[idx] = step_pin_mask[idx];
-    #ifdef COREXY
-      if ((idx==X_MOTOR)||(idx==Y_MOTOR)) { step_pin[idx] = (step_pin_mask[X_AXIS]| step_pin_mask[Y_AXIS]); }
-    #endif
+#ifdef COREXY
+    if ((idx == X_MOTOR) || (idx == Y_MOTOR)) {
+      step_pin[idx] = (step_pin_mask[X_AXIS] | step_pin_mask[Y_AXIS]);
+    }
+#endif
 
-    if (bit_istrue(cycle_mask,bit(idx))) {
+    if (bit_istrue(cycle_mask, bit(idx))) {
       // Set target based on max_travel setting. Ensure homing switches engaged with search scalar.
       // NOTE: settings.max_travel[] is stored as a negative value.
-      max_travel = max(max_travel,(-HOMING_AXIS_SEARCH_SCALAR)*settings.max_travel[idx]);
+      max_travel = max(max_travel, (-HOMING_AXIS_SEARCH_SCALAR) * settings.max_travel[idx]);
     }
   }
 
@@ -303,37 +303,43 @@ void limits_go_home(uint8_t cycle_mask)
   uint8_t limit_state, axislock, n_active_axis;
   do {
 
-    system_convert_array_steps_to_mpos(target,sys_position);
+    system_convert_array_steps_to_mpos(target, sys_position);
 
     // Initialize and declare variables needed for homing routine.
     axislock = 0;
     n_active_axis = 0;
-    for (idx=0; idx<N_AXIS; idx++) {
+    for (idx = 0; idx < N_AXIS; idx++) {
       // Set target location for active axes and setup computation for homing rate.
-      if (bit_istrue(cycle_mask,bit(idx))) {
+      if (bit_istrue(cycle_mask, bit(idx))) {
         n_active_axis++;
-        #ifdef COREXY
-          if (idx == X_AXIS) {
-            int32_t axis_position = system_convert_corexy_to_y_axis_steps(sys_position);
-            sys_position[X_MOTOR] = axis_position;
-            sys_position[Y_MOTOR] = -axis_position;
-          } else if (idx == Y_AXIS) {
-            int32_t axis_position = system_convert_corexy_to_x_axis_steps(sys_position);
-            sys_position[X_MOTOR] = sys_position[Y_MOTOR] = axis_position;
-          } else {
-            sys_position[Z_AXIS] = 0;
-          }
-        #else
-          sys_position[idx] = 0;
-        #endif
+#ifdef COREXY
+        if (idx == X_AXIS) {
+          int32_t axis_position = system_convert_corexy_to_y_axis_steps(sys_position);
+          sys_position[X_MOTOR] = axis_position;
+          sys_position[Y_MOTOR] = -axis_position;
+        } else if (idx == Y_AXIS) {
+          int32_t axis_position = system_convert_corexy_to_x_axis_steps(sys_position);
+          sys_position[X_MOTOR] = sys_position[Y_MOTOR] = axis_position;
+        } else {
+          sys_position[Z_AXIS] = 0;
+        }
+#else
+        sys_position[idx] = 0;
+#endif
         // Set target direction based on cycle mask and homing cycle approach state.
         // NOTE: This happens to compile smaller than any other implementation tried.
-        if (bit_istrue(settings.homing_dir_mask,bit(idx))) {
-          if (approach) { target[idx] = -max_travel; }
-          else { target[idx] = max_travel; }
+        if (bit_istrue(settings.homing_dir_mask, bit(idx))) {
+          if (approach) {
+            target[idx] = -max_travel;
+          } else {
+            target[idx] = max_travel;
+          }
         } else {
-          if (approach) { target[idx] = max_travel; }
-          else { target[idx] = -max_travel; }
+          if (approach) {
+            target[idx] = max_travel;
+          } else {
+            target[idx] = -max_travel;
+          }
         }
         // Apply axislock to the step port pins active in this cycle.
         axislock |= step_pin[idx];
@@ -354,15 +360,18 @@ void limits_go_home(uint8_t cycle_mask)
       if (approach) {
         // Check limit state. Lock out cycle axes when they change.
         limit_state = limits_get_state();
-        for (idx=0; idx<N_AXIS; idx++) {
+        for (idx = 0; idx < N_AXIS; idx++) {
           if (axislock & step_pin[idx]) {
             if (limit_state & (1 << idx)) {
-              #ifdef COREXY
-                if (idx==Z_AXIS) { axislock &= ~(step_pin[Z_AXIS]); }
-                else { axislock &= ~(step_pin[A_MOTOR]|step_pin[B_MOTOR]); }
-              #else
-                axislock &= ~(step_pin[idx]);
-              #endif
+#ifdef COREXY
+              if (idx == Z_AXIS) {
+                axislock &= ~(step_pin[Z_AXIS]);
+              } else {
+                axislock &= ~(step_pin[A_MOTOR] | step_pin[B_MOTOR]);
+              }
+#else
+              axislock &= ~(step_pin[idx]);
+#endif
             }
           }
         }
@@ -375,13 +384,21 @@ void limits_go_home(uint8_t cycle_mask)
       if (sys_rt_exec_state & (EXEC_SAFETY_DOOR | EXEC_RESET | EXEC_CYCLE_STOP)) {
         uint8_t rt_exec = sys_rt_exec_state;
         // Homing failure condition: Reset issued during cycle.
-        if (rt_exec & EXEC_RESET) { system_set_exec_alarm(EXEC_ALARM_HOMING_FAIL_RESET); }
+        if (rt_exec & EXEC_RESET) {
+          system_set_exec_alarm(EXEC_ALARM_HOMING_FAIL_RESET);
+        }
         // Homing failure condition: Safety door was opened.
-        if (rt_exec & EXEC_SAFETY_DOOR) { system_set_exec_alarm(EXEC_ALARM_HOMING_FAIL_DOOR); }
+        if (rt_exec & EXEC_SAFETY_DOOR) {
+          system_set_exec_alarm(EXEC_ALARM_HOMING_FAIL_DOOR);
+        }
         // Homing failure condition: Limit switch still engaged after pull-off motion
-        if (!approach && (limits_get_state() & cycle_mask)) { system_set_exec_alarm(EXEC_ALARM_HOMING_FAIL_PULLOFF); }
+        if (!approach && (limits_get_state() & cycle_mask)) {
+          system_set_exec_alarm(EXEC_ALARM_HOMING_FAIL_PULLOFF);
+        }
         // Homing failure condition: Limit switch not found during approach.
-        if (approach && (rt_exec & EXEC_CYCLE_STOP)) { system_set_exec_alarm(EXEC_ALARM_HOMING_FAIL_APPROACH); }
+        if (approach && (rt_exec & EXEC_CYCLE_STOP)) {
+          system_set_exec_alarm(EXEC_ALARM_HOMING_FAIL_APPROACH);
+        }
         if (sys_rt_exec_alarm) {
           mc_reset(); // Stop motors, if they are running.
           protocol_execute_realtime();
@@ -403,7 +420,7 @@ void limits_go_home(uint8_t cycle_mask)
 
     // After first cycle, homing enters locating phase. Shorten search to pull-off distance.
     if (approach) {
-      max_travel = settings.homing_pulloff*HOMING_AXIS_LOCATE_SCALAR;
+      max_travel = settings.homing_pulloff * HOMING_AXIS_LOCATE_SCALAR;
       homing_rate = settings.homing_feed_rate;
     } else {
       max_travel = settings.homing_pulloff;
@@ -420,34 +437,34 @@ void limits_go_home(uint8_t cycle_mask)
   // triggering when hard limits are enabled or when more than one axes shares a limit pin.
   int32_t set_axis_position;
   // Set machine positions for homed limit switches. Don't update non-homed axes.
-  for (idx=0; idx<N_AXIS; idx++) {
+  for (idx = 0; idx < N_AXIS; idx++) {
     // NOTE: settings.max_travel[] is stored as a negative value.
     if (cycle_mask & bit(idx)) {
-      #ifdef HOMING_FORCE_SET_ORIGIN
-        set_axis_position = 0;
-      #else
-        if ( bit_istrue(settings.homing_dir_mask,bit(idx)) ) {
-          set_axis_position = lroundf((settings.max_travel[idx]+settings.homing_pulloff)*settings.steps_per_mm[idx]);
-        } else {
-          set_axis_position = lroundf(-settings.homing_pulloff*settings.steps_per_mm[idx]);
-        }
-      #endif
+#ifdef HOMING_FORCE_SET_ORIGIN
+      set_axis_position = 0;
+#else
+      if (bit_istrue(settings.homing_dir_mask, bit(idx))) {
+        set_axis_position = lroundf((settings.max_travel[idx] + settings.homing_pulloff) * settings.steps_per_mm[idx]);
+      } else {
+        set_axis_position = lroundf(-settings.homing_pulloff * settings.steps_per_mm[idx]);
+      }
+#endif
 
-      #ifdef COREXY
-        if (idx==X_AXIS) {
-          int32_t off_axis_position = system_convert_corexy_to_y_axis_steps(sys_position);
-          sys_position[A_MOTOR] = set_axis_position + off_axis_position;
-          sys_position[B_MOTOR] = set_axis_position - off_axis_position;
-        } else if (idx==Y_AXIS) {
-          int32_t off_axis_position = system_convert_corexy_to_x_axis_steps(sys_position);
-          sys_position[A_MOTOR] = off_axis_position + set_axis_position;
-          sys_position[B_MOTOR] = off_axis_position - set_axis_position;
-        } else {
-          sys_position[idx] = set_axis_position;
-        }
-      #else
+#ifdef COREXY
+      if (idx == X_AXIS) {
+        int32_t off_axis_position = system_convert_corexy_to_y_axis_steps(sys_position);
+        sys_position[A_MOTOR] = set_axis_position + off_axis_position;
+        sys_position[B_MOTOR] = set_axis_position - off_axis_position;
+      } else if (idx == Y_AXIS) {
+        int32_t off_axis_position = system_convert_corexy_to_x_axis_steps(sys_position);
+        sys_position[A_MOTOR] = off_axis_position + set_axis_position;
+        sys_position[B_MOTOR] = off_axis_position - set_axis_position;
+      } else {
         sys_position[idx] = set_axis_position;
-      #endif
+      }
+#else
+      sys_position[idx] = set_axis_position;
+#endif
 
     }
   }
@@ -458,8 +475,7 @@ void limits_go_home(uint8_t cycle_mask)
 // Performs a soft limit check. Called from mc_line() only. Assumes the machine has been homed,
 // the workspace volume is in all negative space, and the system is in normal operation.
 // NOTE: Used by jogging to limit travel within soft-limit volume.
-void limits_soft_check(float *target)
-{
+void limits_soft_check(float *target) {
   if (system_check_travel_limits(target)) {
     sys.soft_limit = true;
     // Force feed hold if cycle is active. All buffered blocks are guaranteed to be within
@@ -469,8 +485,10 @@ void limits_soft_check(float *target)
       system_set_exec_state_flag(EXEC_FEED_HOLD);
       do {
         protocol_execute_realtime();
-        if (sys.abort) { return; }
-      } while ( sys.state != STATE_IDLE );
+        if (sys.abort) {
+          return;
+        }
+      } while (sys.state != STATE_IDLE);
     }
     mc_reset(); // Issue system reset and ensure spindle and coolant are shutdown.
     system_set_exec_alarm(EXEC_ALARM_SOFT_LIMIT); // Indicate soft limit critical event

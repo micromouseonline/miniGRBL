@@ -36,19 +36,19 @@ void PendSV_Handler(void);
 void SysTick_Handler(void);
 
 #ifndef STM32F10X_CL
-void USB_LP_CAN1_RX0_IRQHandler(void);
+  void USB_LP_CAN1_RX0_IRQHandler(void);
 #endif /* STM32F10X_CL */
 
 #if defined (USE_STM3210B_EVAL) || defined (USE_STM3210E_EVAL)
-void USART1_IRQHandler(void);
+  void USART1_IRQHandler(void);
 #endif /* USE_STM3210B_EVAL or USE_STM3210E_EVAL */
 
 #ifdef USE_STM3210C_EVAL
-void USART2_IRQHandler(void);
+  void USART2_IRQHandler(void);
 #endif /* USE_STM3210C_EVAL */
 
 #ifdef STM32F10X_CL
-void OTG_FS_IRQHandler(void);
+  void OTG_FS_IRQHandler(void);
 #endif /* STM32F10X_CL */
 
 #endif /* __STM32F10x_IT_H */

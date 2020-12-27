@@ -23,29 +23,29 @@
 #define serial_h
 
 #ifdef AVRTARGET
-#ifndef RX_BUFFER_SIZE
-  #define RX_BUFFER_SIZE 128
-#endif
-#ifndef TX_BUFFER_SIZE
-  #ifdef USE_LINE_NUMBERS
-    #define TX_BUFFER_SIZE 112
-  #else
-    #define TX_BUFFER_SIZE 104
+  #ifndef RX_BUFFER_SIZE
+    #define RX_BUFFER_SIZE 128
   #endif
-#endif
+  #ifndef TX_BUFFER_SIZE
+    #ifdef USE_LINE_NUMBERS
+      #define TX_BUFFER_SIZE 112
+    #else
+      #define TX_BUFFER_SIZE 104
+    #endif
+  #endif
 #else
-#define RX_BUFFER_SIZE 254//254
-#ifndef WIN32
-#define TX_BUFFER_SIZE 128 //128	// Do not try 256 it will not work for STM32.
-#else
-#define TX_BUFFER_SIZE 254
-#endif
+  #define RX_BUFFER_SIZE 254//254
+  #ifndef WIN32
+    #define TX_BUFFER_SIZE 128 //128	// Do not try 256 it will not work for STM32.
+  #else
+    #define TX_BUFFER_SIZE 254
+  #endif
 #endif
 
 #define SERIAL_NO_DATA 0xff
 
 #ifdef WIN32
-void winserial_init(char *pPort);
+  void winserial_init(char *pPort);
 #endif
 
 void serial_init();
