@@ -24,9 +24,8 @@
 
 
 #ifndef cpu_map_h
-  #define cpu_map_h
-#endif
-#include "grbl.h"
+#define cpu_map_h
+
 
 //#ifdef CPU_MAP_STM32F103
 
@@ -219,4 +218,4 @@
 #endif
 */
 
-//#endif
+#endif
