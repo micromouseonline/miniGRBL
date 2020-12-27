@@ -195,7 +195,11 @@ static void report_util_setting_string(uint8_t n) {
   report_util_line_feed();
 }
 
-
+/*** NOTE:
+ * without the line feed after each parameter, Lightburn cannot parse the
+ * settings messages.
+ * Which is very annoying.
+ */
 static void report_util_uint8_setting(uint8_t n, int val) {
   report_util_setting_prefix(n);
   print_uint8_base10(val);
