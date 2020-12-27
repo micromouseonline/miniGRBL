@@ -524,7 +524,13 @@ ISR(SERIAL_RX) {
                     }
                     break;
 #ifdef DEBUG
-                  //case CMD_DEBUG_REPORT: {uint8_t sreg = SREG; cli(); bit_true(sys_rt_exec_debug,EXEC_DEBUG_REPORT); SREG = sreg;} break;
+                  //case CMD_DEBUG_REPORT: {	//AVR ONLY
+                    // uint8_t sreg = SREG;
+                    // cli();
+                    // bit_true(sys_rt_exec_debug,EXEC_DEBUG_REPORT);
+                    // SREG = sreg;
+                    // }
+                    //break;
                   case CMD_DEBUG_REPORT: {
                     bit_true(sys_rt_exec_debug, EXEC_DEBUG_REPORT);
                   }
