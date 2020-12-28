@@ -322,7 +322,7 @@ void report_grbl_settings() {
   report_util_uint8_setting(26, settings.homing_debounce_delay);
   report_util_float_setting(27, settings.homing_pulloff, N_DECIMAL_SETTINGVALUE);
   /*
-   * Author Paul Add pwm frequency and tool change toggle delay
+   * Author Paul Add pwm frequency
    */
   report_util_float_setting(28, settings.pwm_mode, N_DECIMAL_RPMVALUE);
   report_util_setting_string(28);

@@ -326,7 +326,7 @@ uint8_t gc_execute_line(char *line) {
               case 1:
                 break; // Optional stop not supported. Ignore.
               default:
-                gc_block.modal.program_flow = int_value; // {Paul M2} Program end and reset
+                gc_block.modal.program_flow = int_value; // Program end and reset
             }
             break;
           case 3:
@@ -1022,7 +1022,7 @@ uint8_t gc_execute_line(char *line) {
 
             // Convert IJK values to proper units.
             if (gc_block.modal.units == UNITS_MODE_INCHES) {
-              for (idx = 0; idx < N_AXIS; idx++) { // Axes indices are consistent, so loop may be used to save flash space. //for (idx=0; idx<N_AXIS-2; idx++) {Paul changed this axis
+              for (idx = 0; idx < N_AXIS; idx++) { // Axes indices are consistent, so loop may be used to save flash space.
                 if (ijk_words & bit(idx)) {
                   gc_block.values.ijk[idx] *= MM_PER_INCH;
                 }
@@ -1300,7 +1300,7 @@ uint8_t gc_execute_line(char *line) {
         mc_line(gc_block.values.xyz, pl_data);
       }
       mc_line(gc_block.values.ijk, pl_data);
-      memcpy(gc_state.position, gc_block.values.ijk, N_AXIS * sizeof(float)); //N_AXIS should be 3 here Paul
+      memcpy(gc_state.position, gc_block.values.ijk, N_AXIS * sizeof(float));
       break;
     case NON_MODAL_SET_HOME_0:
       settings_write_coord_data(SETTING_INDEX_G28, gc_state.position);
