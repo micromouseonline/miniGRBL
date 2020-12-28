@@ -176,24 +176,53 @@
 #define SPINDLE_PWM_OFF_VALUE     0
 #define SPINDLE_PWM_RANGE         (SPINDLE_PWM_MAX_VALUE-SPINDLE_PWM_MIN_VALUE) // PJH: never used
 
-//  PORT A                         PORT B                    PORT C
-//----------------------------------------------------------------------------------
-//   0      X_STEP_BIT           |  PROBE_BIT               | xxxx
-//   1      Y_STEP_BIT           |  SPINDLE_ENABLE_BIT      | xxxx
-//   2      Z_STEP_BIT           |  SPINDLE_DIRECTION_BIT   | xxxx
-//   3      A_STEP_BIT           |  COOLANT_FLOOD_BIT		  | xxxx
-//   4      B_STEP_BIT           |  COOLANT_MIST_BIT		  | xxxx
-//   5      X_DIRECTION_BIT      |  CONTROL_RESET_BIT		  | xxxx
-//   6      Y_DIRECTION_BIT      |  CONTROL_FEED_HOLD_BIT   | xxxx
-//   7      Z_DIRECTION_BIT      |  CONTROL_CYCLE_START_BIT |	xxxx
-//   8      A_DIRECTION_BIT*     |  CONTROL_SAFETY_DOOR_BIT |	xxxx
-//   9       UART                |  SPINDLE_PWM_BIT  T4/CH4 | xxxx
-//   10      UART                |  X_LIMIT_BIT			  | xxxx
-//   11      USB    T1/CH4       |  Y_LIMIT_BIT			  | xxxx
-//   12      USB                 |  Z_LIMIT_BIT         	  | xxxx
-//   13      swdio ATC M6        |  A_LIMIT_BIT*			  | LEDBLINK (test running app)
-//   14	   swdclk ATC Tn   	   |  B_LIMIT_BIT*			  | UART/USB switch
-//   15      B_DIRECTION_BIT*    |  DC Motor fault     	  | STEPPERS_DISABLE_BIT
+// PJH - minigerbil pin map verified from schematic 28-12-20
+//  PORT A
+//-------------------------------
+//    0      X_STEP_BIT
+//    1      Y_STEP_BIT
+//    2      Z_STEP_BIT
+//    3      A_STEP_BIT
+//    4      B_STEP_BIT
+//    5      X_DIRECTION_BIT
+//    6      Y_DIRECTION_BIT
+//    7      Z_DIRECTION_BIT
+//    8      A_DIRECTION_BIT
+//    9      UART TX
+//   10      UART RX
+//   11      USB-
+//   12      USB+
+//   13      SWDIO
+//   14	     SWDCLK
+//   15      B_DIRECTION_BIT
+//
+//   PORT B
+//-----------------
+//    0 PROBE_BIT               (IN)   Not connected anywhere but pulled up internally
+//    1 SPINDLE_ENABLE_BIT      (LO)   connected to MOSFET inverter for LaserOn and LED D3
+//    2 SPINDLE_DIRECTION_BIT   (OUT)  Not used but grounded through 10k Resistor - is BOOT1 pin
+//    3 COOLANT_FLOOD_BIT       (OUT)  Output on J1 pin 1 - not connected to anything else
+//    4 COOLANT_MIST_BIT        (NC)   Output not connected
+//    5 CONTROL_RESET_BIT       (IN)   Input on J5 pin 1 for control reset - GND to activate
+//    6 CONTROL_FEED_HOLD_BIT   (IN)   Input on J1 pin 2 for feed hold - GND to activate
+//    7 CONTROL_CYCLE_START_BIT (IN)   Input on J1 pin 3 for feed start - GND to activate
+//    8 CONTROL_SAFETY_DOOR_BIT (IN)   Input on J5 pin 3 for Door Open - GND to activate
+//    9 SPINDLE_PWM_BIT         (OUT)  Output on J1 pin 4 PWM for laser power IN on LPS ***
+//   10 X_LIMIT_BIT             (IN)   Input on FFC1 pin 5 - GND to activate
+//   11 Y_LIMIT_BIT             (IN)   Input on FFC1 pin 4 - GND to activate
+//   12 Z_LIMIT_BIT             (IN)   Not connected - not used
+//   13 A_LIMIT_BIT             (IN)   Not connected - not used
+//   14	B_LIMIT_BIT             (IN)   Not connected - not used
+//   15 DC Motor fault          (IN)   Input on J5 pin 2  for motor fault - GND to activate
+//
+//   PORT C
+//-----------------------
+//   13 LEDBLINK (test running app)  '1' lights LED2 on board (BluePill is inverse of this)
+//   14	UART/USB switch        (IN)  Pulled high, '1' => use USB, '0' => use USART
+//   15 STEPPERS_DISABLE_BIT   (OUT) '0' => steppers enabled, '1' => steppers disabled
+//
+// *** Laser power PWM is via a transistor inverter T1. This may need smaller base resistor
+//     Why is the collector held up to VIN_MCU via 180 Ohm resistor?
 
 
 /*
