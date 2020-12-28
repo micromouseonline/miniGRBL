@@ -22,6 +22,7 @@ extern "C" {
 
   extern RESET_TYPE resetSource;
   void  getResetSource (void);
+  void checkReset (void);
 
 #ifdef	__cplusplus
 }
