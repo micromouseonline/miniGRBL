@@ -20,6 +20,7 @@
 */
 
 #include "grbl.h"
+#include "utilities.h"
 
 // Declare system global variable structure
 system_t sys;
@@ -102,6 +103,7 @@ void LED_TRACE(char count, int delay);
 #endif
 {
 #if defined (STM32F103C8)
+  getResetSource();
   RCC_HCLKConfig(RCC_SYSCLK_Div1); // High speed data bus
   RCC_PCLK1Config(RCC_HCLK_Div2);//paul high speed peripheral bus
   RCC_PCLK2Config(RCC_HCLK_Div1); // low speed peripheral bus
@@ -247,6 +249,7 @@ void LED_TRACE(char count, int delay);
     }
     // Print welcome message. Indicates an initialization has occurred at power-up or with a reset.
     report_init_message();
+    checkReset();
 
 
     LedBlink();
