@@ -102,19 +102,6 @@ void LED_TRACE(char count, int delay);
 #endif
 {
 #if defined (STM32F103C8)
-  /* Timing and initialization
-   * Author: Paul
-   * We have re-mapped the SWDIO/CLK pins for Tool Change purposes which means these
-   * ISCP functions has disappeared after we have flashed the Bobby Dazzler.
-   * A work around is to erase the chip first when it has been flashed before
-   * so it's restored into the default pin configuration
-   */
-#ifndef MG
-  GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
-  RCC->APB2ENR |= RCC_APB2ENR_AFIOEN; // added to release the jtag pins for gpio functions paul
-  AFIO->MAPR = AFIO_MAPR_SWJ_CFG_DISABLE;
-#endif
-
   RCC_HCLKConfig(RCC_SYSCLK_Div1); // High speed data bus
   RCC_PCLK1Config(RCC_HCLK_Div2);//paul high speed peripheral bus
   RCC_PCLK2Config(RCC_HCLK_Div1); // low speed peripheral bus
@@ -208,14 +195,6 @@ void LED_TRACE(char count, int delay);
     sys.spindle_speed_ovr = DEFAULT_SPINDLE_SPEED_OVERRIDE; // Set to 100%
     memset(sys_probe_position, 0, sizeof(sys_probe_position)); // Clear probe position.
     sys_probe_state = 0;
-    /*
-     * author Paul ATC
-     */
-    sys_m6_state = 0;
-    sys_tool_state = 0;
-    /*
-     * ATC ends
-     */
     sys_rt_exec_state = 0;
     sys_rt_exec_alarm = 0;
     sys_rt_exec_motion_override = 0;
@@ -229,7 +208,6 @@ void LED_TRACE(char count, int delay);
       */
     spindle_init(settings.pwm_mode);
     settings_init(settings.pwm_mode); // Paul's frequency add on: added parm in order to Load Grbl settings from EEPROM
-    tool_init(); //Paul, when ready to test tool change
     /*
      * end
      */

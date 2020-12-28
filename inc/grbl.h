@@ -120,13 +120,6 @@
 #include "motion_control.h"
 #include "planner.h"
 #include "print.h"
-/*
- * Author Paul: added tool changer
- */
-#include "tool.h"
-/*
- * end
- */
 #include "probe.h"
 #include "protocol.h"
 #include "report.h"

@@ -345,18 +345,6 @@ uint8_t gc_execute_line(char *line) {
                 break;
             }
             break;
-          /*
-           * Author Paul, added M6
-           */
-          case 6:
-            word_bit = MODAL_GROUP_M7;
-            switch (int_value) {
-              case 6:
-                gc_block.modal.tool_enable = TOOL_M6_ENABLE;
-                gc_parser_flags |= GC_PARSER_M6_TOGGLE ;
-                break;
-            }
-            break;
 #ifdef ENABLE_M7
           case 7:
           case 8:
@@ -470,7 +458,6 @@ uint8_t gc_execute_line(char *line) {
               FAIL(STATUS_GCODE_MAX_VALUE_EXCEEDED);
             }
             gc_block.values.t = int_value;
-            gc_block.modal.tool_change = TOOL_T_ENABLE; // added by Paul for Tn function
             break;
           case 'X':
             word_bit = WORD_X;
@@ -1214,7 +1201,7 @@ uint8_t gc_execute_line(char *line) {
   // [5. Select tool ]: NOT SUPPORTED. Only tracks tool value.
   gc_state.tool = gc_block.values.t;
 
-  // [6. Change tool ]: NOT SUPPORTED. Paul, not sure what needs to be done here
+  // [6. Change tool ]: NOT SUPPORTED
 
   // [7. Spindle control ]:
   if (gc_state.modal.spindle != gc_block.modal.spindle) {
@@ -1238,61 +1225,7 @@ uint8_t gc_execute_line(char *line) {
     }
   }
   pl_data->condition |= gc_state.modal.coolant; // Set condition flag for planner use.
-  /*
-   * Author Paul, based on the coolant control design pattern
-   *  Coolant design did check 4 states ---
-   *  State | G code |  Block  | Action
-   *  0     |  0     |    0    | Do nothing
-   *  1     |  0     |    1    | Do tool synch
-   *  2     |  1     |    0    | Set gcode parser  = 0
-   *  3     |  1     |    1    | Do nothing
-   *
-   *   Tool design does need a different outcome for state 3
-   *  G code |  Block  | Action
-   *   0     |    0    | Do nothing
-   *   0     |    1    | Do tool synch
-   *   1     |    0    | Set gcode parser  = 0
-   *   1     |    1    | Do tool synch since we want to toggle the M6/Tn outputs
-   *
-   */
-  // [8.1. Execute the M6 Tool valve control ** Paul added this**]:
-  if (bit_istrue(gc_parser_flags, GC_PARSER_M6_TOGGLE)) { // Semaphore so only the M6 toggle command is going thru
-    if (gc_state.modal.tool_enable != gc_block.modal.tool_enable) {
-      // NOTE: tool M6-codes are modal. Only one command per line is allowed. But, multiple states
-      // can exist at the same time, while tool disable clears all states.
-      tool_m6_sync(gc_block.modal.tool_enable);
-      if (gc_block.modal.tool_enable == TOOL_M6_DISABLE) {
-        gc_state.modal.tool_enable = TOOL_M6_DISABLE;
-      } else {
-        gc_state.modal.tool_enable |= gc_block.modal.tool_enable;
-      }
-    } else if ((gc_state.modal.tool_enable = gc_block.modal.tool_enable) & (gc_state.modal.tool_enable = TOOL_M6_ENABLE)) {
-      tool_m6_sync(gc_block.modal.tool_enable);
-      gc_state.modal.tool_enable = TOOL_M6_ENABLE;
-      gc_block.modal.tool_enable = TOOL_M6_DISABLE;
-    }
-    gc_parser_flags &= ~GC_PARSER_M6_TOGGLE; // reset the semaphore
-    // number &= ~(1UL << n);
-    pl_data->condition |= gc_state.modal.tool_enable; // Set condition flag for planner use.
-  }
-  // [8.2. Tn Tool change control ** Paul added this**]:
-  if (gc_state.modal.tool_change != gc_block.modal.tool_change) {
-    // NOTE: tool M6-codes are modal. Only one command per line is allowed. But, multiple states
-    // can exist at the same time, while tool disable clears all states.
-    tool_t_sync(gc_block.modal.tool_change); // spindle_sync(gc_block.modal.spindle, pl_data->spindle_speed);
-    if (gc_block.modal.tool_change == TOOL_T_DISABLE) {
-      gc_state.modal.tool_change = TOOL_T_DISABLE;
-    } else {
-      gc_state.modal.tool_change |= gc_block.modal.tool_change;
-    }
-  } else if ((gc_state.modal.tool_change = gc_block.modal.tool_change) & (gc_state.modal.tool_change = TOOL_T_ENABLE)) {
-    tool_t_sync(gc_block.modal.tool_change);
-    gc_state.modal.tool_change = TOOL_T_DISABLE;
-  }
-  pl_data->condition |= gc_state.modal.tool_change; // Set condition flag for planner use.
-  /*
-   * end
-   */
+
   // [9. Override control ]: NOT SUPPORTED. Always enabled. Except for a Grbl-only parking control.
 #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
   if (gc_state.modal.override != gc_block.modal.override) {
@@ -1446,8 +1379,6 @@ uint8_t gc_execute_line(char *line) {
       gc_state.modal.coord_select = 0; // G54
       gc_state.modal.spindle = SPINDLE_DISABLE;
       gc_state.modal.coolant = COOLANT_DISABLE;
-      gc_state.modal.tool_enable = TOOL_M6_DISABLE; // Added by Paul
-      //gc_state.modal.tool_change = TOOL_T_DISABLE; //Okay, Tn does not reset according LinuxCNC....
 #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
 #ifdef DEACTIVATE_PARKING_UPON_INIT
       gc_state.modal.override = OVERRIDE_DISABLED;
@@ -1470,8 +1401,6 @@ uint8_t gc_execute_line(char *line) {
         system_flag_wco_change(); // Set to refresh immediately just in case something altered.
         spindle_set_state(SPINDLE_DISABLE, 0.0f);
         coolant_set_state(COOLANT_DISABLE);
-        tool_set_m6_state(TOOL_M6_DISABLE);
-        tool_set_t_state(TOOL_T_DISABLE);
       }
       report_feedback_message(MESSAGE_PROGRAM_END);
     }

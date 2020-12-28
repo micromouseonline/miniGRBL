@@ -132,20 +132,6 @@
 #define ResetMistEnablebit()          GPIO_WriteBit(COOLANT_MIST_PORT, 1 << COOLANT_MIST_BIT, Bit_RESET)
 
 
-/*
- * Author Paul: Tool Changer definition pins
- */
-// Define tool changer and M6 enable output pins.
-#define TOOL_CHANGER_PORT             GPIOA
-#define RCC_TOOL_CHANGER_PORT         RCC_APB2Periph_GPIOA //
-#define TOOL_CHANGER_BIT              13 //GPIO_Pin_13
-#define TOOL_M6_PORT                  GPIOA
-#define RCC_TOOL_M6_PORT              RCC_APB2Periph_GPIOA
-#define TOOL_M6_BIT                   14
-#define SetToolChangerEnablebit()     GPIO_WriteBit(TOOL_CHANGER_PORT, 1 << TOOL_CHANGER_BIT, Bit_SET)
-#define ResetToolChangerEnablebit()   GPIO_WriteBit(TOOL_CHANGER_PORT, 1 << TOOL_CHANGER_BIT, Bit_RESET)
-#define SetM6Enablebit()              GPIO_WriteBit(TOOL_M6_PORT, 1 << TOOL_M6_BIT, Bit_SET)
-#define ResetM6Enablebit()            GPIO_WriteBit(TOOL_M6_PORT, 1 << TOOL_M6_BIT, Bit_RESET)
 
 // Define user-control controls (cycle start, reset, feed hold) input pins.
 // NOTE: All CONTROLs pins must be on the same port and not on a port with other input pins (limits).

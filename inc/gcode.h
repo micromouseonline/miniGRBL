@@ -129,16 +129,7 @@
 // Modal Group G13: Control mode
 #define CONTROL_MODE_EXACT_PATH 0 // G61 (Default: Must be zero)
 
-/*
- * Author Paul
- * Tn toggles the tool change GPIO pin n times
- * M6 energises the tool enable GPIO pin TOOL_CHANGE_DELAY ms.
- */
-// Modal Group M6: Tool change control
-#define TOOL_M6_DISABLE 0 // M6 (Default: Must be zero)
-#define TOOL_M6_ENABLE   PL_COND_FLAG_M6  // M6 (NOTE: Uses planner condition bit flag)
-#define TOOL_T_DISABLE 0 // M6 (Default: Must be zero)
-#define TOOL_T_ENABLE   PL_COND_FLAG_T // M6 (NOTE: Uses planner condition bit flag)
+
 // Modal Group M7: Spindle control
 #define SPINDLE_DISABLE 0 // M5 (Default: Must be zero)
 #define SPINDLE_ENABLE_CW   PL_COND_FLAG_SPINDLE_CW // M3 (NOTE: Uses planner condition bit flag)
@@ -230,15 +221,6 @@ typedef struct {
   uint8_t program_flow;    // {M0,M1,M2,M30}
   uint8_t coolant;         // {M7,M8,M9}
   uint8_t spindle;         // {M3,M4,M5}
-  /*
-   * Author Paul
-   * M6 tool change enable
-   */
-  uint8_t tool_enable;     // {M6}
-  uint8_t tool_change;     // [Tn}
-  /*
-   * End
-   */
   uint8_t override;        // {M56}
 } gc_modal_t;
 

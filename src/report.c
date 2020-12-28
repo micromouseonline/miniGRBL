@@ -85,15 +85,6 @@ static void report_util_setting_string(uint8_t n) {
     case 6:
       printPgmString(PSTR("prb inv"));
       break;
-    case 7:
-      printPgmString(PSTR("ATC M6, pulse/ff"));
-      break;
-    case 8:
-      printPgmString(PSTR("ATC Tool Td, milliseconds"));
-      break;
-    case 9:
-      printPgmString(PSTR("ATC M6 Td, milliseconds"));
-      break;
     case 10:
       printPgmString(PSTR("rpt"));
       break;
@@ -312,18 +303,6 @@ void report_grbl_settings() {
   report_util_uint8_setting(4, bit_istrue(settings.flags, BITFLAG_INVERT_ST_ENABLE));
   report_util_uint8_setting(5, bit_istrue(settings.flags, BITFLAG_INVERT_LIMIT_PINS));
   report_util_uint8_setting(6, bit_istrue(settings.flags, BITFLAG_INVERT_PROBE_PIN));
-  /*
-   * Author Paul, Added Tool, M6 duration settings
-   */
-  report_util_uint32_setting(7, settings.m6_ff);
-  report_util_setting_string(7);
-  report_util_uint32_setting(8, settings.tool_delay);
-  report_util_setting_string(8);
-  report_util_uint32_setting(9, settings.m6_delay);
-  report_util_setting_string(9);
-  /*
-   *
-   */
   report_util_uint8_setting(10, settings.status_report_mask);
   report_util_float_setting(11, settings.junction_deviation, N_DECIMAL_SETTINGVALUE);
   report_util_float_setting(12, settings.arc_tolerance, N_DECIMAL_SETTINGVALUE);
@@ -518,18 +497,8 @@ void report_gcode_modes() {
       serial_write('5');
       break;
   }
-  /*
-   * Author Paul, M6 state added
-   */
-  if (gc_state.modal.tool_enable) { // Note: Multiple tool states may be active at the same time.
-    if (gc_state.modal.tool_enable) {
-      report_util_gcode_modes_M();
-      serial_write('6');
-    }
-  }
-  /*
-   *  End
-   */
+
+  //report_util_gcode_modes_M();
 #ifdef ENABLE_M7
   if (gc_state.modal.coolant) { // Note: Multiple coolant states may be active at the same time.
     if (gc_state.modal.coolant & PL_COND_FLAG_COOLANT_MIST) {

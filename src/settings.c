@@ -68,10 +68,6 @@ void settings_restore(uint8_t restore_flag) {
     settings.step_invert_mask = DEFAULT_STEPPING_INVERT_MASK;
     settings.dir_invert_mask = DEFAULT_DIRECTION_INVERT_MASK;
 
-    settings.m6_ff = DEFAULT_FF; // added parm for tool changer
-    settings.tool_delay = DEFAULT_DELAY; // added parm for tool changer
-    settings.m6_delay = DEFAULT_M6_DELAY; // added parm for tool valve
-
     settings.status_report_mask = DEFAULT_STATUS_REPORT_MASK;
     settings.junction_deviation = DEFAULT_JUNCTION_DEVIATION;
     settings.arc_tolerance = DEFAULT_ARC_TOLERANCE;
@@ -327,15 +323,6 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
           settings.flags &= ~BITFLAG_INVERT_PROBE_PIN;
         }
         probe_configure_invert_mask(false);
-        break;
-      case 7:
-        settings.m6_ff = int_value;
-        break;// Paul new tool changer toggle time
-      case 8:
-        settings.tool_delay = value;
-        break;// Paul new tool changer toggle time
-      case 9:
-        settings.m6_delay = value;
         break;
       case 10:
         settings.status_report_mask = int_value;
