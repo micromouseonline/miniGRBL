@@ -48,7 +48,7 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
 #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
   // configure the spin enable port only
   RCC_APB2PeriphClockCmd(RCC_SPINDLE_ENABLE_PORT, ENABLE);
-  GPIO_InitStructureControl.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructureControl.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructureControl.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(SPINDLE_ENABLE_PORT, &GPIO_InitStructureControl);
   GPIO_InitStructureControl.GPIO_Pin =  1 << SPINDLE_ENABLE_BIT | 1 << SPINDLE_DIRECTION_BIT;
@@ -58,7 +58,7 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
 #else
   // combination of 2 ports used: enable and direction
   RCC_APB2PeriphClockCmd(RCC_SPINDLE_ENABLE_PORT, ENABLE);
-  GPIO_InitStructureControl.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructureControl.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructureControl.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(SPINDLE_ENABLE_PORT, &GPIO_InitStructureControl);
   GPIO_InitStructureControl.GPIO_Pin =   1 << SPINDLE_ENABLE_BIT;
@@ -68,7 +68,7 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
 
 
   RCC_APB2PeriphClockCmd(RCC_SPINDLE_DIRECTION_PORT, ENABLE);
-  GPIO_InitStructureControl.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructureControl.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructureControl.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructureControl.GPIO_Pin =  1 << SPINDLE_DIRECTION_BIT;
   GPIO_Init(SPINDLE_DIRECTION_PORT, &GPIO_InitStructureControl);
@@ -91,7 +91,7 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_StructInit(&GPIO_InitStructure);
   //M3, M4, M5 working with this step enable code
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode =  GPIO_Mode_AF_PP;
 
   /*
@@ -209,7 +209,7 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
   GPIO_InitTypeDef gpio_InitStructure;
   GPIO_StructInit(&gpio_InitStructure);
   gpio_InitStructure.GPIO_Pin = SPINDLE_PWM_BIT;
-  gpio_InitStructure.GPIO_Speed =  GPIO_Speed_2MHz;
+  gpio_InitStructure.GPIO_Speed =  GPIO_Speed_50MHz;
   gpio_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_Init(SPINDLE_PWM_PORT, &gpio_InitStructure);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);

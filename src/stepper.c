@@ -795,14 +795,14 @@ void stepper_init() {
 #ifdef STM32F103C8
   GPIO_InitTypeDef GPIO_InitStructure;
   RCC_APB2PeriphClockCmd(RCC_STEPPERS_DISABLE_PORT, ENABLE);
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz; //GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   //	GPIO_InitStructure.GPIO_Pin = STEPPERS_DISABLE_MASK|ISR_BIT;// isr bit is for measuring isr time
   GPIO_InitStructure.GPIO_Pin = STEPPERS_DISABLE_MASK;
   GPIO_Init(STEPPERS_DISABLE_PORT, &GPIO_InitStructure);
 
   RCC_APB2PeriphClockCmd(RCC_STEP_PORT, ENABLE);
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz; //GPIO_Speed_50MHz; Added by Paul
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; // added by paul
   // we initialise both dir and step ins since they share the same gpio port
   GPIO_InitStructure.GPIO_Pin = STEP_MASK | DIRECTION_MASK; // both stepper pins and direction pins initialised
@@ -813,7 +813,7 @@ void stepper_init() {
 
   //    GPIO_PinLockConfig(RCC_STEP_PORT,GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4);
   //	RCC_APB2PeriphClockCmd(RCC_DIRECTION_PORT, ENABLE);
-  //	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; //GPIO_Speed_50MHz;
+  //	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   //	GPIO_InitStructure.GPIO_Pin = DIRECTION_MASK;
   //	GPIO_Init(DIRECTION_PORT, &GPIO_InitStructure);

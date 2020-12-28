@@ -91,7 +91,7 @@ void serial_init() {
   GPIO_InitTypeDef GPIO_InitStructure; //Paul, Set up the input switch for USB or UART function
 
   RCC_APB2PeriphClockCmd(RCC_SERIALSWITCH_PORT, ENABLE);
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; // Pull up, default is USB or High input = 1
   GPIO_InitStructure.GPIO_Pin = SERIALSWITCH_BIT;
   GPIO_Init(SERIALSWITCH_PORT, &GPIO_InitStructure);

@@ -43,7 +43,7 @@ void probe_init() {
 #ifdef STM32F103C8
   //	GPIO_InitTypeDef GPIO_InitStructure;
   //	RCC_APB2PeriphClockCmd(RCC_PROBE_PORT, ENABLE);
-  //	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  //	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 #ifdef DISABLE_PROBE_PIN_PULL_UP
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
 #else
