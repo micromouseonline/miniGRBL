@@ -22,6 +22,8 @@
 #include "grbl.h"
 #include "utilities.h"
 
+//remove soft start setting
+
 // Declare system global variable structure
 system_t sys;
 int32_t sys_position[N_AXIS];      // Real-time machine (aka home) position vector in steps.
@@ -58,17 +60,17 @@ volatile uint8_t sys_rt_exec_accessory_override; // Global realtime executor bit
 #include "stm32f10x_usart.h"
 
 void USART1_Configuration(u32 BaudRate) {
-  GPIO_InitTypeDef GPIO_InitStructure;
-  USART_InitTypeDef USART_InitStructure;
-  NVIC_InitTypeDef NVIC_InitStructure;
+  NVIC_InitTypeDef NVIC_InitStructure = {0};   // PJH - ensure structure is correctly initialised
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
   NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
+
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_StructInit (&GPIO_InitStructure);	   // PJH - ensure structure is correctly initialised
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -77,6 +79,7 @@ void USART1_Configuration(u32 BaudRate) {
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 
+  USART_InitTypeDef USART_InitStructure = {0}; // PJH - ensure structure is correctly initialised
   USART_InitStructure.USART_BaudRate = BaudRate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
@@ -118,6 +121,7 @@ void LED_TRACE(char count, int delay);
 
 #ifdef LEDBLINK
   GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_StructInit(&GPIO_InitStructure);    // PJH - Ensure structure is correctly initialised
 
   //RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOC, ENABLE);//
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);

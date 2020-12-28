@@ -45,6 +45,7 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
    * the direction, enable and timer functions...
    */
   GPIO_InitTypeDef GPIO_InitStructureControl;
+  GPIO_StructInit (&GPIO_InitStructureControl);	// PJH - ensure structure is correctly initialised
 #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
   // configure the spin enable port only
   RCC_APB2PeriphClockCmd(RCC_SPINDLE_ENABLE_PORT, ENABLE);

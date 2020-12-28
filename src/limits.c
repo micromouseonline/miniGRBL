@@ -60,12 +60,13 @@ void limits_init() {
    * Limits init is now performed in system_init()
    *
    */
-  //	GPIO_InitTypeDef GPIO_InitStructure;
-  //	RCC_APB2PeriphClockCmd(RCC_LIMIT_PORT | RCC_APB2Periph_AFIO, ENABLE);
-  //	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-  //	GPIO_InitStructure.GPIO_Pin = LIMIT_MASK;
-  //	GPIO_Init(LIMIT_PORT, &GPIO_InitStructure);
+  //    GPIO_InitTypeDef GPIO_InitStructure;
+  //    GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
+  //    RCC_APB2PeriphClockCmd(RCC_LIMIT_PORT | RCC_APB2Periph_AFIO, ENABLE);
+  //    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  //    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+  //    GPIO_InitStructure.GPIO_Pin = LIMIT_MASK;
+  //    GPIO_Init(LIMIT_PORT, &GPIO_InitStructure);
   // debug
   // GPIO_PinLockConfig(LIMIT_PORT,LIMIT_MASK);
   /*
@@ -89,6 +90,7 @@ void limits_init() {
   //		/* The EXTI line config is already done in the system.c routine sys_init() */
   //
   //		EXTI_InitTypeDef EXTI_InitStructure;
+  //        EXTI_StructInit(&EXTI_InitStructure) // PJH - ensure structure is initialised
   //		EXTI_InitStructure.EXTI_Line = LIMIT_MASK;    // includes CONTROL_FAULT_BIT for DC Motor fault feedback
   //		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt; //Interrupt mode, optional values for the interrupt EXTI_Mode_Interrupt and event EXTI_Mode_Event.
   //		//EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling; //Trigger mode, can be a falling edge trigger EXTI_Trigger_Falling, the rising edge triggered EXTI_Trigger_Rising, or any level (rising edge and falling edge trigger EXTI_Trigger_Rising_Falling)
@@ -100,7 +102,7 @@ void limits_init() {
   //		EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   //		EXTI_Init(&EXTI_InitStructure);
   //
-  //		NVIC_InitTypeDef NVIC_InitStructure;
+  //		NVIC_InitTypeDef NVIC_InitStructure = {0};
   //		NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn; //Enable keypad external interrupt channel and DC motor fault feed back
   //		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02; //Priority 2,
   //		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03; //was Sub priority 2, now 3 since controls are 2

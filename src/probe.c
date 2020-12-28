@@ -42,6 +42,7 @@ void probe_init() {
    */
 #ifdef STM32F103C8
   //	GPIO_InitTypeDef GPIO_InitStructure;
+  //    GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
   //	RCC_APB2PeriphClockCmd(RCC_PROBE_PORT, ENABLE);
   //	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 #ifdef DISABLE_PROBE_PIN_PULL_UP

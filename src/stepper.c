@@ -794,6 +794,7 @@ void stepper_init() {
   // Configure step and direction interface pins
 #ifdef STM32F103C8
   GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
   RCC_APB2PeriphClockCmd(RCC_STEPPERS_DISABLE_PORT, ENABLE);
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -1392,7 +1393,6 @@ float st_get_realtime_rate() {
 #ifdef STM32F103C8
 void TIM_Configuration(TIM_TypeDef* TIMER, u16 Period, u16 Prescaler, u8 PP) { // configures the interrupt timers
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-  NVIC_InitTypeDef NVIC_InitStructure;
 
   TIM_TimeBaseStructure.TIM_Period = Period - 1;
   TIM_TimeBaseStructure.TIM_Prescaler = Prescaler - 1;
@@ -1404,6 +1404,7 @@ void TIM_Configuration(TIM_TypeDef* TIMER, u16 Period, u16 Prescaler, u8 PP) { /
   TIM_ITConfig(TIMER, TIM_IT_Update, ENABLE);
   TIM_Cmd(TIMER, ENABLE);
 
+  NVIC_InitTypeDef NVIC_InitStructure = {0};
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
   if (TIMER == TIM2) {
     NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;

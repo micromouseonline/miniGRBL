@@ -72,7 +72,7 @@ void Leave_LowPowerMode(void) {
  * Description    : Configures the USB interrupts
  *******************************************************************************/
 void USB_Interrupts_Config(void) {
-  NVIC_InitTypeDef NVIC_InitStructure;
+  NVIC_InitTypeDef NVIC_InitStructure = {0};
 
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
 

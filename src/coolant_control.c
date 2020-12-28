@@ -30,6 +30,7 @@ void coolant_init() {
 #endif
 #ifdef STM32F103C8
   GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
   RCC_APB2PeriphClockCmd(RCC_COOLANT_FLOOD_PORT, ENABLE);
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;

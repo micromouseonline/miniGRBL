@@ -89,6 +89,7 @@ uint8_t serial_get_tx_buffer_count() {
 
 void serial_init() {
   GPIO_InitTypeDef GPIO_InitStructure; //Paul, Set up the input switch for USB or UART function
+  GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
 
   RCC_APB2PeriphClockCmd(RCC_SERIALSWITCH_PORT, ENABLE);
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;

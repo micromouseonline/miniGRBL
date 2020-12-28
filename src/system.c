@@ -46,6 +46,7 @@ void system_init() {
    *
    */
   GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
   RCC_APB2PeriphClockCmd(RCC_CONTROL_PORT | RCC_APB2Periph_AFIO, ENABLE);
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 #ifdef DISABLE_CONTROL_PIN_PULL_UP
@@ -73,6 +74,7 @@ void system_init() {
 
   // Added Limits init
   EXTI_InitTypeDef EXTI_InitStructure;
+  EXTI_StructInit(&EXTI_InitStructure);	// PJH - ensure structure is correctly initialised
   if (bit_istrue(settings.flags, BITFLAG_HARD_LIMIT_ENABLE)) {
     GPIO_EXTILineConfig(GPIO_LIMIT_PORT, X_LIMIT_BIT);
     GPIO_EXTILineConfig(GPIO_LIMIT_PORT, Y_LIMIT_BIT);
@@ -95,7 +97,7 @@ void system_init() {
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 
-  NVIC_InitTypeDef NVIC_InitStructure;
+  NVIC_InitTypeDef NVIC_InitStructure = {0};
   NVIC_InitStructure.NVIC_IRQChannel = EXTI9_5_IRQn; //Enable keypad external interrupt channel
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02; //Priority 2,
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02; //Sub priority 2
@@ -105,7 +107,7 @@ void system_init() {
   //TODO: PJH - is this section an AT add-on? IRQ service is in limits.c
   //Added limits init code
   if (bit_istrue(settings.flags, BITFLAG_HARD_LIMIT_ENABLE)) {
-    NVIC_InitTypeDef NVIC_InitStructure;
+    NVIC_InitTypeDef NVIC_InitStructure = {0};
     NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn; //Enable keypad external interrupt channel and DC motor fault feed back
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02; //Priority 2,
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03; //was Sub priority 2, now 3 since controls are 2
