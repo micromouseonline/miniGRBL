@@ -97,6 +97,7 @@
 #define SPINDLE_ENABLE_PORT         GPIOB //GPIOC
 #define RCC_SPINDLE_ENABLE_PORT     RCC_APB2Periph_GPIOB     //RCC_APB2Periph_GPIOC
 #define SPINDLE_ENABLE_BIT          1 //GPIO_Pin_1      // B1 Sets the LO relay EN=DIR
+
 #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN
   //#define SPINDLE_DIRECTION_DDR   GPIOB //GPIOC
   #define RCC_SPINDLE_DIRECTION_PORT  RCC_APB2Periph_GPIOB     //RCC_APB2Periph_GPIOC
@@ -105,15 +106,14 @@
 
   #define SetSpindleDirectionBit()    GPIO_WriteBit(SPINDLE_DIRECTION_PORT, 1 << SPINDLE_DIRECTION_BIT, Bit_SET)
   #define ResetSpindleDirectionBit()  GPIO_WriteBit(SPINDLE_DIRECTION_PORT, 1 << SPINDLE_DIRECTION_BIT, Bit_RESET)
-
 #endif
+
 #ifdef MG
   #define SetSpindleEnablebit()       GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_RESET)
   #define ResetSpindleEnablebit()     GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_SET)
 #else
   #define SetSpindleEnablebit()       GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_SET)
   #define ResetSpindleEnablebit()     GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_RESET)
-
 #endif
 
 //example of led blink = GPIO_WriteBit(GPIOC, GPIO_Pin_13, nOnFlag)
