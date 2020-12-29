@@ -287,12 +287,8 @@ uint8_t system_execute_line(char *line) {
           }
           break;
         case 'G' : // Prints gcode parser state
-          // TODO: Move this to real time commands for GUIs to request this data during suspend-state.
-          // TODO: PJH - default behaviour is to always report. Consider reverting this AT change
-          //Paul, made changes here. Gcode modes Message is popping up all times
-          if (sys.state != STATE_IDLE) { //Paul,13/01/19 moved this out of the idle state since it's annoying
-            report_gcode_modes(); //PAul, might have to add a $ setting for this feature
-          }
+          // TODO: Move this to realtime commands for GUIs to request this data during suspend-state.
+          report_gcode_modes();
           break;
         case 'C' : // Set check g-code mode [IDLE/CHECK]
           // Perform reset when toggling off. Check g-code mode should only work if Grbl
