@@ -601,12 +601,12 @@ void system_set_exec_alarm(uint8_t code) {
 #endif
 #ifdef WIN32
   EnterCriticalSection(&CriticalSection);
-  sys_rt_exec_alarm |= (code);
+  sys_rt_exec_alarm = (code);
   LeaveCriticalSection(&CriticalSection);
 #endif
 #ifdef STM32F103C8
   __disable_irq();
-  sys_rt_exec_alarm |= (code);
+  sys_rt_exec_alarm = (code);
   __enable_irq();
 #endif
 }
