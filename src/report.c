@@ -335,7 +335,9 @@ void report_grbl_settings() {
   report_util_uint8_setting(32, 0);
 #endif
   //Add by Paul, 21/01/19 Fault pin monitoring
+  //NOTE: PJH - Lightburn expects $33 to hold the PWM frequency when set to GRBL-STM
   report_util_uint8_setting(33, bit_istrue(settings.flags, BITFLAG_FAULT_PIN));
+  report_util_setting_string(33);
 
   //    report_util_uint8_setting(40,settings.n_pieces);
   //    report_util_setting_string(40);
