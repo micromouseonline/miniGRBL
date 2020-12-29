@@ -142,9 +142,6 @@ pin &= CONTROL_MASK;
 #ifdef INVERT_CONTROL_PIN_MASK
   pin ^= INVERT_CONTROL_PIN_MASK;
 #endif
-  //  if (bit_istrue(settings.flags, BITFLAG_INVERT_LIMIT_PINS)){ //Paul, all control and limit pins are inverted or not
-  //	  pin ^= CONTROL_MASK;
-  //  }
   if (pin) {
 #ifdef ENABLE_SAFETY_DOOR_INPUT_PIN
     if (bit_isfalse(pin, (1 << CONTROL_SAFETY_DOOR_BIT))) {
