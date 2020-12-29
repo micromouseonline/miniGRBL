@@ -62,11 +62,13 @@ void system_init() {
    * interrupts on the controls or limit switches or probe or DC motor fault feedback
    *
    * PJH - note that the probe pin would normally be initialised in
-   * probe.c:29 but the code there is commented out.
+   * probe.c:29 but the code there is commented out. On minigerbil the probe
+   * pin is not connected to anything
+   *
    */
   GPIO_InitStructure.GPIO_Pin = CONTROL_MASK | LIMIT_MASK | PROBE_MASK; // Paul, Limit Mask includes the Controls and CONTROL_FAULT_BIT pin!
   GPIO_Init(CONTROL_PORT, &GPIO_InitStructure);
-
+//PJH: Every time these config calls are made, an interrupt is generated 
   GPIO_EXTILineConfig(GPIO_CONTROL_PORT, CONTROL_RESET_BIT); //abort
   GPIO_EXTILineConfig(GPIO_CONTROL_PORT, CONTROL_FEED_HOLD_BIT); //pause
   GPIO_EXTILineConfig(GPIO_CONTROL_PORT, CONTROL_CYCLE_START_BIT); //resume
@@ -125,7 +127,7 @@ void system_init() {
 // Returns control pin state as a uint8 bitfield. Each bit indicates the input pin state, where
 // triggered is 1 and not triggered is 0. Invert mask is applied. Bitfield organization is
 // defined by the CONTROL_PIN_INDEX in the header file.
-uint8_t system_control_get_state() { //uint8_t system_control_get_state()
+uint8_t system_control_get_state() {
   uint16_t control_state = 0;
 #ifdef AVRTARGET
   uint8_t pin = (CONTROL_PIN & CONTROL_MASK);
@@ -135,7 +137,7 @@ uint8_t system_control_get_state() { //uint8_t system_control_get_state()
 #endif
 #ifdef STM32F103C8
   uint16_t pin = GPIO_ReadInputData(CONTROL_PIN_PORT);
-
+pin &= CONTROL_MASK;
 #endif
 #ifdef INVERT_CONTROL_PIN_MASK
   pin ^= INVERT_CONTROL_PIN_MASK;
@@ -188,6 +190,7 @@ ISR(CONTROL_INT_vect) {
 #endif
 #if defined (STM32F103C8)
 void EXTI9_5_IRQHandler(void) {
+	//PJH: why is this not CONTROL_MASK
   EXTI_ClearITPendingBit((1 << CONTROL_RESET_BIT) | (1 << CONTROL_FEED_HOLD_BIT) | (1 << CONTROL_CYCLE_START_BIT) | (1 << CONTROL_SAFETY_DOOR_BIT));
 
   uint16_t pin = system_control_get_state();
@@ -256,7 +259,6 @@ void system_execute_startup(char *line) {
 uint8_t system_execute_line(char *line) {
   uint8_t char_counter = 1;
   uint8_t helper_var = 0; // Helper variable
-
   float parameter, value;
   switch (line[char_counter]) {
     case 0 :
@@ -650,7 +652,7 @@ void system_set_exec_motion_override_flag(uint8_t mask) {
 #endif
 }
 
-void system_set_exec_accessory_override_flag(uint8_t mask) { // accessory mask must be 16bits to allow for additional accessories like DC fault
+void system_set_exec_accessory_override_flag(uint8_t mask) {
 #ifdef AVRTARGET
   uint8_t sreg = SREG;
   cli();
