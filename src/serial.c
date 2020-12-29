@@ -40,10 +40,10 @@
   #define TX_RING_BUFFER (TX_BUFFER_SIZE)
 #endif
 
-uint16_t serial_rx_buffer[RX_RING_BUFFER];
-uint16_t serial_rx_buffer_head = 0;
-volatile uint16_t serial_rx_buffer_tail = 0;
 volatile uint16_t line_counter = 0;
+uint8_t serial_rx_buffer[RX_RING_BUFFER];
+uint8_t serial_rx_buffer_head = 0;
+volatile uint8_t serial_rx_buffer_tail = 0;
 
 uint8_t serial_tx_buffer[TX_RING_BUFFER];
 uint8_t serial_tx_buffer_head = 0;
@@ -51,8 +51,8 @@ volatile uint8_t serial_tx_buffer_tail = 0;
 
 
 // Returns the number of bytes available in the RX serial buffer.
-uint16_t serial_get_rx_buffer_available() {
-  uint16_t rtail = serial_rx_buffer_tail; // Copy to limit multiple calls to volatile
+uint8_t serial_get_rx_buffer_available() {
+  uint8_t rtail = serial_rx_buffer_tail; // Copy to limit multiple calls to volatile
   if (serial_rx_buffer_head >= rtail) {
     return (RX_BUFFER_SIZE - (serial_rx_buffer_head - rtail));
   }
