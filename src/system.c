@@ -205,14 +205,9 @@ void EXTI9_5_IRQHandler(void) {
     }
 #else
     else if (bit_istrue(pin, CONTROL_PIN_INDEX_SAFETY_DOOR)) {
-      //TODO: PJH - this seems to be an unnecessary additional check. Possibly switch bounce in safety switch?
-      if (system_check_safety_door_ajar()) { //Paul, Safety door triggers of rising & falling edge
-        //check whether the door was truly opened
-        bit_true(sys_rt_exec_state, EXEC_SAFETY_DOOR);
-      }
+      bit_true(sys_rt_exec_state, EXEC_SAFETY_DOOR);
     }
 #endif
-
     NVIC_ClearPendingIRQ(EXTI9_5_IRQn);
   }
 }
