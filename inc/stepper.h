@@ -23,10 +23,10 @@
 #define stepper_h
 
 #ifndef SEGMENT_BUFFER_SIZE
-  #ifndef AVRTARGET
-    #define SEGMENT_BUFFER_SIZE 32 // 6
+  #ifdef AVRTARGET
+    #define SEGMENT_BUFFER_SIZE 6
   #else
-    #define SEGMENT_BUFFER_SIZE 10 // paul
+    #define SEGMENT_BUFFER_SIZE 10
   #endif
 #endif
 
