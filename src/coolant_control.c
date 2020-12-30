@@ -42,8 +42,6 @@ void coolant_init() {
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructure.GPIO_Pin = 1 << COOLANT_MIST_BIT;
   GPIO_Init(COOLANT_MIST_PORT, &GPIO_InitStructure);
-  ResetFloodEnablebit();
-  ResetMistEnablebit();
 #endif
   coolant_stop();
 }
