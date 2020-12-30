@@ -50,60 +50,36 @@ void coolant_init() {
 // Returns current coolant output state. Overrides may alter it from programmed state.
 uint8_t coolant_get_state() {
   uint8_t cl_state = COOLANT_STATE_DISABLE;
-  //#if defined(AVRTARGET) || defined(STM32F103C8)
-  //#if defined(STM32F103C8)
-#ifdef INVERT_COOLANT_FLOOD_PIN
-  //if (bit_isfalse(
-  if (bit_istrue(GPIO_ReadOutputData(COOLANT_FLOOD_PORT), (1 << COOLANT_FLOOD_BIT))) {
-    cl_state &= COOLANT_STATE_FLOOD;
-  }
-  //#ifdef AVRTARGET
-  //		COOLANT_FLOOD_PORT
-  //#else
-  //		GPIO_ReadOutputData(COOLANT_FLOOD_PORT)
-  //#endif
-  //		,(1 << COOLANT_FLOOD_BIT))) {
+#if defined(AVRTARGET) || defined(STM32F103C8)
+#ifdef AVRTARGET
+  uint8_t flood_port_output = COOLANT_FLOOD_PORT;
 #else
-  //if (bit_istrue(
-  if (bit_istrue(GPIO_ReadOutputData(COOLANT_FLOOD_PORT), (1 << COOLANT_FLOOD_BIT))) {
-    //#ifdef AVRTARGET
-    //		COOLANT_FLOOD_PORT
-    //#else
-    //GPIO_ReadOutputData(COOLANT_FLOOD_PORT)
-    //#endif
-    //,(1 << COOLANT_FLOOD_BIT))) {
-    //#endif
+  uint16_t flood_port_output = GPIO_ReadOutputData(COOLANT_FLOOD_PORT);
+#endif
+#ifdef INVERT_COOLANT_FLOOD_PIN
+  if (bit_isfalse(flood_port_output, (1 << COOLANT_FLOOD_BIT))) {
+#else
+  if (bit_istrue(flood_port_output, (1 << COOLANT_FLOOD_BIT))) {
+#endif
     cl_state |= COOLANT_STATE_FLOOD;
   }
-#endif
+
 #ifdef ENABLE_M7
-#ifdef INVERT_COOLANT_MIST_PIN
-  //      if (bit_isfalse(
-  if (bit_istrue(GPIO_ReadOutputData(COOLANT_FLOOD_PORT), (1 << COOLANT_MIST_BIT))) {
-    cl_state &= COOLANT_STATE_MIST;
-  }
-  //#ifdef AVRTARGET
-  //		  COOLANT_MIST_PORT
-  //#else
-  //		  GPIO_ReadOutputData(COOLANT_MIST_PORT)
-  //    #endif
-  //		  ,(1 << COOLANT_MIST_BIT))) {
+#ifdef AVRTARGET
+  uint8_t mist_port_output = COOLANT_MIST_PORT;
 #else
-  //      if (bit_istrue(
-  if (bit_istrue(GPIO_ReadOutputData(COOLANT_MIST_PORT), (1 << COOLANT_MIST_BIT))) {
+  uint16_t mist_port_output = GPIO_ReadOutputData(COOLANT_MIST_PORT);
+#endif
+#ifdef INVERT_COOLANT_MIST_PIN
+  if (bit_isfalse(mist_port_output, (1 << COOLANT_MIST_BIT))) {
+#else
+  if (bit_istrue(mist_port_output, (1 << COOLANT_MIST_BIT))) {
+#endif
     cl_state |= COOLANT_STATE_MIST;
   }
-  //#ifdef AVRTARGET
-  //		  COOLANT_MIST_PORT
-  //#else
-  //		  GPIO_ReadOutputData(COOLANT_MIST_PORT)
+#endif	// ENABLE_M7
+
 #endif
-  //		  ,(1 << COOLANT_MIST_BIT))) {
-  //    #endif
-  //     cl_state |= COOLANT_STATE_MIST;
-  //   }
-#endif
-  //#endif
   return (cl_state);
 }
 
