@@ -89,38 +89,15 @@ uint8_t coolant_get_state() {
 void coolant_stop() {
 #if defined(AVRTARGET) || defined(STM32F103C8)
 #ifdef INVERT_COOLANT_FLOOD_PIN
-#ifdef AVRTARGET
-  COOLANT_FLOOD_PORT |= (1 << COOLANT_FLOOD_BIT);
+  SetFloodEnablebit();
 #else
-  GPIO_SetBits(COOLANT_FLOOD_PORT, COOLANT_FLOOD_BIT);
-#endif
-#else
-#ifdef AVRTARGET
-  COOLANT_FLOOD_PORT &= ~(1 << COOLANT_FLOOD_BIT);
-#else
-  //GPIO_Write(DIRECTION_PORT, (GPIO_ReadOutputData(DIRECTION_PORT) & ~DIRECTION_MASK) | (st.dir_outbits & DIRECTION_MASK));
-  //GPIO_ResetBits(COOLANT_FLOOD_PORT, COOLANT_FLOOD_BIT);
-  //GPIO_ResetBits(COOLANT_FLOOD_PORT,1 << COOLANT_FLOOD_BIT);
   ResetFloodEnablebit();
-
-#endif
 #endif
 #ifdef ENABLE_M7
 #ifdef INVERT_COOLANT_MIST_PIN
-#ifdef AVRTARGET
-  COOLANT_MIST_PORT |= (1 << COOLANT_MIST_BIT);
-#else
-  //GPIO_SetBits(COOLANT_MIST_PORT, COOLANT_MIST_BIT);
   SetMistEnablebit();
-#endif
 #else
-#ifdef AVRTARGET
-  COOLANT_MIST_PORT &= ~(1 << COOLANT_MIST_BIT);
-#else
-  //	GPIO_ResetBits(COOLANT_MIST_PORT, COOLANT_MIST_BIT);
   ResetMistEnablebit();
-
-#endif
 #endif
 #endif
 #endif
