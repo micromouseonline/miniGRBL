@@ -112,54 +112,29 @@ void coolant_set_state(uint8_t mode) {
   if (sys.abort) {
     return;  // Block during abort.
   }
-
   if (mode == COOLANT_DISABLE) {
-
     coolant_stop();
-
   } else {
 
 #if defined(AVRTARGET) || defined(STM32F103C8)
     if (mode & COOLANT_FLOOD_ENABLE) {
 #ifdef INVERT_COOLANT_FLOOD_PIN
-#ifdef AVRTARGET
-      COOLANT_FLOOD_PORT &= ~(1 << COOLANT_FLOOD_BIT);
-#else
-      GPIO_ResetBits(COOLANT_FLOOD_PORT, COOLANT_FLOOD_BIT);
-#endif
-#else
-#ifdef AVRTARGET
-      COOLANT_FLOOD_PORT |= (1 << COOLANT_FLOOD_BIT);
+      ReSetFloodEnablebit();
 #else
       SetFloodEnablebit();
-
-      //GPIO_SetBits(COOLANT_FLOOD_PORT, COOLANT_FLOOD_BIT);
-      //GPIO_SetBits(COOLANT_FLOOD_PORT,1 << COOLANT_FLOOD_BIT);
-      //		GPIO_SetBits(GPIOB,COOLANT_FLOOD_BIT);
-#endif
 #endif
     }
 
 #ifdef ENABLE_M7
     if (mode & COOLANT_MIST_ENABLE) {
 #ifdef INVERT_COOLANT_MIST_PIN
-#ifdef AVRTARGET
-      COOLANT_MIST_PORT &= ~(1 << COOLANT_MIST_BIT);
-#else
-      //GPIO_ResetBits(COOLANT_MIST_PORT, COOLANT_MIST_BIT);
       ResetMistEnablebit();
-#endif
-#else
-#ifdef AVRTARGET
-      COOLANT_MIST_PORT |= (1 << COOLANT_MIST_BIT);
 #else
       SetMistEnablebit();
-
-      // GPIO_SetBits(COOLANT_MIST_PORT, COOLANT_MIST_BIT);
-#endif
 #endif
     }
-#endif
+#endif // ENABLE_M7
+
 #endif
   }
   sys.report_ovr_counter = 0; // Set to report change immediately
