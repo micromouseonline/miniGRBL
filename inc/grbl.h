@@ -36,27 +36,27 @@
 #include <math.h>
 
 
-  #include "stm32f10x.h"
-  #include "stm32f10x_conf.h"
-  #include "system_stm32f10x.h"
-  #include "stm32f10x_gpio.h"
-  #include "stm32f10x_exti.h"
-  #include "stm32f10x_tim.h"
-  #include "misc.h"
-  #include "stm32f10x_rcc.h" //place holder to add sd card libs
-  #include "stm32f10x_rtc.h"
+#include "stm32f10x.h"
+#include "stm32f10x_conf.h"
+#include "system_stm32f10x.h"
+#include "stm32f10x_gpio.h"
+#include "stm32f10x_exti.h"
+#include "stm32f10x_tim.h"
+#include "misc.h"
+#include "stm32f10x_rcc.h" //place holder to add sd card libs
+#include "stm32f10x_rtc.h"
 
-  #define PSTR(x) x
-  #define pgm_read_byte_near(x) *(x)
-  void _delay_ms(uint32_t x);
-  void _delay_us(uint32_t x);
-  #define false 0
-  #define true 1
-  //#define PORTPINDEF uint16_t
-  #define PORTPINDEF uint32_t //Paul
-  typedef int bool;
-  //#define NOEEPROMSUPPORT
-  #define printPgmString printString
+#define PSTR(x) x
+#define pgm_read_byte_near(x) *(x)
+void _delay_ms(uint32_t x);
+void _delay_us(uint32_t x);
+#define false 0
+#define true 1
+//#define PORTPINDEF uint16_t
+#define PORTPINDEF uint32_t //Paul
+typedef int bool;
+//#define NOEEPROMSUPPORT
+#define printPgmString printString
 
 #include <string.h>
 #include <stdlib.h>

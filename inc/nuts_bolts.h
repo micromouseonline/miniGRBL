@@ -22,7 +22,7 @@
 #ifndef nuts_bolts_h
 #define nuts_bolts_h
 
-  #include "stm32f10x_rcc.h"
+#include "stm32f10x_rcc.h"
 
 #include "float.h"
 #define false 0
@@ -51,7 +51,7 @@
 #define TICKS_PER_MICROSECOND (F_CPU/1000000)
 
 
-  #define F_CPU SystemCoreClock
+#define F_CPU SystemCoreClock
 
 #define DELAY_MODE_DWELL       0
 #define DELAY_MODE_SYS_SUSPEND 1

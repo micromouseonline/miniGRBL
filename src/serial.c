@@ -23,18 +23,18 @@
 #include "nuts_bolts.h"
 
 
-  #include "stm32f10x.h"
-  #include "core_cm3.h"
-  //#ifndef USEUSB
-  #include "stm32f10x_usart.h"
-  //#else
-  #include "usb_regs.h"
-  //#endif
+#include "stm32f10x.h"
+#include "core_cm3.h"
+//#ifndef USEUSB
+#include "stm32f10x_usart.h"
+//#else
+#include "usb_regs.h"
+//#endif
 
 
 
-  #define RX_RING_BUFFER (RX_BUFFER_SIZE)
-  #define TX_RING_BUFFER (TX_BUFFER_SIZE)
+#define RX_RING_BUFFER (RX_BUFFER_SIZE)
+#define TX_RING_BUFFER (TX_BUFFER_SIZE)
 
 
 volatile uint16_t line_counter = 0;
@@ -81,7 +81,7 @@ uint8_t serial_get_tx_buffer_count() {
 
 void serial_init() {
   GPIO_InitTypeDef GPIO_InitStructure; //Paul, Set up the input switch for USB or UART function
-  GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
+  GPIO_StructInit(&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
 
   RCC_APB2PeriphClockCmd(RCC_SERIALSWITCH_PORT, ENABLE);
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -163,342 +163,342 @@ uint8_t serial_read() {
 
 
 
-      //#ifdef STM32F103C8
-      //#ifdef USEUSB
-      //void OnUsbDataRx(uint8_t* dataIn, uint8_t length)
-      //{
-      //	//lcd_write_char(*dataIn);
-      //	uint8_t next_head;
-      //    uint8_t data;
-      //
-      //	// Write data to buffer unless it is full.
-      //	while (length != 0)
-      //	{
-      //        data = *dataIn ++;
-      //#else
-      ///*----------------------------------------------------------------------------
-      //  USART1_IRQHandler -- OLD ---
-      //  Handles USART1 global interrupt request.
-      // *----------------------------------------------------------------------------*/
-      //void USART1_IRQHandler (void)
-      //{
-      //    volatile unsigned int IIR;
-      //    uint8_t data;
-      //    uint8_t next_head;
-      //
-      //    IIR = USART1->SR;
-      //    if (IIR & USART_FLAG_RXNE)
-      //    {                  // read interrupt
-      //        data = USART1->DR & 0x1FF;
-      //#endif
-      //#endif
-      //  // Pick off realtime command characters directly from the serial stream. These characters are
-      //  // not passed into the main buffer, but these set system state flag bits for realtime execution.
-      //  switch (data) {
-      //    case CMD_RESET:         mc_reset(); break; // Call motion control reset routine.
-      //    case CMD_STATUS_REPORT: system_set_exec_state_flag(EXEC_STATUS_REPORT); break; // Set as true
-      //    case CMD_CYCLE_START:   system_set_exec_state_flag(EXEC_CYCLE_START); break; // Set as true
-      //    case CMD_FEED_HOLD:     system_set_exec_state_flag(EXEC_FEED_HOLD); break; // Set as true
-      //    default :
-      //      if (data > 0x7F) { // Real-time control characters are extended ACSII only.
-      //        switch(data) {
-      //          case CMD_SAFETY_DOOR:   system_set_exec_state_flag(EXEC_SAFETY_DOOR); break; // Set as true
-      //          case CMD_JOG_CANCEL:
-      //            if (sys.state & STATE_JOG) { // Block all other states from invoking motion cancel.
-      //              system_set_exec_state_flag(EXEC_MOTION_CANCEL);
-      //            }
-      //            break;
-      //          #ifdef DEBUG
-      //            case CMD_DEBUG_REPORT: {uint8_t sreg = SREG; cli(); bit_true(sys_rt_exec_debug,EXEC_DEBUG_REPORT); SREG = sreg;} break;
-      //          #endif
-      //          case CMD_FEED_OVR_RESET: system_set_exec_motion_override_flag(EXEC_FEED_OVR_RESET); break;
-      //          case CMD_FEED_OVR_COARSE_PLUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_PLUS); break;
-      //          case CMD_FEED_OVR_COARSE_MINUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_MINUS); break;
-      //          case CMD_FEED_OVR_FINE_PLUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_PLUS); break;
-      //          case CMD_FEED_OVR_FINE_MINUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_MINUS); break;
-      //          case CMD_RAPID_OVR_RESET: system_set_exec_motion_override_flag(EXEC_RAPID_OVR_RESET); break;
-      //          case CMD_RAPID_OVR_MEDIUM: system_set_exec_motion_override_flag(EXEC_RAPID_OVR_MEDIUM); break;
-      //          case CMD_RAPID_OVR_LOW: system_set_exec_motion_override_flag(EXEC_RAPID_OVR_LOW); break;
-      //          case CMD_SPINDLE_OVR_RESET: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_RESET); break;
-      //          case CMD_SPINDLE_OVR_COARSE_PLUS: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_PLUS); break;
-      //          case CMD_SPINDLE_OVR_COARSE_MINUS: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_MINUS); break;
-      //          case CMD_SPINDLE_OVR_FINE_PLUS: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_PLUS); break;
-      //          case CMD_SPINDLE_OVR_FINE_MINUS: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_MINUS); break;
-      //          case CMD_SPINDLE_OVR_STOP: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_STOP); break;
-      //          case CMD_COOLANT_FLOOD_OVR_TOGGLE: system_set_exec_accessory_override_flag(EXEC_COOLANT_FLOOD_OVR_TOGGLE); break;
-      //          #ifdef ENABLE_M7
-      //            case CMD_COOLANT_MIST_OVR_TOGGLE: system_set_exec_accessory_override_flag(EXEC_COOLANT_MIST_OVR_TOGGLE); break;
-      //          #endif
-      //        }
-      //        // Throw away any unfound extended-ASCII character by not passing it to the serial buffer.
-      //      } else { // Write character to buffer
-      //        next_head = serial_rx_buffer_head + 1;
-      //        if (next_head == RX_RING_BUFFER) { next_head = 0; }
-      //
-      //        // Write data to buffer unless it is full.
-      //        if (next_head != serial_rx_buffer_tail) {
-      //          serial_rx_buffer[serial_rx_buffer_head] = data;
-      //          serial_rx_buffer_head = next_head;
-      //        }
-      //      }
-      //  }
-      //#ifdef WIN32
-      //    }
-      //#endif
-      //#ifdef STM32F103C8
-      //#ifndef USEUSB
-      //        USART1->SR &= ~USART_FLAG_RXNE;	          // clear interrupt
-      //#else
-      //    length--;
-      //#endif
-      //   }
-      //#endif
-      //}
-      /* End of the orginal routine. Both routines below are replacing the above one
-       *
-       */
+//#ifdef STM32F103C8
+//#ifdef USEUSB
+//void OnUsbDataRx(uint8_t* dataIn, uint8_t length)
+//{
+//	//lcd_write_char(*dataIn);
+//	uint8_t next_head;
+//    uint8_t data;
+//
+//	// Write data to buffer unless it is full.
+//	while (length != 0)
+//	{
+//        data = *dataIn ++;
+//#else
+///*----------------------------------------------------------------------------
+//  USART1_IRQHandler -- OLD ---
+//  Handles USART1 global interrupt request.
+// *----------------------------------------------------------------------------*/
+//void USART1_IRQHandler (void)
+//{
+//    volatile unsigned int IIR;
+//    uint8_t data;
+//    uint8_t next_head;
+//
+//    IIR = USART1->SR;
+//    if (IIR & USART_FLAG_RXNE)
+//    {                  // read interrupt
+//        data = USART1->DR & 0x1FF;
+//#endif
+//#endif
+//  // Pick off realtime command characters directly from the serial stream. These characters are
+//  // not passed into the main buffer, but these set system state flag bits for realtime execution.
+//  switch (data) {
+//    case CMD_RESET:         mc_reset(); break; // Call motion control reset routine.
+//    case CMD_STATUS_REPORT: system_set_exec_state_flag(EXEC_STATUS_REPORT); break; // Set as true
+//    case CMD_CYCLE_START:   system_set_exec_state_flag(EXEC_CYCLE_START); break; // Set as true
+//    case CMD_FEED_HOLD:     system_set_exec_state_flag(EXEC_FEED_HOLD); break; // Set as true
+//    default :
+//      if (data > 0x7F) { // Real-time control characters are extended ACSII only.
+//        switch(data) {
+//          case CMD_SAFETY_DOOR:   system_set_exec_state_flag(EXEC_SAFETY_DOOR); break; // Set as true
+//          case CMD_JOG_CANCEL:
+//            if (sys.state & STATE_JOG) { // Block all other states from invoking motion cancel.
+//              system_set_exec_state_flag(EXEC_MOTION_CANCEL);
+//            }
+//            break;
+//          #ifdef DEBUG
+//            case CMD_DEBUG_REPORT: {uint8_t sreg = SREG; cli(); bit_true(sys_rt_exec_debug,EXEC_DEBUG_REPORT); SREG = sreg;} break;
+//          #endif
+//          case CMD_FEED_OVR_RESET: system_set_exec_motion_override_flag(EXEC_FEED_OVR_RESET); break;
+//          case CMD_FEED_OVR_COARSE_PLUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_PLUS); break;
+//          case CMD_FEED_OVR_COARSE_MINUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_MINUS); break;
+//          case CMD_FEED_OVR_FINE_PLUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_PLUS); break;
+//          case CMD_FEED_OVR_FINE_MINUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_MINUS); break;
+//          case CMD_RAPID_OVR_RESET: system_set_exec_motion_override_flag(EXEC_RAPID_OVR_RESET); break;
+//          case CMD_RAPID_OVR_MEDIUM: system_set_exec_motion_override_flag(EXEC_RAPID_OVR_MEDIUM); break;
+//          case CMD_RAPID_OVR_LOW: system_set_exec_motion_override_flag(EXEC_RAPID_OVR_LOW); break;
+//          case CMD_SPINDLE_OVR_RESET: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_RESET); break;
+//          case CMD_SPINDLE_OVR_COARSE_PLUS: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_PLUS); break;
+//          case CMD_SPINDLE_OVR_COARSE_MINUS: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_MINUS); break;
+//          case CMD_SPINDLE_OVR_FINE_PLUS: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_PLUS); break;
+//          case CMD_SPINDLE_OVR_FINE_MINUS: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_MINUS); break;
+//          case CMD_SPINDLE_OVR_STOP: system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_STOP); break;
+//          case CMD_COOLANT_FLOOD_OVR_TOGGLE: system_set_exec_accessory_override_flag(EXEC_COOLANT_FLOOD_OVR_TOGGLE); break;
+//          #ifdef ENABLE_M7
+//            case CMD_COOLANT_MIST_OVR_TOGGLE: system_set_exec_accessory_override_flag(EXEC_COOLANT_MIST_OVR_TOGGLE); break;
+//          #endif
+//        }
+//        // Throw away any unfound extended-ASCII character by not passing it to the serial buffer.
+//      } else { // Write character to buffer
+//        next_head = serial_rx_buffer_head + 1;
+//        if (next_head == RX_RING_BUFFER) { next_head = 0; }
+//
+//        // Write data to buffer unless it is full.
+//        if (next_head != serial_rx_buffer_tail) {
+//          serial_rx_buffer[serial_rx_buffer_head] = data;
+//          serial_rx_buffer_head = next_head;
+//        }
+//      }
+//  }
+//#ifdef WIN32
+//    }
+//#endif
+//#ifdef STM32F103C8
+//#ifndef USEUSB
+//        USART1->SR &= ~USART_FLAG_RXNE;	          // clear interrupt
+//#else
+//    length--;
+//#endif
+//   }
+//#endif
+//}
+/* End of the orginal routine. Both routines below are replacing the above one
+ *
+ */
 
-      /* Author: Paul
-       * This routine deals with just the USB data
-       */
-      void OnUsbDataRx(uint8_t* dataIn, uint8_t length) {
-        //lcd_write_char(*dataIn);
-        uint8_t next_head;
-        uint8_t data;
+/* Author: Paul
+ * This routine deals with just the USB data
+ */
+void OnUsbDataRx(uint8_t* dataIn, uint8_t length) {
+  //lcd_write_char(*dataIn);
+  uint8_t next_head;
+  uint8_t data;
 
-        // Write data to buffer unless it is full.
-        while (length != 0) {
-          data = *dataIn ++;
-          // Pick off realtime command characters directly from the serial stream. These characters are
-          // not passed into the main buffer, but these set system state flag bits for realtime execution.
+  // Write data to buffer unless it is full.
+  while (length != 0) {
+    data = *dataIn ++;
+    // Pick off realtime command characters directly from the serial stream. These characters are
+    // not passed into the main buffer, but these set system state flag bits for realtime execution.
+    switch (data) {
+      case CMD_RESET:
+        mc_reset();
+        break; // Call motion control reset routine.
+      case CMD_STATUS_REPORT:
+        system_set_exec_state_flag(EXEC_STATUS_REPORT);
+        break; // Set as true
+      case CMD_CYCLE_START:
+        system_set_exec_state_flag(EXEC_CYCLE_START);
+        break; // Set as true
+      case CMD_FEED_HOLD:
+        system_set_exec_state_flag(EXEC_FEED_HOLD);
+        break; // Set as true
+      default :
+        if (data > 0x7F) { // Real-time control characters are extended ACSII only.
           switch (data) {
-            case CMD_RESET:
-              mc_reset();
-              break; // Call motion control reset routine.
-            case CMD_STATUS_REPORT:
-              system_set_exec_state_flag(EXEC_STATUS_REPORT);
+            case CMD_SAFETY_DOOR:
+              system_set_exec_state_flag(EXEC_SAFETY_DOOR);
               break; // Set as true
-            case CMD_CYCLE_START:
-              system_set_exec_state_flag(EXEC_CYCLE_START);
-              break; // Set as true
-            case CMD_FEED_HOLD:
-              system_set_exec_state_flag(EXEC_FEED_HOLD);
-              break; // Set as true
-            default :
-              if (data > 0x7F) { // Real-time control characters are extended ACSII only.
-                switch (data) {
-                  case CMD_SAFETY_DOOR:
-                    system_set_exec_state_flag(EXEC_SAFETY_DOOR);
-                    break; // Set as true
-                  case CMD_JOG_CANCEL:
-                    if (sys.state & STATE_JOG) { // Block all other states from invoking motion cancel.
-                      system_set_exec_state_flag(EXEC_MOTION_CANCEL);
-                    }
-                    break;
-#ifdef DEBUG
-                  //case CMD_DEBUG_REPORT: {uint8_t sreg = SREG; cli(); bit_true(sys_rt_exec_debug,EXEC_DEBUG_REPORT); SREG = sreg;} break;
-                  case CMD_DEBUG_REPORT: {
-                    bit_true(sys_rt_exec_debug, EXEC_DEBUG_REPORT);
-                  }
-                  break;
-#endif
-                  case CMD_FEED_OVR_RESET:
-                    system_set_exec_motion_override_flag(EXEC_FEED_OVR_RESET);
-                    break;
-                  case CMD_FEED_OVR_COARSE_PLUS:
-                    system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_PLUS);
-                    break;
-                  case CMD_FEED_OVR_COARSE_MINUS:
-                    system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_MINUS);
-                    break;
-                  case CMD_FEED_OVR_FINE_PLUS:
-                    system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_PLUS);
-                    break;
-                  case CMD_FEED_OVR_FINE_MINUS:
-                    system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_MINUS);
-                    break;
-                  case CMD_RAPID_OVR_RESET:
-                    system_set_exec_motion_override_flag(EXEC_RAPID_OVR_RESET);
-                    break;
-                  case CMD_RAPID_OVR_MEDIUM:
-                    system_set_exec_motion_override_flag(EXEC_RAPID_OVR_MEDIUM);
-                    break;
-                  case CMD_RAPID_OVR_LOW:
-                    system_set_exec_motion_override_flag(EXEC_RAPID_OVR_LOW);
-                    break;
-                  case CMD_SPINDLE_OVR_RESET:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_RESET);
-                    break;
-                  case CMD_SPINDLE_OVR_COARSE_PLUS:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_PLUS);
-                    break;
-                  case CMD_SPINDLE_OVR_COARSE_MINUS:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_MINUS);
-                    break;
-                  case CMD_SPINDLE_OVR_FINE_PLUS:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_PLUS);
-                    break;
-                  case CMD_SPINDLE_OVR_FINE_MINUS:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_MINUS);
-                    break;
-                  case CMD_SPINDLE_OVR_STOP:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_STOP);
-                    break;
-                  case CMD_COOLANT_FLOOD_OVR_TOGGLE:
-                    system_set_exec_accessory_override_flag(EXEC_COOLANT_FLOOD_OVR_TOGGLE);
-                    break;
-#ifdef ENABLE_M7
-                  case CMD_COOLANT_MIST_OVR_TOGGLE:
-                    system_set_exec_accessory_override_flag(EXEC_COOLANT_MIST_OVR_TOGGLE);
-                    break;
-#endif
-                }
-                // Throw away any unfound extended-ASCII character by not passing it to the serial buffer.
-              } else { // Write character to buffer
-                next_head = serial_rx_buffer_head + 1;
-                if (next_head == RX_RING_BUFFER) {
-                  next_head = 0;
-                }
-
-                // Write data to buffer unless it is full.
-                if (next_head != serial_rx_buffer_tail) {
-                  serial_rx_buffer[serial_rx_buffer_head] = data;
-                  serial_rx_buffer_head = next_head;
-                }
+            case CMD_JOG_CANCEL:
+              if (sys.state & STATE_JOG) { // Block all other states from invoking motion cancel.
+                system_set_exec_state_flag(EXEC_MOTION_CANCEL);
               }
+              break;
+#ifdef DEBUG
+            //case CMD_DEBUG_REPORT: {uint8_t sreg = SREG; cli(); bit_true(sys_rt_exec_debug,EXEC_DEBUG_REPORT); SREG = sreg;} break;
+            case CMD_DEBUG_REPORT: {
+              bit_true(sys_rt_exec_debug, EXEC_DEBUG_REPORT);
+            }
+            break;
+#endif
+            case CMD_FEED_OVR_RESET:
+              system_set_exec_motion_override_flag(EXEC_FEED_OVR_RESET);
+              break;
+            case CMD_FEED_OVR_COARSE_PLUS:
+              system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_PLUS);
+              break;
+            case CMD_FEED_OVR_COARSE_MINUS:
+              system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_MINUS);
+              break;
+            case CMD_FEED_OVR_FINE_PLUS:
+              system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_PLUS);
+              break;
+            case CMD_FEED_OVR_FINE_MINUS:
+              system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_MINUS);
+              break;
+            case CMD_RAPID_OVR_RESET:
+              system_set_exec_motion_override_flag(EXEC_RAPID_OVR_RESET);
+              break;
+            case CMD_RAPID_OVR_MEDIUM:
+              system_set_exec_motion_override_flag(EXEC_RAPID_OVR_MEDIUM);
+              break;
+            case CMD_RAPID_OVR_LOW:
+              system_set_exec_motion_override_flag(EXEC_RAPID_OVR_LOW);
+              break;
+            case CMD_SPINDLE_OVR_RESET:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_RESET);
+              break;
+            case CMD_SPINDLE_OVR_COARSE_PLUS:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_PLUS);
+              break;
+            case CMD_SPINDLE_OVR_COARSE_MINUS:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_MINUS);
+              break;
+            case CMD_SPINDLE_OVR_FINE_PLUS:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_PLUS);
+              break;
+            case CMD_SPINDLE_OVR_FINE_MINUS:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_MINUS);
+              break;
+            case CMD_SPINDLE_OVR_STOP:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_STOP);
+              break;
+            case CMD_COOLANT_FLOOD_OVR_TOGGLE:
+              system_set_exec_accessory_override_flag(EXEC_COOLANT_FLOOD_OVR_TOGGLE);
+              break;
+#ifdef ENABLE_M7
+            case CMD_COOLANT_MIST_OVR_TOGGLE:
+              system_set_exec_accessory_override_flag(EXEC_COOLANT_MIST_OVR_TOGGLE);
+              break;
+#endif
           }
-          length--;
-        }
-      }
-
-
-      /*----------------------------------------------------------------------------
-        USART1_IRQHandler
-        Handles USART1 global interrupt request.
-        This routine just deals with the UART data
-        The theory is that when the switch is enabled, only one serial port will be
-        in use so no race conditional for serial data from USB and UART should exists
-        We must ensure that the USB routine do have the switch read out command up front
-        to prevent them to execute. The UART idem dito.
-       *----------------------------------------------------------------------------*/
-      void USART1_IRQHandler(void) {
-        volatile unsigned int IIR;
-        uint8_t data;
-        uint8_t next_head;
-
-        IIR = USART1->SR;
-        if (IIR & USART_FLAG_RXNE) {
-          // read interrupt
-          data = USART1->DR & 0x1FF;
-          // Pick off realtime command characters directly from the serial stream. These characters are
-          // not passed into the main buffer, but these set system state flag bits for realtime execution.
-          switch (data) {
-            case CMD_RESET:
-              mc_reset();
-              break; // Call motion control reset routine.
-            case CMD_STATUS_REPORT:
-              system_set_exec_state_flag(EXEC_STATUS_REPORT);
-              break; // Set as true
-            case CMD_CYCLE_START:
-              system_set_exec_state_flag(EXEC_CYCLE_START);
-              break; // Set as true
-            case CMD_FEED_HOLD:
-              system_set_exec_state_flag(EXEC_FEED_HOLD);
-              break; // Set as true
-            default :
-              if (data > 0x7F) { // Real-time control characters are extended ACSII only.
-                switch (data) {
-                  case CMD_SAFETY_DOOR:
-                    system_set_exec_state_flag(EXEC_SAFETY_DOOR);
-                    break; // Set as true
-                  case CMD_JOG_CANCEL:
-                    if (sys.state & STATE_JOG) { // Block all other states from invoking motion cancel.
-                      system_set_exec_state_flag(EXEC_MOTION_CANCEL);
-                    }
-                    break;
-#ifdef DEBUG
-                  //case CMD_DEBUG_REPORT: {	//AVR ONLY
-                    // uint8_t sreg = SREG;
-                    // cli();
-                    // bit_true(sys_rt_exec_debug,EXEC_DEBUG_REPORT);
-                    // SREG = sreg;
-                    // }
-                    //break;
-                  case CMD_DEBUG_REPORT: {
-                    bit_true(sys_rt_exec_debug, EXEC_DEBUG_REPORT);
-                  }
-                  break;
-#endif
-                  case CMD_FEED_OVR_RESET:
-                    system_set_exec_motion_override_flag(EXEC_FEED_OVR_RESET);
-                    break;
-                  case CMD_FEED_OVR_COARSE_PLUS:
-                    system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_PLUS);
-                    break;
-                  case CMD_FEED_OVR_COARSE_MINUS:
-                    system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_MINUS);
-                    break;
-                  case CMD_FEED_OVR_FINE_PLUS:
-                    system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_PLUS);
-                    break;
-                  case CMD_FEED_OVR_FINE_MINUS:
-                    system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_MINUS);
-                    break;
-                  case CMD_RAPID_OVR_RESET:
-                    system_set_exec_motion_override_flag(EXEC_RAPID_OVR_RESET);
-                    break;
-                  case CMD_RAPID_OVR_MEDIUM:
-                    system_set_exec_motion_override_flag(EXEC_RAPID_OVR_MEDIUM);
-                    break;
-                  case CMD_RAPID_OVR_LOW:
-                    system_set_exec_motion_override_flag(EXEC_RAPID_OVR_LOW);
-                    break;
-                  case CMD_SPINDLE_OVR_RESET:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_RESET);
-                    break;
-                  case CMD_SPINDLE_OVR_COARSE_PLUS:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_PLUS);
-                    break;
-                  case CMD_SPINDLE_OVR_COARSE_MINUS:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_MINUS);
-                    break;
-                  case CMD_SPINDLE_OVR_FINE_PLUS:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_PLUS);
-                    break;
-                  case CMD_SPINDLE_OVR_FINE_MINUS:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_MINUS);
-                    break;
-                  case CMD_SPINDLE_OVR_STOP:
-                    system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_STOP);
-                    break;
-                  case CMD_COOLANT_FLOOD_OVR_TOGGLE:
-                    system_set_exec_accessory_override_flag(EXEC_COOLANT_FLOOD_OVR_TOGGLE);
-                    break;
-#ifdef ENABLE_M7
-                  case CMD_COOLANT_MIST_OVR_TOGGLE:
-                    system_set_exec_accessory_override_flag(EXEC_COOLANT_MIST_OVR_TOGGLE);
-                    break;
-#endif
-                }
-                // Throw away any unfound extended-ASCII character by not passing it to the serial buffer.
-              } else { // Write character to buffer
-                next_head = serial_rx_buffer_head + 1;
-                if (next_head == RX_RING_BUFFER) {
-                  next_head = 0;
-                }
-
-                // Write data to buffer unless it is full.
-                if (next_head != serial_rx_buffer_tail) {
-                  serial_rx_buffer[serial_rx_buffer_head] = data;
-                  serial_rx_buffer_head = next_head;
-                }
-              }
+          // Throw away any unfound extended-ASCII character by not passing it to the serial buffer.
+        } else { // Write character to buffer
+          next_head = serial_rx_buffer_head + 1;
+          if (next_head == RX_RING_BUFFER) {
+            next_head = 0;
           }
 
-          USART1->SR &= ~USART_FLAG_RXNE;	          // clear interrupt
+          // Write data to buffer unless it is full.
+          if (next_head != serial_rx_buffer_tail) {
+            serial_rx_buffer[serial_rx_buffer_head] = data;
+            serial_rx_buffer_head = next_head;
+          }
         }
-      }
+    }
+    length--;
+  }
+}
 
-      void serial_reset_read_buffer() {
-        serial_rx_buffer_tail = serial_rx_buffer_head;
-      }
+
+/*----------------------------------------------------------------------------
+  USART1_IRQHandler
+  Handles USART1 global interrupt request.
+  This routine just deals with the UART data
+  The theory is that when the switch is enabled, only one serial port will be
+  in use so no race conditional for serial data from USB and UART should exists
+  We must ensure that the USB routine do have the switch read out command up front
+  to prevent them to execute. The UART idem dito.
+ *----------------------------------------------------------------------------*/
+void USART1_IRQHandler(void) {
+  volatile unsigned int IIR;
+  uint8_t data;
+  uint8_t next_head;
+
+  IIR = USART1->SR;
+  if (IIR & USART_FLAG_RXNE) {
+    // read interrupt
+    data = USART1->DR & 0x1FF;
+    // Pick off realtime command characters directly from the serial stream. These characters are
+    // not passed into the main buffer, but these set system state flag bits for realtime execution.
+    switch (data) {
+      case CMD_RESET:
+        mc_reset();
+        break; // Call motion control reset routine.
+      case CMD_STATUS_REPORT:
+        system_set_exec_state_flag(EXEC_STATUS_REPORT);
+        break; // Set as true
+      case CMD_CYCLE_START:
+        system_set_exec_state_flag(EXEC_CYCLE_START);
+        break; // Set as true
+      case CMD_FEED_HOLD:
+        system_set_exec_state_flag(EXEC_FEED_HOLD);
+        break; // Set as true
+      default :
+        if (data > 0x7F) { // Real-time control characters are extended ACSII only.
+          switch (data) {
+            case CMD_SAFETY_DOOR:
+              system_set_exec_state_flag(EXEC_SAFETY_DOOR);
+              break; // Set as true
+            case CMD_JOG_CANCEL:
+              if (sys.state & STATE_JOG) { // Block all other states from invoking motion cancel.
+                system_set_exec_state_flag(EXEC_MOTION_CANCEL);
+              }
+              break;
+#ifdef DEBUG
+            //case CMD_DEBUG_REPORT: {	//AVR ONLY
+            // uint8_t sreg = SREG;
+            // cli();
+            // bit_true(sys_rt_exec_debug,EXEC_DEBUG_REPORT);
+            // SREG = sreg;
+            // }
+            //break;
+            case CMD_DEBUG_REPORT: {
+              bit_true(sys_rt_exec_debug, EXEC_DEBUG_REPORT);
+            }
+            break;
+#endif
+            case CMD_FEED_OVR_RESET:
+              system_set_exec_motion_override_flag(EXEC_FEED_OVR_RESET);
+              break;
+            case CMD_FEED_OVR_COARSE_PLUS:
+              system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_PLUS);
+              break;
+            case CMD_FEED_OVR_COARSE_MINUS:
+              system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_MINUS);
+              break;
+            case CMD_FEED_OVR_FINE_PLUS:
+              system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_PLUS);
+              break;
+            case CMD_FEED_OVR_FINE_MINUS:
+              system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_MINUS);
+              break;
+            case CMD_RAPID_OVR_RESET:
+              system_set_exec_motion_override_flag(EXEC_RAPID_OVR_RESET);
+              break;
+            case CMD_RAPID_OVR_MEDIUM:
+              system_set_exec_motion_override_flag(EXEC_RAPID_OVR_MEDIUM);
+              break;
+            case CMD_RAPID_OVR_LOW:
+              system_set_exec_motion_override_flag(EXEC_RAPID_OVR_LOW);
+              break;
+            case CMD_SPINDLE_OVR_RESET:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_RESET);
+              break;
+            case CMD_SPINDLE_OVR_COARSE_PLUS:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_PLUS);
+              break;
+            case CMD_SPINDLE_OVR_COARSE_MINUS:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_MINUS);
+              break;
+            case CMD_SPINDLE_OVR_FINE_PLUS:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_PLUS);
+              break;
+            case CMD_SPINDLE_OVR_FINE_MINUS:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_FINE_MINUS);
+              break;
+            case CMD_SPINDLE_OVR_STOP:
+              system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_STOP);
+              break;
+            case CMD_COOLANT_FLOOD_OVR_TOGGLE:
+              system_set_exec_accessory_override_flag(EXEC_COOLANT_FLOOD_OVR_TOGGLE);
+              break;
+#ifdef ENABLE_M7
+            case CMD_COOLANT_MIST_OVR_TOGGLE:
+              system_set_exec_accessory_override_flag(EXEC_COOLANT_MIST_OVR_TOGGLE);
+              break;
+#endif
+          }
+          // Throw away any unfound extended-ASCII character by not passing it to the serial buffer.
+        } else { // Write character to buffer
+          next_head = serial_rx_buffer_head + 1;
+          if (next_head == RX_RING_BUFFER) {
+            next_head = 0;
+          }
+
+          // Write data to buffer unless it is full.
+          if (next_head != serial_rx_buffer_tail) {
+            serial_rx_buffer[serial_rx_buffer_head] = data;
+            serial_rx_buffer_head = next_head;
+          }
+        }
+    }
+
+    USART1->SR &= ~USART_FLAG_RXNE;	          // clear interrupt
+  }
+}
+
+void serial_reset_read_buffer() {
+  serial_rx_buffer_tail = serial_rx_buffer_head;
+}

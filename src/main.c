@@ -62,7 +62,7 @@ void USART1_Configuration(u32 BaudRate) {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO, ENABLE);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_StructInit (&GPIO_InitStructure);	   // PJH - ensure structure is correctly initialised
+  GPIO_StructInit(&GPIO_InitStructure);	    // PJH - ensure structure is correctly initialised
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -90,7 +90,7 @@ void LED_TRACE(char count, int delay);
 
 
 
-  int main(void)
+int main(void)
 
 {
 

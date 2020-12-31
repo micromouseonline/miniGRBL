@@ -79,8 +79,7 @@ uint8_t limits_get_state() {
 // special pinout for an e-stop, but it is generally recommended to just directly connect
 // your e-stop switch to the Arduino reset pin, since it is the most correct way to do this.
 #ifndef ENABLE_SOFTWARE_DEBOUNCE
-  void EXTI15_10_IRQHandler(void)
-{
+void EXTI15_10_IRQHandler(void) {
 
   bool flag_fault = 0;
   if (EXTI_GetITStatus(1 << X_LIMIT_BIT) != RESET) {

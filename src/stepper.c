@@ -26,11 +26,11 @@ maybe (CHECK with testing): is_pwm_rate_adjusted is still 8 bits but might need 
 #include "grbl.h"
 
 
-  typedef int bool;
-  #include "stm32f10x_rcc.h"
-  #include "stm32f10x_tim.h"
-  #include "misc.h"
-  void TIM_Configuration(TIM_TypeDef* TIMER, u16 Period, u16 Prescaler, u8 PP);
+typedef int bool;
+#include "stm32f10x_rcc.h"
+#include "stm32f10x_tim.h"
+#include "misc.h"
+void TIM_Configuration(TIM_TypeDef* TIMER, u16 Period, u16 Prescaler, u8 PP);
 
 
 //#ifdef LEDBLINK // Paul to test isr timing via led gpio13 toggles the ISR on entrance and exit
@@ -380,7 +380,7 @@ void st_go_idle() {
 // int8 variables and update position counters only when a segment completes. This can get complicated
 // with probing and homing cycles that require true real-time positions.
 
-  void TIM2_IRQHandler(void)
+void TIM2_IRQHandler(void)
 
 {
 
@@ -605,8 +605,7 @@ void st_go_idle() {
 // a step. This ISR resets the motor port after a short period (settings.pulse_microseconds)
 // completing one step cycle.
 
-  void TIM3_IRQHandler(void)
-{
+void TIM3_IRQHandler(void) {
   if ((TIM3->SR & 0x0001) != 0) {                // check interrupt source
     //		LedBlink();
     TIM3->SR &= ~(1 << 0);                        // clear UIF flag
@@ -675,7 +674,7 @@ void stepper_init() {
   // Configure step and direction interface pins
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
+  GPIO_StructInit(&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
   RCC_APB2PeriphClockCmd(RCC_STEPPERS_DISABLE_PORT, ENABLE);
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;

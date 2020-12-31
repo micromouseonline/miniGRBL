@@ -12,17 +12,17 @@
 extern "C" {
 #endif
 
-  typedef   enum {
-    SOFT_RESET,
-    POWER_ON_RESET,
-    PIN_RESET,
-    OTHER_RESET
-  }
-  RESET_TYPE;
+typedef   enum {
+  SOFT_RESET,
+  POWER_ON_RESET,
+  PIN_RESET,
+  OTHER_RESET
+}
+RESET_TYPE;
 
-  extern RESET_TYPE resetSource;
-  void  getResetSource (void);
-  void checkReset (void);
+extern RESET_TYPE resetSource;
+void  getResetSource(void);
+void checkReset(void);
 
 #ifdef	__cplusplus
 }

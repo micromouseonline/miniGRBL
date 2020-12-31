@@ -21,7 +21,7 @@
 #ifndef eeprom_h
 #define eeprom_h
 
-  void eeprom_init();
+void eeprom_init();
 
 unsigned char eeprom_get_char(unsigned int addr);
 void eeprom_put_char(unsigned int addr, unsigned char new_value);

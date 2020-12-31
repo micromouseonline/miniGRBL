@@ -36,7 +36,7 @@ void system_init() {
    *
    */
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
+  GPIO_StructInit(&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
   RCC_APB2PeriphClockCmd(RCC_CONTROL_PORT | RCC_APB2Periph_AFIO, ENABLE);
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 #ifdef DISABLE_CONTROL_PIN_PULL_UP
@@ -58,7 +58,7 @@ void system_init() {
    */
   GPIO_InitStructure.GPIO_Pin = CONTROL_MASK | LIMIT_MASK | PROBE_MASK; // Paul, Limit Mask includes the Controls
   GPIO_Init(CONTROL_PORT, &GPIO_InitStructure);
-//PJH: Every time these config calls are made, an interrupt is generated 
+  //PJH: Every time these config calls are made, an interrupt is generated
   GPIO_EXTILineConfig(GPIO_CONTROL_PORT, CONTROL_RESET_BIT); //abort
   GPIO_EXTILineConfig(GPIO_CONTROL_PORT, CONTROL_FEED_HOLD_BIT); //pause
   GPIO_EXTILineConfig(GPIO_CONTROL_PORT, CONTROL_CYCLE_START_BIT); //resume
@@ -119,7 +119,7 @@ void system_init() {
 uint8_t system_control_get_state() {
   uint16_t control_state = 0;
   uint16_t pin = GPIO_ReadInputData(CONTROL_PIN_PORT);
-pin &= CONTROL_MASK;
+  pin &= CONTROL_MASK;
 #ifdef INVERT_CONTROL_PIN_MASK
   pin ^= INVERT_CONTROL_PIN_MASK;
 #endif
@@ -149,7 +149,7 @@ pin &= CONTROL_MASK;
 // directly from the incoming serial data stream.
 
 void EXTI9_5_IRQHandler(void) {
-	//PJH: why is this not CONTROL_MASK
+  //PJH: why is this not CONTROL_MASK
   EXTI_ClearITPendingBit((1 << CONTROL_RESET_BIT) | (1 << CONTROL_FEED_HOLD_BIT) | (1 << CONTROL_CYCLE_START_BIT) | (1 << CONTROL_SAFETY_DOOR_BIT));
 
   uint16_t pin = system_control_get_state();

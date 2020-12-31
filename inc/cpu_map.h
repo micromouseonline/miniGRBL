@@ -98,11 +98,11 @@
 #define ResetSpindleEnablebit()     GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_RESET)
 
 #ifdef INVERT_SPINDLE_ENABLE_PIN
-#define EnableSpindle()  ResetSpindleEnablebit(); // Turn Spindle enable ON (0 Volt)
-#define DisableSpindle() SetSpindleEnablebit();   // Turn Spindle enable OFF (5V)
+  #define EnableSpindle()  ResetSpindleEnablebit(); // Turn Spindle enable ON (0 Volt)
+  #define DisableSpindle() SetSpindleEnablebit();   // Turn Spindle enable OFF (5V)
 #else
-#define EnableSpindle()  SetSpindleEnablebit(); // Turn Spindle enable ON (5V)
-#define DisableSpindle() ResetSpindleEnablebit(); // Turn Spindle enable OFF (0 Volt)
+  #define EnableSpindle()  SetSpindleEnablebit(); // Turn Spindle enable ON (5V)
+  #define DisableSpindle() ResetSpindleEnablebit(); // Turn Spindle enable OFF (0 Volt)
 #endif
 
 #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN

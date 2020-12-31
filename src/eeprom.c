@@ -25,12 +25,12 @@
 
 
 
-  #include <string.h>
-  #include "stm32eeprom.h"
-  #include "settings.h"
+#include <string.h>
+#include "stm32eeprom.h"
+#include "settings.h"
 
 
-  unsigned char EE_Buffer[0x400];
+unsigned char EE_Buffer[0x400];
 
 
 
