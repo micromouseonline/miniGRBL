@@ -29,6 +29,7 @@
 #ifndef HOMING_AXIS_LOCATE_SCALAR
   #define HOMING_AXIS_LOCATE_SCALAR  5.0f // Must be > 1 to ensure limit switch is cleared.
 #endif
+
 //TODO: PJH - this function just calls system_init. Is that what is best?
 void limits_init() {
 #ifdef AVRTARGET
@@ -54,66 +55,8 @@ void limits_init() {
 #endif
 #endif
 #ifdef STM32F103C8
-  /*
-   * Author Paul All AFIO GPIO pins are initialised together in one action to prevent
-   * IO issues. Apparently you cannot initialise pins on one port separately like Arduino
-   * Limits init is now performed in system_init()
-   *
-   */
-  //    GPIO_InitTypeDef GPIO_InitStructure;
-  //    GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
-  //    RCC_APB2PeriphClockCmd(RCC_LIMIT_PORT | RCC_APB2Periph_AFIO, ENABLE);
-  //    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  //    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-  //    GPIO_InitStructure.GPIO_Pin = LIMIT_MASK;
-  //    GPIO_Init(LIMIT_PORT, &GPIO_InitStructure);
-  // debug
-  // GPIO_PinLockConfig(LIMIT_PORT,LIMIT_MASK);
-  /*
-   * End
-   */
-
   //TODO: PJH - does this call mean system_init() gets called twice?
   system_init(); // Take over the limits_init() routine
-
-  //	if (bit_istrue(settings.flags, BITFLAG_HARD_LIMIT_ENABLE))
-  //	{
-  //		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, X_LIMIT_BIT);
-  //		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, Y_LIMIT_BIT);
-  //		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, Z_LIMIT_BIT);
-  //		/*
-  //		 * Author Paul
-  //		 */
-  //		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, A_LIMIT_BIT); // added 13/08/2018 Paul
-  //		GPIO_EXTILineConfig(GPIO_LIMIT_PORT, B_LIMIT_BIT); //
-  //
-  //		/* The EXTI line config is already done in the system.c routine sys_init() */
-  //
-  //		EXTI_InitTypeDef EXTI_InitStructure;
-  //        EXTI_StructInit(&EXTI_InitStructure) // PJH - ensure structure is initialised
-  //		EXTI_InitStructure.EXTI_Line = LIMIT_MASK;    // includes CONTROL_FAULT_BIT for DC Motor fault feedback
-  //		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt; //Interrupt mode, optional values for the interrupt EXTI_Mode_Interrupt and event EXTI_Mode_Event.
-  //		//EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising_Falling; //Trigger mode, can be a falling edge trigger EXTI_Trigger_Falling, the rising edge triggered EXTI_Trigger_Rising, or any level (rising edge and falling edge trigger EXTI_Trigger_Rising_Falling)
-  //		if (bit_istrue(settings.flags, BITFLAG_INVERT_LIMIT_PINS )) { // for normally closed switches, we need to interrupt on the rising edge
-  //			EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising ; //Trigger mode, can be a falling edge trigger EXTI_Trigger_Falling, the rising edge triggered EXTI_Trigger_Rising, or any level (rising edge and falling edge trigger EXTI_Trigger_Rising_Falling)
-  //		} else {
-  //			EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling; //Trigger mode, can be a falling edge trigger EXTI_Trigger_Falling, the rising edge triggered EXTI_Trigger_Rising, or any level (rising edge and falling edge trigger EXTI_Trigger_Rising_Falling)
-  //		}
-  //		EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-  //		EXTI_Init(&EXTI_InitStructure);
-  //
-  //		NVIC_InitTypeDef NVIC_InitStructure = {0};
-  //		NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn; //Enable keypad external interrupt channel and DC motor fault feed back
-  //		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02; //Priority 2,
-  //		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03; //was Sub priority 2, now 3 since controls are 2
-  //		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //Enable external interrupt channel
-  //		NVIC_Init(&NVIC_InitStructure);
-  //
-  //	}
-  //	else
-  //	{
-  //		limits_disable();
-  //	}
 #endif
 }
 
