@@ -22,13 +22,6 @@
 
 
 void coolant_init() {
-#ifdef AVRTARGET
-  COOLANT_FLOOD_DDR |= (1 << COOLANT_FLOOD_BIT); // Configure as output pin
-#ifdef ENABLE_M7
-  COOLANT_MIST_DDR |= (1 << COOLANT_MIST_BIT);
-#endif
-#endif
-#ifdef STM32F103C8
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
   RCC_APB2PeriphClockCmd(RCC_COOLANT_FLOOD_PORT, ENABLE);
@@ -42,7 +35,7 @@ void coolant_init() {
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructure.GPIO_Pin = 1 << COOLANT_MIST_BIT;
   GPIO_Init(COOLANT_MIST_PORT, &GPIO_InitStructure);
-#endif
+
   coolant_stop();
 }
 
@@ -50,26 +43,16 @@ void coolant_init() {
 // Returns current coolant output state. Overrides may alter it from programmed state.
 uint8_t coolant_get_state() {
   uint8_t cl_state = COOLANT_STATE_DISABLE;
-#if defined(AVRTARGET) || defined(STM32F103C8)
-#ifdef AVRTARGET
-  uint8_t flood_port_output = COOLANT_FLOOD_PORT;
-#else
   uint16_t flood_port_output = GPIO_ReadOutputData(COOLANT_FLOOD_PORT);
-#endif
 #ifdef INVERT_COOLANT_FLOOD_PIN
   if (bit_isfalse(flood_port_output, (1 << COOLANT_FLOOD_BIT))) {
 #else
   if (bit_istrue(flood_port_output, (1 << COOLANT_FLOOD_BIT))) {
-#endif
     cl_state |= COOLANT_STATE_FLOOD;
   }
 
 #ifdef ENABLE_M7
-#ifdef AVRTARGET
-  uint8_t mist_port_output = COOLANT_MIST_PORT;
-#else
   uint16_t mist_port_output = GPIO_ReadOutputData(COOLANT_MIST_PORT);
-#endif
 #ifdef INVERT_COOLANT_MIST_PIN
   if (bit_isfalse(mist_port_output, (1 << COOLANT_MIST_BIT))) {
 #else
@@ -87,7 +70,6 @@ uint8_t coolant_get_state() {
 // Directly called by coolant_init(), coolant_set_state(), and mc_reset(), which can be at
 // an interrupt-level. No report flag set, but only called by routines that don't need it.
 void coolant_stop() {
-#if defined(AVRTARGET) || defined(STM32F103C8)
 #ifdef INVERT_COOLANT_FLOOD_PIN
   SetFloodEnablebit();
 #else
@@ -98,7 +80,6 @@ void coolant_stop() {
   SetMistEnablebit();
 #else
   ResetMistEnablebit();
-#endif
 #endif
 #endif
 }
@@ -116,7 +97,7 @@ void coolant_set_state(uint8_t mode) {
     coolant_stop();
   } else {
 
-#if defined(AVRTARGET) || defined(STM32F103C8)
+
     if (mode & COOLANT_FLOOD_ENABLE) {
 #ifdef INVERT_COOLANT_FLOOD_PIN
       ReSetFloodEnablebit();
@@ -135,7 +116,7 @@ void coolant_set_state(uint8_t mode) {
     }
 #endif // ENABLE_M7
 
-#endif
+
   }
   sys.report_ovr_counter = 0; // Set to report change immediately
 }

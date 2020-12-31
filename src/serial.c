@@ -140,34 +140,11 @@ void serial_write(uint8_t data) {
   }
   serial_tx_buffer_head = next_head;
 
-#ifdef AVRTARGET
-  // Enable Data Register Empty Interrupt to make sure tx-streaming is running
-  UCSR0B |= (1 << UDRIE0);
-#endif
+
 }
 
-#ifdef AVRTARGET
-// Data Register Empty Interrupt handler
-ISR(SERIAL_UDRE) {
-  uint8_t tail = serial_tx_buffer_tail; // Temporary serial_tx_buffer_tail (to optimize for volatile)
 
-  // Send a byte from the buffer
-  UDR0 = serial_tx_buffer[tail];
 
-  // Update tail position
-  tail++;
-  if (tail == TX_RING_BUFFER) {
-    tail = 0;
-  }
-
-  serial_tx_buffer_tail = tail;
-
-  // Turn off Data Register Empty Interrupt to stop tx-streaming if this concludes the transfer
-  if (tail == serial_tx_buffer_head) {
-    UCSR0B &= ~(1 << UDRIE0);
-  }
-}
-#endif
 #ifdef WIN32
 void SendthreadFunction(void *pVoid) {
   unsigned char szBuf[RX_RING_BUFFER + 1];
@@ -235,11 +212,8 @@ uint8_t serial_read() {
   }
 }
 
-#ifdef AVRTARGET
-ISR(SERIAL_RX) {
-  uint8_t data = UDR0;
-  uint8_t next_head;
-#endif
+
+
 #ifdef WIN32
   //#define WINLOG
   void RecvthreadFunction(void *pVoid) {

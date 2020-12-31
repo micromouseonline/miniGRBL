@@ -27,23 +27,12 @@
 #define GRBL_SERIAL "0x00001" // Paul, added OEM info
 #define GRBL_SERIAL_BUILD "Date:20190130" //
 #define GRBL_OEM "Awesome.tech" //
-#define GRBL_PRODUCT "SuperGerbil" //
+#define GRBL_PRODUCT "MiniGerbil - PJH" //
 
-//#if !defined(STM32F103C8) && !defined(WIN32)
-//#define AVRTARGET
-//#endif
+
 
 // Define standard libraries used by Grbl.
-#ifdef AVRTARGET
-  #include <avr/io.h>
-  #include <avr/pgmspace.h>
-  #include <avr/interrupt.h>
-  #include <avr/wdt.h>
-  #include <util/delay.h>
-  #include <inttypes.h>
-  #include <stdbool.h>
-  #define PORTPINDEF uint8_t
-#endif
+
 #include <math.h>
 #ifdef WIN32
   #include <Windows.h>

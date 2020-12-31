@@ -22,16 +22,7 @@
 
 
 void system_init() {
-#ifdef AVRTARGET
-  CONTROL_DDR &= ~(CONTROL_MASK); // Configure as input pins
-#ifdef DISABLE_CONTROL_PIN_PULL_UP
-  CONTROL_PORT &= ~(CONTROL_MASK); // Normal low operation. Requires external pull-down.
-#else
-  CONTROL_PORT |= CONTROL_MASK;   // Enable internal pull-up resistors. Normal high operation.
-#endif
-  CONTROL_PCMSK |= CONTROL_MASK;  // Enable specific pins of the Pin Change Interrupt
-  PCICR |= (1 << CONTROL_INT);   // Enable Pin Change Interrupt
-#endif
+
 #ifdef STM32F103C8
   /*
    * Author Paul
@@ -129,9 +120,7 @@ void system_init() {
 // defined by the CONTROL_PIN_INDEX in the header file.
 uint8_t system_control_get_state() {
   uint16_t control_state = 0;
-#ifdef AVRTARGET
-  uint8_t pin = (CONTROL_PIN & CONTROL_MASK);
-#endif
+
 #ifdef WIN32
   uint8_t pin = 0;
 #endif
@@ -166,25 +155,7 @@ pin &= CONTROL_MASK;
 // only the realtime command execute variable to have the main program execute these when
 // its ready. This works exactly like the character-based realtime commands when picked off
 // directly from the incoming serial data stream.
-#ifdef AVRTARGET
-ISR(CONTROL_INT_vect) {
-  uint8_t pin = system_control_get_state();
-  if (pin) {
-    if (bit_istrue(pin, CONTROL_PIN_INDEX_RESET)) {
-      mc_reset();
-    } else if (bit_istrue(pin, CONTROL_PIN_INDEX_CYCLE_START)) {
-      bit_true(sys_rt_exec_state, EXEC_CYCLE_START);
-#ifndef ENABLE_SAFETY_DOOR_INPUT_PIN
-    } else if (bit_istrue(pin, CONTROL_PIN_INDEX_FEED_HOLD)) {
-      bit_true(sys_rt_exec_state, EXEC_FEED_HOLD);
-#else
-    } else if (bit_istrue(pin, CONTROL_PIN_INDEX_SAFETY_DOOR)) {
-      bit_true(sys_rt_exec_state, EXEC_SAFETY_DOOR);
-#endif
-    }
-  }
-}
-#endif
+
 #if defined (STM32F103C8)
 void EXTI9_5_IRQHandler(void) {
 	//PJH: why is this not CONTROL_MASK
@@ -546,12 +517,7 @@ uint8_t system_check_travel_limits(float *target) {
 
 // Special handlers for setting and clearing Grbl's real-time execution flags.
 void system_set_exec_state_flag(uint8_t mask) {
-#ifdef AVRTARGET
-  uint8_t sreg = SREG;
-  cli();
-  sys_rt_exec_state |= (mask);
-  SREG = sreg;
-#endif
+
 #ifdef WIN32
   EnterCriticalSection(&CriticalSection);
   sys_rt_exec_state |= (mask);
@@ -565,12 +531,7 @@ void system_set_exec_state_flag(uint8_t mask) {
 }
 
 void system_clear_exec_state_flag(uint8_t mask) {
-#ifdef AVRTARGET
-  uint8_t sreg = SREG;
-  cli();
-  sys_rt_exec_state &= ~(mask);
-  SREG = sreg;
-#endif
+
 #ifdef WIN32
   EnterCriticalSection(&CriticalSection);
   sys_rt_exec_state &= ~(mask);
@@ -584,12 +545,7 @@ void system_clear_exec_state_flag(uint8_t mask) {
 }
 
 void system_set_exec_alarm(uint8_t code) {
-#ifdef AVRTARGET
-  uint8_t sreg = SREG;
-  cli();
-  sys_rt_exec_alarm = code;
-  SREG = sreg;
-#endif
+
 #ifdef WIN32
   EnterCriticalSection(&CriticalSection);
   sys_rt_exec_alarm = (code);
@@ -603,12 +559,7 @@ void system_set_exec_alarm(uint8_t code) {
 }
 
 void system_clear_exec_alarm() {
-#ifdef AVRTARGET
-  uint8_t sreg = SREG;
-  cli();
-  sys_rt_exec_alarm = 0;
-  SREG = sreg;
-#endif
+
 #ifdef WIN32
   EnterCriticalSection(&CriticalSection);
   sys_rt_exec_alarm = 0;
@@ -622,12 +573,8 @@ void system_clear_exec_alarm() {
 }
 
 void system_set_exec_motion_override_flag(uint8_t mask) {
-#ifdef AVRTARGET
-  uint8_t sreg = SREG;
-  cli();
-  sys_rt_exec_motion_override |= (mask);
-  SREG = sreg;
-#endif
+
+
 #ifdef WIN32
   EnterCriticalSection(&CriticalSection);
   sys_rt_exec_motion_override |= (mask);
@@ -641,12 +588,8 @@ void system_set_exec_motion_override_flag(uint8_t mask) {
 }
 
 void system_set_exec_accessory_override_flag(uint8_t mask) {
-#ifdef AVRTARGET
-  uint8_t sreg = SREG;
-  cli();
-  sys_rt_exec_accessory_override |= (mask);
-  SREG = sreg;
-#endif
+
+
 #ifdef WIN32
   EnterCriticalSection(&CriticalSection);
   sys_rt_exec_accessory_override |= (mask);
@@ -660,12 +603,8 @@ void system_set_exec_accessory_override_flag(uint8_t mask) {
 }
 
 void system_clear_exec_motion_overrides() {
-#ifdef AVRTARGET
-  uint8_t sreg = SREG;
-  cli();
-  sys_rt_exec_motion_override = 0;
-  SREG = sreg;
-#endif
+
+
 #ifdef WIN32
   EnterCriticalSection(&CriticalSection);
   sys_rt_exec_motion_override = 0;
@@ -679,12 +618,8 @@ void system_clear_exec_motion_overrides() {
 }
 
 void system_clear_exec_accessory_overrides() {
-#ifdef AVRTARGET
-  uint8_t sreg = SREG;
-  cli();
-  sys_rt_exec_accessory_override = 0;
-  SREG = sreg;
-#endif
+
+
 #ifdef WIN32
   EnterCriticalSection(&CriticalSection);
   sys_rt_exec_accessory_override = 0;

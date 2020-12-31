@@ -187,7 +187,7 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
     TIM_OCInitStruct.TIM_OCMode = TIM_OCMode_PWM1; 		// 0 counting up mode
     TIM_OCInitStruct.TIM_Pulse = 0;     					// init speed is 0
     TIM_OCInitStruct.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_Low; // Paul, TIM_OCPolarity_High for SG, Low for Mini Gerbil
+    TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_Low; // Paul, TIM_OCPolarity_Low for Mini Gerbil
     TIM_OC4Init(TIM4, &TIM_OCInitStruct);
     TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
 
@@ -219,15 +219,12 @@ uint8_t spindle_get_state() {
     uint8_t pin = 0;
 #ifdef VARIABLE_SPINDLE
 #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
-#ifdef AVRTARGET
-  pin = SPINDLE_ENABLE_PORT;
-#endif
-#if defined (STM32F103C8)
+
   //pin = SPINDLE_ENABLE_PORT; //GPIO_ReadInputData(SPINDLE_ENABLE_PORT);
   pin = GPIO_ReadInputData(SPINDLE_ENABLE_PORT);
   //  printString("\n\l spindle state = ");
   //  printInteger(pin);
-#endif
+
   // No spindle direction output pin.
 #ifdef INVERT_SPINDLE_ENABLE_PIN
   if (bit_isfalse(pin, (1 << SPINDLE_ENABLE_BIT))) {
@@ -239,13 +236,7 @@ uint8_t spindle_get_state() {
   }
 #endif
 #else
-#ifdef AVRTARGET
-  pin = SPINDLE_DIRECTION_PORT;
-  if (SPINDLE_TCCRA_REGISTER & (1 << SPINDLE_COMB_BIT))
-#endif
-#if defined (STM32F103C8)
     pin = GPIO_ReadInputData(SPINDLE_DIRECTION_PORT);
-#endif
     {
         if (pin & (1 << SPINDLE_DIRECTION_BIT)) {
             return (SPINDLE_STATE_CCW);
@@ -255,12 +246,10 @@ uint8_t spindle_get_state() {
     }
 #endif
 #else
-#ifdef AVRTARGET
-  pin = SPINDLE_ENABLE_PORT;
-#endif
-#if defined (STM32F103C8)
+
+
   pin = GPIO_ReadInputData(SPINDLE_ENABLE_PORT);
-#endif
+
 #ifdef INVERT_SPINDLE_ENABLE_PIN
   if (bit_isfalse(pin, (1 << SPINDLE_ENABLE_BIT))) {
 #else
