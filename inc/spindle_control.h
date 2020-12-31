@@ -53,12 +53,7 @@ uint8_t spindle_get_state();
   // Sets spindle running state with direction, enable, and spindle PWM.
   void spindle_set_state(uint8_t state, float rpm);
 
-  // Author Paul
-  // measures the difference between the current rpm and the new rpm. If difference
-  // too high then soft increase to rpm
-  //
-  uint16_t current_pwm;
-  void differentiate_spindle_speed(SPINDLE_PWM_TYPE set_pwm_value, SPINDLE_PWM_TYPE pwm_value);
+
 
   // Sets spindle PWM quickly for stepper ISR. Also called by spindle_set_state().
   // NOTE: 328p PWM register is 8-bit.
