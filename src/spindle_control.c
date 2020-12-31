@@ -23,8 +23,7 @@
 #include "stm32f10x_gpio.h"
 
 #ifdef VARIABLE_SPINDLE
-  //static float pwm_gradient; // Pre-calculated value to speed up rpm to PWM conversions.
-  float pwm_gradient;
+  static float pwm_gradient; // Pre-calculated value to speed up rpm to PWM conversions.
 #endif
 
 
@@ -45,7 +44,7 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
    * the direction, enable and timer functions...
    */
   GPIO_InitTypeDef GPIO_InitStructureControl;
-  GPIO_StructInit (&GPIO_InitStructureControl);	// PJH - ensure structure is correctly initialised
+  GPIO_StructInit (&GPIO_InitStructureControl);  // PJH - ensure structure is correctly initialised
 #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
   // configure the spin enable port only
   RCC_APB2PeriphClockCmd(RCC_SPINDLE_ENABLE_PORT, ENABLE);
@@ -79,14 +78,9 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
   ResetSpindleDirectionBit();
 #endif
 
-#if defined (STM32F103C8)
-  /*
-   * Author Paul
-   */
 
   RCC_APB2PeriphClockCmd(RCC_SPINDLE_ENABLE_PORT | RCC_SPINDLE_PWM_PORT | RCC_APB2Periph_AFIO, ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-  //RCC->APB1ENR |= RCC_APB1Periph_TIM4;
 
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_StructInit(&GPIO_InitStructure);
@@ -110,99 +104,96 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
 #ifdef VARIABLE_SPINDLE
 
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-  RCC->APB1ENR |= RCC_APB1Periph_TIM4;
-
   TIM_SelectMasterSlaveMode(TIM4, TIM_MasterSlaveMode_Disable);
   TIM_InternalClockConfig(TIM4);
-  TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStruct;
-  TIM_OCInitTypeDef TIM_OCInitStruct;
-
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStruct = {0};
+  TIM_OCInitTypeDef TIM_OCInitStruct = {0};
+  const uint32_t Max_Period = 1000;
   switch (pwm_mode) {
+    /*** PJH - PWM frequencies should be integer factors of F_CPU ***/
     case 0://60 Hz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 60000 - 1; //default setting medium freq 60Hz. 1000 pwm steps
-      TIM_TimeBaseInitStruct.TIM_Period = 999;
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (60 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
     case 1://125 Hz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 125000 - 1; //dither mode low freq 125Hz
-      TIM_TimeBaseInitStruct.TIM_Period = 999;
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (125 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
     case 2://250Hz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 250000 - 1; //smooth high freq 250Hz
-      TIM_TimeBaseInitStruct.TIM_Period = 999;
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (250 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
     case 3://500Hz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 500000 - 1; //ultra smooth highest freq 500Hz
-      TIM_TimeBaseInitStruct.TIM_Period = 999;
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (500 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
-
     case 4://1kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 1000000 - 1; //default setting medium freq 1kHz
-      TIM_TimeBaseInitStruct.TIM_Period = 999;
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (1000 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
-
     case 5://1.5kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 1500000 - 1; //default setting medium freq 1.5Kc
-      TIM_TimeBaseInitStruct.TIM_Period = 999;
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (1500 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
     case 6://3kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 300000 - 1; //smooth high freq 250Hz
-      TIM_TimeBaseInitStruct.TIM_Period = 99;
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (3000 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
     case 7://4.5kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 4500000 - 1; //default setting medium freq 4.5kC
-      TIM_TimeBaseInitStruct.TIM_Period = 999;
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (4500 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
     case 8://6kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 600000 - 1;
-      TIM_TimeBaseInitStruct.TIM_Period = 99;
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (6000 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
     case 9://8kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 800000 - 1;
-      TIM_TimeBaseInitStruct.TIM_Period = 99;
-    case 10://10kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 1000000 - 1;
-      TIM_TimeBaseInitStruct.TIM_Period = 99;
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (8000 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
+    case 10://12000
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (12000 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
-    case 11://15kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 1500000 - 1;
-      TIM_TimeBaseInitStruct.TIM_Period = 99;
+    case 11://14400
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (14400 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
-    case 12://30kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 3000000 - 1;
-      TIM_TimeBaseInitStruct.TIM_Period = 99;
+    case 12://18000
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (18000 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
-    case 13://45kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 4500000 - 1;
-      TIM_TimeBaseInitStruct.TIM_Period = 99;
+    case 13://24000
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (24000 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
-    case 14://60kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 6000000 - 1;
-      TIM_TimeBaseInitStruct.TIM_Period = 99;
+    case 14://36000
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (36000 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
-    case 15://80kHz
-      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / 7500000 - 1;
-      TIM_TimeBaseInitStruct.TIM_Period = 99;
+    case 15://72000
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (72000 * Max_Period) - 1;
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
     default:
+      /// PJH - need to report an error
+      TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (1500 * Max_Period) - 1; //default setting medium freq 1.5KHz
+      TIM_TimeBaseInitStruct.TIM_Period = Max_Period-1;
       break;
   }
-  TIM_TimeBaseInitStruct.TIM_CounterMode = TIM_CounterMode_Up;
-  /*
-   * author Paul
-   */
 
+  TIM_TimeBaseInitStruct.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseInitStruct.TIM_ClockDivision = TIM_CKD_DIV1;
   TIM_TimeBaseInit(TIM4, &TIM_TimeBaseInitStruct);
 
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
   TIM_ARRPreloadConfig(TIM4, ENABLE);
-  TIM_OCInitStruct.TIM_OCMode = TIM_OCMode_PWM1; // 0 counting up mode
-  TIM_OCInitStruct.TIM_Pulse = 0;     // initit speed is 0
+  TIM_OCInitStruct.TIM_OCMode = TIM_OCMode_PWM1; 				// 0 counting up mode
+  TIM_OCInitStruct.TIM_Pulse = 0;     							// init speed is 0
   TIM_OCInitStruct.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_High; // Paul, TIM_OCPolarity_High for SG, Low for Mini Gerbil
+  TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_High; 		// Paul, TIM_OCPolarity_High for SG, Low for Mini Gerbil
   TIM_OC4Init(TIM4, &TIM_OCInitStruct);
   TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
-  TIM_Cmd(TIM4, ENABLE);
+
+
 
   RCC_APB2PeriphClockCmd(RCC_SPINDLE_PWM_PORT, ENABLE); // enable the clock
 
@@ -213,22 +204,16 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
   gpio_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_Init(SPINDLE_PWM_PORT, &gpio_InitStructure);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+
   TIM_Cmd(TIM4, ENABLE);
-  // Does we want to lock in the PWM pin forever?
-  //GPIO_PinLockConfig(SPINDLE_PWM_PORT, SPINDLE_PWM_BIT);
-
+  /***
+   * Timer should now be running but idling low
+   */
   GPIO_ResetBits(SPINDLE_PWM_PORT, SPINDLE_PWM_BIT);
-
-#ifdef VARIABLE_SPINDLE
-  //  pwm_gradient = SPINDLE_PWM_RANGE / (settings.rpm_max - settings.rpm_min);
-  pwm_gradient = (TIM_TimeBaseInitStruct.TIM_Period - 5) / (settings.rpm_max - settings.rpm_min);
+  pwm_gradient = (float)(TIM_TimeBaseInitStruct.TIM_Period) / (settings.rpm_max - settings.rpm_min);
   time_base = TIM_TimeBaseInitStruct.TIM_Period;
-#endif
 
 #endif
-
-#endif
-
 
   spindle_stop();
 }
@@ -301,14 +286,8 @@ uint8_t spindle_get_state() {
 // Called by spindle_init(), spindle_set_speed(), spindle_set_state(), and mc_reset().
 void spindle_stop() {
 #ifdef VARIABLE_SPINDLE
-#ifdef AVRTARGET
-  SPINDLE_TCCRA_REGISTER &= ~(1 << SPINDLE_COMB_BIT); // Disable PWM. Output voltage is zero.
-#endif
-#if defined (STM32F103C8)
 
-  //TIM_SetCompare4(TIM4, settings.rpm_max - SPINDLE_PWM_OFF_VALUE);
   TIM_SetCompare4(TIM4, 0);
-#endif
 
 
 #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
@@ -344,30 +323,19 @@ void differentiate_spindle_speed(SPINDLE_PWM_TYPE set_pwm_value, SPINDLE_PWM_TYP
   } else {
     TIM_SetCompare4(TIM4, set_pwm_value);
   }
-
 }
 
 #ifdef VARIABLE_SPINDLE
 // Sets spindle speed PWM output and enable pin, if configured. Called by spindle_set_state()
 // and stepper ISR. Keep routine small and efficient.
 void spindle_set_speed(SPINDLE_PWM_TYPE pwm_value) {
-#ifdef AVRTARGET
-  SPINDLE_OCR_REGISTER = pwm_value; // Set PWM output level.
-#endif
-#if defined (STM32F103C8)
-  TIM_SetCompare4(TIM4, pwm_value);
 
-#endif
 #ifdef SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED
   if (pwm_value == SPINDLE_PWM_OFF_VALUE) {
     spindle_stop();
   } else {
-#ifdef AVRTARGET
-    SPINDLE_TCCRA_REGISTER |= (1 << SPINDLE_COMB_BIT); // Ensure PWM output is enabled.
-#endif
-#if defined (STM32F103C8)
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
-#endif
+
 #ifdef INVERT_SPINDLE_ENABLE_PIN
     ResetSpindleEnablebit();
 #else
@@ -376,33 +344,29 @@ void spindle_set_speed(SPINDLE_PWM_TYPE pwm_value) {
   }
 #else
   if (pwm_value == SPINDLE_PWM_OFF_VALUE) {
-#ifdef AVRTARGET
-    SPINDLE_TCCRA_REGISTER &= ~(1 << SPINDLE_COMB_BIT); // Disable PWM. Output voltage is zero.
-#endif
-#if defined (STM32F103C8)
-
     TIM_SetCompare4(TIM4, pwm_value);
-
-#endif
   } else {
-#ifdef AVRTARGET
-    SPINDLE_TCCRA_REGISTER |= (1 << SPINDLE_COMB_BIT); // Ensure PWM output is enabled.
-#endif
     TIM_SetCompare4(TIM4, pwm_value); // 13/08/2018
     EnableSpindle();
   }
 #endif
 }
-#endif
+#endif // VARIABLE_SPINDLE
+
+
+
 
 SPINDLE_PWM_TYPE spindle_compute_pwm_value(float rpm) { // 328p PWM register is 8-bit.
   SPINDLE_PWM_TYPE pwm_value;
   rpm *= (0.010f * sys.spindle_speed_ovr); // Scale by spindle speed override value.
+
+
+
   // Calculate PWM register value based on rpm max/min settings and programmed rpm.
   if ((settings.rpm_min >= settings.rpm_max) || (rpm >= settings.rpm_max)) {
     // No PWM range possible. Set simple on/off spindle control pin state.
     sys.spindle_speed = settings.rpm_max;
-    //pwm_value = SPINDLE_PWM_MAX_VALUE;
+    pwm_value = SPINDLE_PWM_MAX_VALUE;
     pwm_value = time_base;
   } else if (rpm <= settings.rpm_min) {
     if (rpm == 0.0f) { // S0 disables spindle
@@ -417,12 +381,13 @@ SPINDLE_PWM_TYPE spindle_compute_pwm_value(float rpm) { // 328p PWM register is 
     // NOTE: A nonlinear model could be installed here, if required, but keep it VERY light-weight.
     sys.spindle_speed = rpm;
 
-    pwm_value = (SPINDLE_PWM_TYPE)floorf((rpm - settings.rpm_min) * pwm_gradient) + SPINDLE_PWM_MIN_VALUE;
+    pwm_value = (SPINDLE_PWM_TYPE)floorf((rpm - settings.rpm_min) *pwm_gradient ) + SPINDLE_PWM_MIN_VALUE;
   }
-  //		printFloat_RateValue(Command);
-
   return (pwm_value);
 }
+
+
+
 
 
 // Immediately sets spindle running state with direction and spindle rpm via PWM, if enabled.

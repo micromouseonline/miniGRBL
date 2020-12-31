@@ -167,20 +167,18 @@
 #ifdef VARIABLE_SPINDLE
 
   // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
-  #define SPINDLE_PWM_FREQUENCY       10000                  // KHz
-  #define SPINDLE_PWM_DDR	            GPIOB //B
+  #define SPINDLE_PWM_DDR	          GPIOB //B
   #define SPINDLE_PWM_PORT            GPIOB //B
   #define RCC_SPINDLE_PWM_PORT        RCC_APB2Periph_GPIOB //RCC_APB2Periph_GPIOB
-  #define SPINDLE_PWM_BIT	            GPIO_Pin_9 // PB9 is PWM output, was 8 in conflict with USB port
+  #define SPINDLE_PWM_BIT	          GPIO_Pin_9 // PB9 is PWM output, was 8 in conflict with USB port
 #endif // End of VARIABLE_SPINDLE
 
-#define SPINDLE_PWM_MAX_VALUE       (1000000 / SPINDLE_PWM_FREQUENCY)
+#define SPINDLE_PWM_MAX_VALUE       999
 
 #ifndef SPINDLE_PWM_MIN_VALUE
   #define SPINDLE_PWM_MIN_VALUE   1   // Must be greater than zero.
 #endif
 #define SPINDLE_PWM_OFF_VALUE     0
-#define SPINDLE_PWM_RANGE         (SPINDLE_PWM_MAX_VALUE-SPINDLE_PWM_MIN_VALUE) // PJH: never used
 
 // PJH - minigerbil pin map verified from schematic 28-12-20
 //  PORT A
