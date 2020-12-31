@@ -39,8 +39,6 @@
 #define BITFLAG_INVERT_LIMIT_PINS  bit(6)
 #define BITFLAG_INVERT_PROBE_PIN   bit(7)
 
-//Define bit flag masks for the boolean settings in settings.flag.
-#define BITFLAG_FAULT_PIN          bit(8)
 
 // Define status reporting boolean enable bit flags in settings.status_report_mask
 #define BITFLAG_RT_STATUS_POSITION_TYPE     bit(0)

@@ -127,14 +127,7 @@
 
 #define DEFAULT_SOFT_START 0 // disabled
 //  #define HOMING_CYCLE_0 ((1<<X_AXIS)|(1<<Y_AXIS))
-/*
- * author Paul
- * Fault pin on Spindle modules monitoring settings
- */
-#define DEFAULT_ENABLE_FAULT_PIN 0
-/*
- * Soft start curve
- */
+
 #define DEFAULT_N_PIECES 4
 #define DEFAULT_RPM_MAX 11643.4
 #define DEFAULT_RPM_MIN 810.9

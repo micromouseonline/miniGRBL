@@ -85,13 +85,9 @@
   #define A_LIMIT_BIT      13 //GPIO_Pin_13  // additional axis Paul
   #define B_LIMIT_BIT      14 //GPIO_Pin_14  // additional 2nd axis
 #endif
-/*
- * Author Paul added fault pin for DC motor feed back. In limit pins and not in control, because pin 15 falls in EXTI_15
- * All AFIO pins on Port B must be configured together otherwise only one (last one) with get active
- * and leave previous IO pins hanging in ***void*** or cyber space (whatever, just pick one).
- */
-#define CONTROL_FAULT_BIT             15 //PortB, GPIO_Pin_15, Added as an additional state, DC motor feedback pin (Low is a Fault condition)
-#define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)|(1<<Z_LIMIT_BIT)|(1<<A_LIMIT_BIT)|(1<<B_LIMIT_BIT)|(1<<CONTROL_FAULT_BIT)) // All limit bits
+
+
+#define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)|(1<<Z_LIMIT_BIT)|(1<<A_LIMIT_BIT)|(1<<B_LIMIT_BIT)) // All limit bits
 //#define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT))
 
 
@@ -217,7 +213,7 @@
 //   12 Z_LIMIT_BIT             (IN)   Not connected - not used
 //   13 A_LIMIT_BIT             (IN)   Not connected - not used
 //   14	B_LIMIT_BIT             (IN)   Not connected - not used
-//   15 DC Motor fault          (IN)   Input on J5 pin 2  for motor fault - GND to activate
+//   15 DC Motor fault          (IN)   Input on J5 pin 2  for motor fault - GND to activate - removed - PJH
 //
 //   PORT C
 //-----------------------

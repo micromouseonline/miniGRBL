@@ -197,12 +197,6 @@ uint8_t limits_get_state() {
   if (EXTI_GetITStatus(1 << B_LIMIT_BIT) != RESET) { // Test A, B axis
     EXTI_ClearITPendingBit(1 << B_LIMIT_BIT);
   }
-  if (bit_istrue(settings.flags, BITFLAG_FAULT_PIN)) {
-    if (EXTI_GetITStatus(1 << CONTROL_FAULT_BIT) != RESET) { // Test DC Motor Faults
-      EXTI_ClearITPendingBit(1 << CONTROL_FAULT_BIT);
-      flag_fault = 1;
-    }
-  }
   NVIC_ClearPendingIRQ(EXTI15_10_IRQn);
 #endif
   // Ignore limit switches if already in an alarm state or in-process of executing an alarm.

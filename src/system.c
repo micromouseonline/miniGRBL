@@ -66,7 +66,7 @@ void system_init() {
    * pin is not connected to anything
    *
    */
-  GPIO_InitStructure.GPIO_Pin = CONTROL_MASK | LIMIT_MASK | PROBE_MASK; // Paul, Limit Mask includes the Controls and CONTROL_FAULT_BIT pin!
+  GPIO_InitStructure.GPIO_Pin = CONTROL_MASK | LIMIT_MASK | PROBE_MASK; // Paul, Limit Mask includes the Controls
   GPIO_Init(CONTROL_PORT, &GPIO_InitStructure);
 //PJH: Every time these config calls are made, an interrupt is generated 
   GPIO_EXTILineConfig(GPIO_CONTROL_PORT, CONTROL_RESET_BIT); //abort
