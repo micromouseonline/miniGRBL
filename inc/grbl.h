@@ -34,30 +34,8 @@
 // Define standard libraries used by Grbl.
 
 #include <math.h>
-#ifdef WIN32
-  #include <Windows.h>
-  typedef signed char  int8_t;
-  typedef signed short int16_t;
-  typedef signed int   int32_t;
-  typedef unsigned char  uint8_t;
-  typedef unsigned short uint16_t;
-  typedef unsigned int   uint32_t;
-  typedef signed long long   int64_t;
-  typedef unsigned long long uint64_t;
-  typedef int bool;
-  #define false 0
-  #define true 1
-  #define truncf(x) (int32_t)x
-  #define PSTR(x) x
-  #define pgm_read_byte_near(x) *(x)
-  #define _delay_ms(x) Sleep(x)
-  #define M_PI 3.1415926f
-  #define LOG(x,y)
-  #define PORTPINDEF uint8_t
-  #define printPgmString printString
-  //#define NOEEPROMSUPPORT
-#endif
-#ifdef STM32F103C8
+
+
   #include "stm32f10x.h"
   #include "stm32f10x_conf.h"
   #include "system_stm32f10x.h"
@@ -67,16 +45,6 @@
   #include "misc.h"
   #include "stm32f10x_rcc.h" //place holder to add sd card libs
   #include "stm32f10x_rtc.h"
-  /*
-  #include "ff.h"
-  #include "diskio.h"
-  #include "ffconf.h"
-  #include "integer.h"
-  #include "xprintf.h" //end of the SD card libs
-  #include "mmcb.h"
-  #include "ST7735.h"
-  #include "integer.h"
-  */
 
   #define PSTR(x) x
   #define pgm_read_byte_near(x) *(x)
@@ -89,7 +57,7 @@
   typedef int bool;
   //#define NOEEPROMSUPPORT
   #define printPgmString printString
-#endif
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -130,7 +98,7 @@
 #endif
 
 //#if defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) && !defined(CPU_MAP_ATMEGA328P)
-#if defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) && !defined(CPU_MAP_STM32F103)
+#if defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
   #error "USE_SPINDLE_DIR_AS_ENABLE_PIN may only be used with a 328p processor"
 #endif
 

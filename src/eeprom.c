@@ -23,42 +23,17 @@
 ****************************************************************************/
 #include "grbl.h"
 
-#ifdef WIN32
-  #include <stdio.h>
-  #include <string.h>
-#endif
-#ifdef STM32F103C8
+
+
   #include <string.h>
   #include "stm32eeprom.h"
   #include "settings.h"
-#endif
-#if defined(WIN32) || defined (STM32F103C8)
-  unsigned char EE_Buffer[0x400];
-#endif
-#if defined(WIN32)
-#ifndef NOEEPROMSUPPORT
-void eeprom_flush() {
-  FILE *out = fopen("eeprom.bin", "wb");
-  fwrite(EE_Buffer, 1, 0x400, out);
-  fclose(out);
-}
-#endif
-void eeprom_init() {
-#ifndef NOEEPROMSUPPORT
-  FILE *in = fopen("eeprom.bin", "rb");
-  if (in != NULL) {
-    fread(EE_Buffer, 1, 0x400, in);
-    fclose(in);
-  } else {
-    memset(EE_Buffer, 0xff, 0x400);
-  }
-#else
-  memset(EE_Buffer, 0x0, 0x400);
-#endif
-}
-#endif
 
-#ifdef STM32F103C8
+
+  unsigned char EE_Buffer[0x400];
+
+
+
 #ifndef NOEEPROMSUPPORT
 void eeprom_flush() {
   uint32_t nAddress = EEPROM_START_ADDRESS;
@@ -66,7 +41,6 @@ void eeprom_flush() {
   uint16_t nSize = PAGE_SIZE;
 
   FLASH_Status FlashStatus = FLASH_COMPLETE;
-
   /* Erase Page0 */
   FlashStatus = FLASH_ErasePage(EEPROM_START_ADDRESS);
 
@@ -107,7 +81,7 @@ void eeprom_init() {
   }
 }
 #endif
-#endif
+
 
 /*! \brief  Read byte from EEPROM.
  *
@@ -119,10 +93,7 @@ void eeprom_init() {
  *  \return  The byte read from the EEPROM address.
  */
 unsigned char eeprom_get_char(unsigned int addr) {
-
-#if defined(WIN32) || defined(STM32F103C8)
   return EE_Buffer[addr];
-#endif
 }
 
 /*! \brief  Write byte to EEPROM.
@@ -143,9 +114,9 @@ unsigned char eeprom_get_char(unsigned int addr) {
  *  \param  new_value  New EEPROM value.
  */
 void eeprom_put_char(unsigned int addr, unsigned char new_value) {
-#if defined(WIN32) || defined(STM32F103C8)
+
   EE_Buffer[addr] = new_value;
-#endif
+
 }
 
 // Extensions added as part of Grbl
@@ -159,11 +130,11 @@ void memcpy_to_eeprom_with_checksum(unsigned int destination, char *source, unsi
     eeprom_put_char(destination++, *(source++));
   }
   eeprom_put_char(destination, checksum);
-#if defined(WIN32) || defined(STM32F103C8)
+
 #ifndef NOEEPROMSUPPORT
   eeprom_flush();
 #endif
-#endif
+
 }
 
 int memcpy_from_eeprom_with_checksum(char *destination, unsigned int source, unsigned int size) {

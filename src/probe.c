@@ -32,7 +32,7 @@ void probe_init() {
    * so that all these control pins are initialised together.
    * Possibly to make sure interrupts work properly
    */
-#ifdef STM32F103C8
+
   //	GPIO_InitTypeDef GPIO_InitStructure;
   //    GPIO_StructInit (&GPIO_InitStructure);	// PJH - ensure structure is correctly initialised
   //	RCC_APB2PeriphClockCmd(RCC_PROBE_PORT, ENABLE);
@@ -44,7 +44,7 @@ void probe_init() {
 #endif
   //	GPIO_InitStructure.GPIO_Pin = PROBE_MASK;
   //	GPIO_Init(PROBE_PORT, &GPIO_InitStructure);
-#endif
+
   probe_configure_invert_mask(false); // Initialize invert mask.
 }
 

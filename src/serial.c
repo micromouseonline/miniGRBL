@@ -22,7 +22,7 @@
 #include "grbl.h"
 #include "nuts_bolts.h"
 
-#ifdef STM32F103C8
+
   #include "stm32f10x.h"
   #include "core_cm3.h"
   //#ifndef USEUSB
@@ -30,15 +30,12 @@
   //#else
   #include "usb_regs.h"
   //#endif
-#endif
 
-#if !defined(STM32F103C8)
-  #define RX_RING_BUFFER (RX_BUFFER_SIZE+1)
-  #define TX_RING_BUFFER (TX_BUFFER_SIZE+1)
-#else
+
+
   #define RX_RING_BUFFER (RX_BUFFER_SIZE)
   #define TX_RING_BUFFER (TX_BUFFER_SIZE)
-#endif
+
 
 volatile uint16_t line_counter = 0;
 uint8_t serial_rx_buffer[RX_RING_BUFFER];
@@ -145,54 +142,6 @@ void serial_write(uint8_t data) {
 
 
 
-#ifdef WIN32
-void SendthreadFunction(void *pVoid) {
-  unsigned char szBuf[RX_RING_BUFFER + 1];
-
-  DWORD dwBytesWritten;
-  uint8_t nNextTai;
-  for (;;) {
-    while (serial_tx_buffer_head == serial_tx_buffer_tail) {
-      Sleep(1);
-    }
-    uint16_t USB_Tx_length;
-
-    if (serial_tx_buffer_head > serial_tx_buffer_tail) {
-      USB_Tx_length = serial_tx_buffer_head - serial_tx_buffer_tail;
-    } else {
-      USB_Tx_length = RX_RING_BUFFER - serial_tx_buffer_tail;
-      if (USB_Tx_length == 0) {
-        USB_Tx_length = serial_tx_buffer_head;
-      }
-    }
-    nNextTai = serial_tx_buffer_tail;
-
-    if (USB_Tx_length != 0) {
-      if (hSerial != INVALID_HANDLE_VALUE) {
-        WriteFile(hSerial, serial_tx_buffer + serial_tx_buffer_tail, USB_Tx_length, &dwBytesWritten, NULL);
-        nNextTai += (uint8_t)dwBytesWritten;
-#ifdef LOCAL_ECHO
-        memcpy(szBuf, &serial_tx_buffer[serial_tx_buffer_tail], dwBytesWritten);
-        szBuf[dwBytesWritten] = 0;
-        printf(szBuf);
-#endif
-      } else {
-        //	fwrite(szBuf, 1, USB_Tx_length, stdout);
-        memcpy(szBuf, &serial_tx_buffer[serial_tx_buffer_tail], USB_Tx_length);
-        szBuf[USB_Tx_length] = 0;
-        printf(szBuf);
-        nNextTai += USB_Tx_length;
-      }
-      if (nNextTai == RX_RING_BUFFER) {
-        nNextTai = 0;
-      }
-
-      serial_tx_buffer_tail = nNextTai;
-    }
-  }
-}
-#endif
-
 // Fetches the first byte in the serial read buffer. Called by main program.
 uint8_t serial_read() {
   uint16_t tail = serial_rx_buffer_tail; // Temporary serial_rx_buffer_tail (to optimize for volatile)
@@ -213,32 +162,6 @@ uint8_t serial_read() {
 }
 
 
-
-#ifdef WIN32
-  //#define WINLOG
-  void RecvthreadFunction(void *pVoid) {
-    DWORD  dwBytesRead;
-    uint8_t data;
-    uint8_t next_head;
-    for (;;) {
-      if (hSerial != INVALID_HANDLE_VALUE) {
-        if (ReadFile(hSerial, &data, 1, &dwBytesRead, NULL) && dwBytesRead == 1) {
-        } else {
-#ifdef WIN32
-          Sleep(1);
-#endif
-
-          data = 0;
-        }
-      } else {
-        while (_kbhit() == 0)
-          ;
-        data = _getch();
-      }
-      if (data == 0) {
-        continue;
-      }
-#endif
 
       //#ifdef STM32F103C8
       //#ifdef USEUSB

@@ -23,7 +23,6 @@
 
 void system_init() {
 
-#ifdef STM32F103C8
   /*
    * Author Paul
    * +++   Warning, warning Robinson !   +++
@@ -111,7 +110,6 @@ void system_init() {
   }
   // end of limits init code
 
-#endif
 }
 
 
@@ -120,14 +118,8 @@ void system_init() {
 // defined by the CONTROL_PIN_INDEX in the header file.
 uint8_t system_control_get_state() {
   uint16_t control_state = 0;
-
-#ifdef WIN32
-  uint8_t pin = 0;
-#endif
-#ifdef STM32F103C8
   uint16_t pin = GPIO_ReadInputData(CONTROL_PIN_PORT);
 pin &= CONTROL_MASK;
-#endif
 #ifdef INVERT_CONTROL_PIN_MASK
   pin ^= INVERT_CONTROL_PIN_MASK;
 #endif
@@ -156,7 +148,6 @@ pin &= CONTROL_MASK;
 // its ready. This works exactly like the character-based realtime commands when picked off
 // directly from the incoming serial data stream.
 
-#if defined (STM32F103C8)
 void EXTI9_5_IRQHandler(void) {
 	//PJH: why is this not CONTROL_MASK
   EXTI_ClearITPendingBit((1 << CONTROL_RESET_BIT) | (1 << CONTROL_FEED_HOLD_BIT) | (1 << CONTROL_CYCLE_START_BIT) | (1 << CONTROL_SAFETY_DOOR_BIT));
@@ -182,7 +173,7 @@ void EXTI9_5_IRQHandler(void) {
     NVIC_ClearPendingIRQ(EXTI9_5_IRQn);
   }
 }
-#endif
+
 
 // Returns if safety door is ajar(T) or closed(F), based on pin state.
 uint8_t system_check_safety_door_ajar() {
@@ -511,123 +502,52 @@ uint8_t system_check_travel_limits(float *target) {
   return (false);
 }
 
-#ifdef WIN32
-  extern CRITICAL_SECTION CriticalSection;
-#endif
 
 // Special handlers for setting and clearing Grbl's real-time execution flags.
 void system_set_exec_state_flag(uint8_t mask) {
-
-#ifdef WIN32
-  EnterCriticalSection(&CriticalSection);
-  sys_rt_exec_state |= (mask);
-  LeaveCriticalSection(&CriticalSection);
-#endif
-#ifdef STM32F103C8
   __disable_irq();
   sys_rt_exec_state |= (mask);
   __enable_irq();
-#endif
 }
 
 void system_clear_exec_state_flag(uint8_t mask) {
-
-#ifdef WIN32
-  EnterCriticalSection(&CriticalSection);
-  sys_rt_exec_state &= ~(mask);
-  LeaveCriticalSection(&CriticalSection);
-#endif
-#ifdef STM32F103C8
   __disable_irq();
   sys_rt_exec_state &= ~(mask);
   __enable_irq();
-#endif
 }
 
 void system_set_exec_alarm(uint8_t code) {
-
-#ifdef WIN32
-  EnterCriticalSection(&CriticalSection);
-  sys_rt_exec_alarm = (code);
-  LeaveCriticalSection(&CriticalSection);
-#endif
-#ifdef STM32F103C8
   __disable_irq();
   sys_rt_exec_alarm = (code);
   __enable_irq();
-#endif
 }
 
 void system_clear_exec_alarm() {
-
-#ifdef WIN32
-  EnterCriticalSection(&CriticalSection);
-  sys_rt_exec_alarm = 0;
-  LeaveCriticalSection(&CriticalSection);
-#endif
-#ifdef STM32F103C8
   __disable_irq();
   sys_rt_exec_alarm = 0;
   __enable_irq();
-#endif
 }
 
 void system_set_exec_motion_override_flag(uint8_t mask) {
-
-
-#ifdef WIN32
-  EnterCriticalSection(&CriticalSection);
-  sys_rt_exec_motion_override |= (mask);
-  LeaveCriticalSection(&CriticalSection);
-#endif
-#ifdef STM32F103C8
   __disable_irq();
   sys_rt_exec_motion_override |= (mask);
   __enable_irq();
-#endif
 }
 
 void system_set_exec_accessory_override_flag(uint8_t mask) {
-
-
-#ifdef WIN32
-  EnterCriticalSection(&CriticalSection);
-  sys_rt_exec_accessory_override |= (mask);
-  LeaveCriticalSection(&CriticalSection);
-#endif
-#ifdef STM32F103C8
   __disable_irq();
   sys_rt_exec_accessory_override |= (mask);
   __enable_irq();
-#endif
 }
 
 void system_clear_exec_motion_overrides() {
-
-
-#ifdef WIN32
-  EnterCriticalSection(&CriticalSection);
-  sys_rt_exec_motion_override = 0;
-  LeaveCriticalSection(&CriticalSection);
-#endif
-#ifdef STM32F103C8
   __disable_irq();
   sys_rt_exec_motion_override = 0;
   __enable_irq();
-#endif
 }
 
 void system_clear_exec_accessory_overrides() {
-
-
-#ifdef WIN32
-  EnterCriticalSection(&CriticalSection);
-  sys_rt_exec_accessory_override = 0;
-  LeaveCriticalSection(&CriticalSection);
-#endif
-#ifdef STM32F103C8
   __disable_irq();
   sys_rt_exec_accessory_override = 0;
   __enable_irq();
-#endif
 }

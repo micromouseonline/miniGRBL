@@ -39,7 +39,9 @@
 #define DEFAULTS_GENERIC
 //#define DEFAULT_CNC3020
 
-#define SG
+#ifndef MG
+  #define MG
+#endif
 #ifndef STM32F103C8
   #define STM32F103C8
 #endif
@@ -47,14 +49,8 @@
   #define USEUSB
 #endif
 
-#define CPU_MAP_STM32F103 // CPU_MAP_STM32F103
-#ifdef WIN32
-  #define CPU_MAP_WIN32
-#endif
+#define CPU_MAP_STM32F103 //
 
-#ifdef STM32F103C8
-  #define CPU_MAP_STM32F103
-#endif
 
 //#define SYSCLK_FREQ_72MHz
 // Serial baud rate
@@ -483,10 +479,8 @@
 // 115200 baud will take 5 msec to transmit a typical 55 character report. Worst case reports are
 // around 90-100 characters. As long as the serial TX buffer doesn't get continually maxed, Grbl
 // will continue operating efficiently. Size the TX buffer around the size of a worst-case report.
-#if !defined (STM32F103C8)
-  #define RX_BUFFER_SIZE 128 // (1-254) Uncomment to override defaults in serial.h
-  #define TX_BUFFER_SIZE 100 // (1-254)
-#endif
+//  #define RX_BUFFER_SIZE 128 // (1-254) Uncomment to override defaults in serial.h
+//  #define TX_BUFFER_SIZE 100 // (1-254)
 
 // A simple software debouncing feature for hard limit switches. When enabled, the interrupt
 // monitoring the hard limit switch pins will enable the Arduino's watchdog timer to re-check

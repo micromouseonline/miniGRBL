@@ -37,7 +37,7 @@ volatile uint8_t sys_rt_exec_accessory_override; // Global realtime executor bit
   volatile uint8_t sys_rt_exec_debug;
 #endif
 
-#if defined (STM32F103C8)
+
 #include "usb_lib.h"
 
 #ifdef USEUSB
@@ -84,32 +84,23 @@ void USART1_Configuration(u32 BaudRate) {
   USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
   USART_Cmd(USART1, ENABLE);
 }
-#endif
 
-//#endif
 void LedBlink(void);
 void LED_TRACE(char count, int delay);
 
 
-#ifdef WIN32
-  int main(int argc, char *argv[])
-#else
+
   int main(void)
-#endif
+
 {
-#if defined (STM32F103C8)
+
   getResetSource();
   RCC_HCLKConfig(RCC_SYSCLK_Div1); // High speed data bus
   RCC_PCLK1Config(RCC_HCLK_Div2);//paul high speed peripheral bus
   RCC_PCLK2Config(RCC_HCLK_Div1); // low speed peripheral bus
   //SystemInit();
 
-
   //RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);//paul
-
-#ifndef LEDBLINK
-#define LEDBLINK
-#endif
 
 #ifdef LEDBLINK
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -146,7 +137,6 @@ void LED_TRACE(char count, int delay);
   SysTick->CTRL &= 0xfffffffb;
   //SysTick_Config(1000);//paul lost usb on a device with no recovery until a full erase done
 
-#endif
   // Initialize system upon power-up.
   serial_init();   // Setup serial baud rate and interrupts
 
@@ -258,7 +248,8 @@ void LED_TRACE(char count, int delay);
 
   return 0;   /* Never reached */
 }
-#if defined (STM32F103C8)
+
+
 void _delay_ms(uint32_t x) {
   u32 temp;
   SysTick->LOAD = (u32)72000000 / 72000;                     // Loading time
@@ -296,4 +287,4 @@ void LED_TRACE(char count, int delay) {
 //return uart_getc(USART1);
 //}
 
-#endif
+

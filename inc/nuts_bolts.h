@@ -21,9 +21,9 @@
 
 #ifndef nuts_bolts_h
 #define nuts_bolts_h
-#ifdef STM32F103C8
+
   #include "stm32f10x_rcc.h"
-#endif
+
 #include "float.h"
 #define false 0
 #define true 1
@@ -49,13 +49,10 @@
 #define MM_PER_INCH (25.40f)
 #define INCH_PER_MM (0.0393701f)
 #define TICKS_PER_MICROSECOND (F_CPU/1000000)
-#ifdef WIN32
-  extern LARGE_INTEGER Win32Frequency;
-  #define F_CPU  Win32Frequency.QuadPart
-#endif
-#ifdef STM32F103C8
+
+
   #define F_CPU SystemCoreClock
-#endif
+
 #define DELAY_MODE_DWELL       0
 #define DELAY_MODE_SYS_SUSPEND 1
 

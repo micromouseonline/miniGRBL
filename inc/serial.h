@@ -29,9 +29,6 @@
 
 #define SERIAL_NO_DATA 0xff
 
-#ifdef WIN32
-  void winserial_init(char *pPort);
-#endif
 
 void serial_init();
 
