@@ -124,14 +124,7 @@
 #define DEFAULT_HOMING_SEEK_RATE 3000.0f // mm/min
 #define DEFAULT_HOMING_DEBOUNCE_DELAY 250 // msec (0-65k)
 #define DEFAULT_HOMING_PULLOFF 2.5f // mm
-/*
- * author Paul
- * PWM and Tool changer settings
- */
 
-#define DEFAULT_FF 0 //0 = pulse 1 = flipflop
-#define DEFAULT_DELAY 100 // 1sec toggle for tool changer
-#define DEFAULT_M6_DELAY 100 // 1sec duration for M6 valve
 #define DEFAULT_SOFT_START 0 // disabled
 //  #define HOMING_CYCLE_0 ((1<<X_AXIS)|(1<<Y_AXIS))
 /*

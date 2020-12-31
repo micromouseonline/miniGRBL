@@ -83,8 +83,7 @@ uint8_t gc_execute_line(char *line) {
   // Initialize command and value words and parser flags variables.
   uint16_t command_words = 0; // Tracks G and M command words. Also used for modal group violations.
   uint16_t value_words = 0; // Tracks value words.
-  //  uint8_t gc_parser_flags = GC_PARSER_NONE;
-  uint16_t gc_parser_flags = GC_PARSER_NONE; // Paul added a semaphor for M6 toggle
+  uint8_t gc_parser_flags = GC_PARSER_NONE;
 
   // Determine if the line is a jogging motion or a normal g-code block.
   if (line[0] == '$') { // NOTE: `$J=` already parsed when passed to this function.

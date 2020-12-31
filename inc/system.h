@@ -70,8 +70,7 @@
 #define EXEC_SPINDLE_OVR_STOP          bit(5)
 #define EXEC_COOLANT_FLOOD_OVR_TOGGLE  bit(6)
 #define EXEC_COOLANT_MIST_OVR_TOGGLE   bit(7)
-#define EXEC_TOOL_CHANGE_OVR_TOGGLE    bit(8) //Added by Paul
-#define EXEC_TOOL_M6_OVR_TOGGLE        bit(9)
+
 // Define system state bit map. The state variable primarily tracks the individual functions
 // of Grbl to manage each without overlapping. It is also used as a messaging flag for
 // critical events.
@@ -149,8 +148,6 @@ typedef struct {
 #ifdef VARIABLE_SPINDLE
   float spindle_speed;
 #endif
-  uint32_t tool_counter;        // Tracks the pulse duration for the Tn toggle
-  uint32_t m6_counter;          // Tracks the pulse duration for the M6 pin
 } system_t;
 extern system_t sys;
 
@@ -159,13 +156,6 @@ extern int32_t sys_position[N_AXIS];      // Real-time machine (aka home) positi
 extern int32_t sys_probe_position[N_AXIS]; // Last probe position in machine coordinates and steps.
 
 extern volatile uint8_t sys_probe_state;   // Probing state value.  Used to coordinate the probing cycle with stepper ISR.
-extern volatile uint8_t sys_m6_state;   // m6 state value.  Used to coordinate the ATC cycle with stepper ISR.
-extern volatile uint8_t sys_tool_state;   // tool state value.  Used to coordinate the ATC cycle with stepper ISR.
-
-//extern volatile uint8_t sys_rt_exec_state;   // Global realtime executor bitflag variable for state management. See EXEC bitmasks.
-//extern volatile uint8_t sys_rt_exec_alarm;   // Global realtime executor bitflag variable for setting various alarms.
-//extern volatile uint8_t sys_rt_exec_motion_override; // Global realtime executor bitflag variable for motion-based overrides.
-//extern volatile uint8_t sys_rt_exec_accessory_override; // Global realtime executor bitflag variable for spindle/coolant overrides.
 
 extern volatile uint8_t sys_rt_exec_state;   // Global realtime executor bitflag variable for state management. See EXEC bitmasks.
 extern volatile uint8_t sys_rt_exec_alarm;   // Global realtime executor bitflag variable for setting various alarms.

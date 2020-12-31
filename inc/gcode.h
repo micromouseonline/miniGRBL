@@ -204,7 +204,6 @@
 #define GC_PARSER_LASER_FORCE_SYNC      bit(5)
 #define GC_PARSER_LASER_DISABLE         bit(6)
 #define GC_PARSER_LASER_ISMOTION        bit(7)
-#define GC_PARSER_M6_TOGGLE             bit(8)
 
 // NOTE: When this struct is zeroed, the above defines set the defaults for the system.
 typedef struct {
