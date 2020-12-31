@@ -110,20 +110,15 @@
 #define DEFAULT_STATUS_REPORT_MASK 31 // MPos enabled
 #define DEFAULT_JUNCTION_DEVIATION 0.01f // mm
 #define DEFAULT_ARC_TOLERANCE 0.002f // mm
-#define DEFAULT_REPORT_INCHES 0 // false
-#define DEFAULT_INVERT_ST_ENABLE 0 // false
-#define DEFAULT_INVERT_LIMIT_PINS 1 // false
+#define DEFAULT_REPORT_INCHES 0 	// false
+#define DEFAULT_INVERT_ST_ENABLE 0 	// false
+#define DEFAULT_INVERT_LIMIT_PINS 1 // true
 #define DEFAULT_SOFT_LIMIT_ENABLE 0 // false
-#define DEFAULT_HARD_LIMIT_ENABLE 0  // false
-#define DEFAULT_INVERT_PROBE_PIN 0 // false
-#ifndef MG
-  #define DEFAULT_LASER_MODE 0 // false
-  #define DEFAULT_MODE 4 // Laser frequency
-#else
-  #define DEFAULT_LASER_MODE 1 // false
-  #define DEFAULT_MODE 2 // Laser frequency
-#endif
-#define DEFAULT_HOMING_ENABLE 1  // false
+#define DEFAULT_HARD_LIMIT_ENABLE 0 // false
+#define DEFAULT_INVERT_PROBE_PIN 0 	// false
+#define DEFAULT_LASER_MODE 1 		// true
+#define DEFAULT_MODE 5 				// Laser frequency
+#define DEFAULT_HOMING_ENABLE 1  	// true
 #define DEFAULT_HOMING_DIR_MASK 3 // move positive dir
 #define DEFAULT_HOMING_FEED_RATE 600.0f // mm/min
 #define DEFAULT_HOMING_SEEK_RATE 3000.0f // mm/min
