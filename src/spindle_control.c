@@ -75,8 +75,7 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
   GPIO_Init(SPINDLE_DIRECTION_PORT, &GPIO_InitStructureControl);
   // debug
   GPIO_PinLockConfig(SPINDLE_DIRECTION_PORT, SPINDLE_DIRECTION_BIT);
-
-  ResetSpindleEnablebit();
+  DisableSpindle();
   ResetSpindleDirectionBit();
 #endif
 
@@ -322,10 +321,8 @@ void spindle_stop() {
 #else
 #ifdef INVERT_SPINDLE_ENABLE_PIN
   SetSpindleEnablebit();
-
 #else
   ResetSpindleEnablebit();
-
 #endif
 #endif
 #endif
@@ -391,16 +388,8 @@ void spindle_set_speed(SPINDLE_PWM_TYPE pwm_value) {
 #ifdef AVRTARGET
     SPINDLE_TCCRA_REGISTER |= (1 << SPINDLE_COMB_BIT); // Ensure PWM output is enabled.
 #endif
-#if defined (STM32F103C8)
-
     TIM_SetCompare4(TIM4, pwm_value); // 13/08/2018
-
-#ifdef INVERT_SPINDLE_ENABLE_PIN
-    ResetSpindleEnablebit(); // Turn Spindle enable On (0 Volt)
-#else
-    SetSpindleEnablebit(); // Turn Spindle enable On (5V)
-#endif
-#endif
+    EnableSpindle();
   }
 #endif
 }
@@ -479,27 +468,11 @@ SPINDLE_PWM_TYPE spindle_compute_pwm_value(float rpm) { // 328p PWM register is 
       spindle_set_speed(spindle_compute_pwm_value(rpm));
     } else {
       current_pwm = TIM4->CCR4 ;
-
       differentiate_spindle_speed(spindle_compute_pwm_value(rpm), current_pwm);
     }
+#endif //VARIABLE_SPINDLE
+   EnableSpindle();
 
-
-#endif
-#ifdef INVERT_SPINDLE_ENABLE_PIN // Paul, bug fix of orginal code
-    ResetSpindleEnablebit();
-#else
-    SetSpindleEnablebit();
-#endif
-#if (defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) && \
-        !defined(SPINDLE_ENABLE_OFF_WITH_ZERO_SPEED)) || !defined(VARIABLE_SPINDLE)
-    // NOTE: Without variable spindle, the enable bit should just turn on or off, regardless
-    // if the spindle speed value is zero, as its ignored anyhow.
-    //      #ifdef INVERT_SPINDLE_ENABLE_PIN
-    //        ResetSpindleEnablebit();
-    //      #else
-    //        SetSpindleEnablebit();
-    //      #endif
-#endif
   }
 
   sys.report_ovr_counter = 0; // Set to report change immediately

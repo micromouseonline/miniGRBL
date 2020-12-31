@@ -93,13 +93,25 @@
 #define CONTROL_FAULT_BIT             15 //PortB, GPIO_Pin_15, Added as an additional state, DC motor feedback pin (Low is a Fault condition)
 #define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)|(1<<Z_LIMIT_BIT)|(1<<A_LIMIT_BIT)|(1<<B_LIMIT_BIT)|(1<<CONTROL_FAULT_BIT)) // All limit bits
 //#define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT))
+
+
 // Define spindle enable and spindle direction output pins.
 #define SPINDLE_ENABLE_PORT         GPIOB //GPIOC
 #define RCC_SPINDLE_ENABLE_PORT     RCC_APB2Periph_GPIOB     //RCC_APB2Periph_GPIOC
 #define SPINDLE_ENABLE_BIT          1 //GPIO_Pin_1      // B1 Sets the LO relay EN=DIR
+/*** PJH - Spindle enable is connected through an inverter. High  turns on the laser ***/
+#define SetSpindleEnablebit()       GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_SET)
+#define ResetSpindleEnablebit()     GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_RESET)
+
+#ifdef INVERT_SPINDLE_ENABLE_PIN
+#define EnableSpindle()  ResetSpindleEnablebit(); // Turn Spindle enable ON (0 Volt)
+#define DisableSpindle() SetSpindleEnablebit();   // Turn Spindle enable OFF (5V)
+#else
+#define EnableSpindle()  SetSpindleEnablebit(); // Turn Spindle enable ON (5V)
+#define DisableSpindle() ResetSpindleEnablebit(); // Turn Spindle enable OFF (0 Volt)
+#endif
 
 #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN
-  //#define SPINDLE_DIRECTION_DDR   GPIOB //GPIOC
   #define RCC_SPINDLE_DIRECTION_PORT  RCC_APB2Periph_GPIOB     //RCC_APB2Periph_GPIOC
   #define SPINDLE_DIRECTION_PORT      GPIOB //GPIOC
   #define SPINDLE_DIRECTION_BIT       2     //
@@ -108,13 +120,7 @@
   #define ResetSpindleDirectionBit()  GPIO_WriteBit(SPINDLE_DIRECTION_PORT, 1 << SPINDLE_DIRECTION_BIT, Bit_RESET)
 #endif
 
-#ifdef MG
-  #define SetSpindleEnablebit()       GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_RESET)
-  #define ResetSpindleEnablebit()     GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_SET)
-#else
-  #define SetSpindleEnablebit()       GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_SET)
-  #define ResetSpindleEnablebit()     GPIO_WriteBit(SPINDLE_ENABLE_PORT, 1 << SPINDLE_ENABLE_BIT, Bit_RESET)
-#endif
+
 
 //example of led blink = GPIO_WriteBit(GPIOC, GPIO_Pin_13, nOnFlag)
 
