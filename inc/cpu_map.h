@@ -199,7 +199,7 @@
 //    0 PROBE_BIT               (IN)   Not connected anywhere but pulled up internally
 //    1 SPINDLE_ENABLE_BIT      (LO)   connected to MOSFET inverter for LaserOn and LED D3 - active high
 //    2 SPINDLE_DIRECTION_BIT   (OUT)  Not used but grounded through 10k Resistor - is BOOT1 pin
-//    3 COOLANT_FLOOD_BIT       (OUT)  Output on J1 pin 1 - not connected to anything else
+//    3 COOLANT_FLOOD_BIT       (OUT)  Output on J1 pin 1 - used by GCode M8 in lightburn to turn on air assist
 //    4 COOLANT_MIST_BIT        (NC)   Output not connected
 //    5 CONTROL_RESET_BIT       (IN)   Input on J5 pin 1 for control reset - GND to activate
 //    6 CONTROL_FEED_HOLD_BIT   (IN)   Input on J1 pin 2 for feed hold - GND to activate
