@@ -136,9 +136,8 @@ static void report_util_setting_string(uint8_t n) {
     case 32:
       printPgmString(PSTR("laser"));
       break;
-    //Added by Paul, 21/01/19
     case 33:
-      printPgmString(PSTR("fault"));
+      printPgmString(PSTR("PWM Frequency - Hz"));
       break;
     default:
       n -= AXIS_SETTINGS_START_VAL;
@@ -334,6 +333,9 @@ void report_grbl_settings() {
 #else
   report_util_uint8_setting(32, 0);
 #endif
+  uint32_t freq =  F_CPU/(1000*(TIM4->PSC + 1));
+  report_util_uint32_setting(33, freq);
+  report_util_setting_string(33);
 
 
   //    report_util_uint8_setting(40,settings.n_pieces);
