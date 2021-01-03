@@ -117,7 +117,7 @@ int main(void)
 
   //Set_System();
   //#ifndef USEUSB
-  USART1_Configuration(115200);//230400 is possible
+  USART1_Configuration(BAUD_RATE);//230400 is possible
   //#else
   Set_USBClock();
   USB_Interrupts_Config();
