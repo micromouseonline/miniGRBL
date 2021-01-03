@@ -72,21 +72,21 @@
 
 #ifdef MG
   #define X_LIMIT_BIT      10 //GPIO_Pin_10
-  #define Y_LIMIT_BIT      12 //GPIO_Pin_12
-  #define Z_LIMIT_BIT      11 //GPIO_Pin_11  // swapped Y,Z to allow pcb routing
+  #define Y_LIMIT_BIT      11 //GPIO_Pin_12
+  #define Z_LIMIT_BIT      12 //GPIO_Pin_11  // swapped Y,Z to allow pcb routing
   #define A_LIMIT_BIT      13 //GPIO_Pin_13  // additional axis Paul
   #define B_LIMIT_BIT      14 //GPIO_Pin_14  // additional 2nd axis
 #else
   #define X_LIMIT_BIT      10 //GPIO_Pin_10
-  #define Y_LIMIT_BIT      12 //GPIO_Pin_12
-  #define Z_LIMIT_BIT      11 //GPIO_Pin_11  // swapped Y,Z to allow pcb routing
+  #define Y_LIMIT_BIT      11 //GPIO_Pin_12
+  #define Z_LIMIT_BIT      12 //GPIO_Pin_11  // swapped Y,Z to allow pcb routing
   #define A_LIMIT_BIT      13 //GPIO_Pin_13  // additional axis Paul
   #define B_LIMIT_BIT      14 //GPIO_Pin_14  // additional 2nd axis
 #endif
 
 
-#define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)|(1<<Z_LIMIT_BIT)|(1<<A_LIMIT_BIT)|(1<<B_LIMIT_BIT)) // All limit bits
-//#define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT))
+//#define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)|(1<<Z_LIMIT_BIT)|(1<<A_LIMIT_BIT)|(1<<B_LIMIT_BIT)) // All limit bits
+#define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT))
 
 
 // Define spindle enable and spindle direction output pins.
