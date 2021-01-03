@@ -1,3 +1,19 @@
+# miniGRBL
+This version of the SuperGerbil firmware source has been heavily modified to build under the STM32CubeIDE for the Awesome Technology MiniGerbil board.
+
+The changes in here are my own and do not indicate approval by or from Awesome Tech. PLease do not bother them with questions about this version - they are not responsible.
+
+The primary motivation for making these changes was to correct the laser power PWM ranges as they were incorrect for the processor and clock speed. The setting modes remain and the actual PWM frequency in use is reported back to the user in the $33 setting. The value shown will always be calculated before display and cannot be changed by manually setting the $33 value.
+
+PWM ranges are now always 0-999 for all frequency modes.
+
+This build may also prove more stable than the version shipped with the board since some changes have been made to the way the ports are initialised.
+
+There is no guarantee that these changes will make anything work better or even at all on your board in your application. Use entirely at your own risk.
+
+The .hex files that are normally a part of the repository have been removed to avoid confusion. If you want to build this for your board, you will have to do so yourself. If you do not know how to do that then you may be looking in the wrong place for updated firmware.
+
+
 # SuperGerbil
 STM32 driven ARM Grbl firmware
 ![GitHub Logo](https://awesome.tech/wp-content/uploads/2018/11/20181030_103220-1-e1547624499622.jpg)
