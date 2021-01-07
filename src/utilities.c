@@ -2,9 +2,9 @@
 #include "utilities.h"
 
 
-RESET_TYPE resetSource;
+static RESET_TYPE resetSource;
 
-void getResetSource(void) {
+void test_reset_source(void) {
   resetSource = OTHER_RESET;
   // test the reset flags in order because the pin reset is always set.
   if (RCC_GetFlagStatus(RCC_FLAG_SFTRST)) {
@@ -13,13 +13,12 @@ void getResetSource(void) {
     resetSource = POWER_ON_RESET;
   } else if (RCC_GetFlagStatus(RCC_FLAG_PINRST)) {
     resetSource = PIN_RESET;
-  } else {
-    resetSource = OTHER_RESET;
-  } // The flags must be cleared manually after use
+  }
+  // The flags must be cleared manually after use
   RCC_ClearFlag();
 }
 
-void checkReset(void) {
+void report_reset_source(void) {
   switch (resetSource) {
     case SOFT_RESET:
       printPgmString(PSTR("\r\nSoft reset\r\n"));

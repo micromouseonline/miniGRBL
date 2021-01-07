@@ -94,7 +94,7 @@ int main(void)
 
 {
 
-  getResetSource();
+  test_reset_source();
   RCC_HCLKConfig(RCC_SYSCLK_Div1); // High speed data bus
   RCC_PCLK1Config(RCC_HCLK_Div2);//paul high speed peripheral bus
   RCC_PCLK2Config(RCC_HCLK_Div1); // low speed peripheral bus
@@ -229,7 +229,7 @@ int main(void)
     }
     // Print welcome message. Indicates an initialization has occurred at power-up or with a reset.
     report_init_message();
-    checkReset();
+    report_reset_source();
     LedBlink();
     protocol_main_loop(); // Start Grbl main loop. Processes program inputs and executes them.
   }

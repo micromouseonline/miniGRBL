@@ -20,7 +20,6 @@ typedef   enum {
 }
 RESET_TYPE;
 
-extern RESET_TYPE resetSource;
 void  getResetSource(void);
 void checkReset(void);
 
