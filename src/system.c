@@ -274,8 +274,8 @@ uint8_t system_execute_line(char *line) {
           } // Otherwise, no effect.
           break;
         default:
-            // PJH - this is an error - how should it be reported/handled?
-            break;
+          // PJH - this is an error - how should it be reported/handled?
+          break;
       }
       break;
     default :

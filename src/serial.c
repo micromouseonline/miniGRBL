@@ -94,7 +94,7 @@ void serial_write(uint8_t data) {
    *
    */
   if (GPIO_ReadInputDataBit(SERIALSWITCH_PORT, SERIALSWITCH_BIT) == 0) { // Jumper is added so USART
-    while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET){
+    while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET) {
       // do nothing;
     }
     USART_SendData(USART1, data);
