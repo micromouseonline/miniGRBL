@@ -333,7 +333,7 @@ void report_grbl_settings() {
 #else
   report_util_uint8_setting(32, 0);
 #endif
-  uint32_t freq =  F_CPU/(1000*(TIM4->PSC + 1));
+  uint32_t freq =  F_CPU / (1000 * (TIM4->PSC + 1));
   report_util_uint32_setting(33, freq);
   report_util_setting_string(33);
 
