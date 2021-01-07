@@ -306,66 +306,51 @@ uint8_t gc_execute_line(char *line) {
         command_words |= bit(word_bit);
         break;
 
-      case 'M':
-
-        // Determine 'M' command and its modal group
+      case 'M':        // Determine 'M' command and its modal group
         if (mantissa > 0) {
           FAIL(STATUS_GCODE_COMMAND_VALUE_NOT_INTEGER);  // [No Mxx.x commands]
         }
         switch (int_value) {
-          case 0:
-          case 1:
-          case 2:
-          case 30:
+          case 0:   // Program pause
             word_bit = MODAL_GROUP_M4;
-            switch (int_value) {
-              case 0:
-                gc_block.modal.program_flow = PROGRAM_FLOW_PAUSED;
-                break; // Program pause
-              case 1:
-                break; // Optional stop not supported. Ignore.
-              default:
-                gc_block.modal.program_flow = int_value; // Program end and reset
-            }
+            gc_block.modal.program_flow = PROGRAM_FLOW_PAUSED;
+            break;
+          case 1:  // Optional stop not supported. Ignore.
+            word_bit = MODAL_GROUP_M4;
+            break;
+          case 2:  // Program end and reset
+            word_bit = MODAL_GROUP_M4;
+            gc_block.modal.program_flow = int_value;
             break;
           case 3:
+            word_bit = MODAL_GROUP_M7;
+            gc_block.modal.spindle = SPINDLE_ENABLE_CW;
+            break;
           case 4:
+            word_bit = MODAL_GROUP_M7;
+            gc_block.modal.spindle = SPINDLE_ENABLE_CCW;
+            break;
           case 5:
             word_bit = MODAL_GROUP_M7;
-            switch (int_value) {
-              case 3:
-                gc_block.modal.spindle = SPINDLE_ENABLE_CW;
-                break;
-              case 4:
-                gc_block.modal.spindle = SPINDLE_ENABLE_CCW;
-                break;
-              case 5:
-                gc_block.modal.spindle = SPINDLE_DISABLE;
-                break;
-            }
+            gc_block.modal.spindle = SPINDLE_DISABLE;
             break;
 #ifdef ENABLE_M7
           case 7:
-          case 8:
-          case 9:
-#else
-          case 8:
-          case 9:
-#endif
             word_bit = MODAL_GROUP_M8;
-            switch (int_value) {
-#ifdef ENABLE_M7
-              case 7:
-                gc_block.modal.coolant = COOLANT_MIST_ENABLE;
-                break;
+            gc_block.modal.coolant = COOLANT_MIST_ENABLE;
+            break;
 #endif
-              case 8:
-                gc_block.modal.coolant = COOLANT_FLOOD_ENABLE;
-                break;
-              case 9:
-                gc_block.modal.coolant = COOLANT_DISABLE;
-                break;
-            }
+          case 8:
+            word_bit = MODAL_GROUP_M8;
+            gc_block.modal.coolant = COOLANT_FLOOD_ENABLE;
+            break;
+          case 9:
+            word_bit = MODAL_GROUP_M8;
+            gc_block.modal.coolant = COOLANT_DISABLE;
+            break;
+          case 30: // Program end and reset
+            word_bit = MODAL_GROUP_M4;
+            gc_block.modal.program_flow = int_value;
             break;
 #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
           case 56:
