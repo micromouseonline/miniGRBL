@@ -273,6 +273,9 @@ uint8_t system_execute_line(char *line) {
             // Don't run startup script. Prevents stored moves in startup from causing accidents.
           } // Otherwise, no effect.
           break;
+        default:
+            // PJH - this is an error - how should it be reported/handled?
+            break;
       }
       break;
     default :
