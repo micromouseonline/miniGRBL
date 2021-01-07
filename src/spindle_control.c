@@ -148,6 +148,7 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
     case 9:  //8kHz
       TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (8000 * Max_Period) - 1;
       TIM_TimeBaseInitStruct.TIM_Period = Max_Period - 1;
+      break;
     case 10:  //12000
       TIM_TimeBaseInitStruct.TIM_Prescaler = F_CPU / (12000 * Max_Period) - 1;
       TIM_TimeBaseInitStruct.TIM_Period = Max_Period - 1;
