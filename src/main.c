@@ -106,36 +106,34 @@ int main(void)
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_StructInit(&GPIO_InitStructure);    // PJH - Ensure structure is correctly initialised
 
-  //RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOC, ENABLE);//
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; //  GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);//GPIOC
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
 #endif
   //uint8_t setflagmessage = 0;
 
-  //Set_System();
-  //#ifndef USEUSB
-  USART1_Configuration(BAUD_RATE);//230400 is possible
-  //#else
+  Set_System(); // PJH - this is a call to an empty function intended to set clocks
+
+  /*** PJH - Both USART and USB CDC comms are initialised in hardware.
+   * Care must be taken to ensure that only one channel is used during execution
+   * or that there is suitable arbitration.
+   * Look in serial.c to find out how this is done. Essentially, the channel select
+   * pin (PC14) is tested to see which channel is being listened to.
+   */
+  USART1_Configuration(BAUD_RATE);
+
   Set_USBClock();
   USB_Interrupts_Config();
-
-  LED_TRACE(2, 1500); // TODO: mikep 12/15/19 working debug of USB_Init() failure
-
   USB_Init();
 
-  LED_TRACE(4, 500); // TODO: mikep 12/15/19 working debug of USB_Init() failure
-
-  //#endif
 
 #ifndef NOEEPROMSUPPORT
   FLASH_Unlock();
   eeprom_init();
 #endif
   SysTick->CTRL &= 0xfffffffb;
-  //SysTick_Config(1000);//paul lost usb on a device with no recovery until a full erase done
 
   // Initialize system upon power-up.
   serial_init();   // Setup serial baud rate and interrupts
@@ -210,11 +208,7 @@ int main(void)
     // Sync cleared gcode and planner positions to current system position.
     plan_sync_position();
     gc_sync_position();
-    //delay_ms(32000);
-    //    while ((Virtual_Com_port_IsHostPortOpen()) == false){
-    //        delay_ms(1000);
-    //		LedBlink();
-    //    }
+
     /*
      * Author Paul
      * We read out the jumper bridge to determine whether we have selected USB or UART
@@ -222,12 +216,12 @@ int main(void)
      * USART mode: flash twice as fast as USB mode
      *
      */
-    if (GPIO_ReadInputDataBit(SERIALSWITCH_PORT, SERIALSWITCH_BIT) == 1) { //if the jumper is bridged->USB
+    if (GPIO_ReadInputDataBit(SERIALSWITCH_PORT, SERIALSWITCH_BIT) == 1) { // Jumper on PC14 missing => USB
       while (Virtual_Com_Port_IsHostPortOpen() == false) {
-        delay_ms(1500);
+        delay_ms(1000);
         LedBlink();
       }
-    } else { //Serial switch jumper is open ->USART
+    } else {                                                               // Jumper on PC14 present => USART
       while (USART_GetFlagStatus(USART1, USART_FLAG_IDLE) == 0) {
         delay_ms(500);
         LedBlink();
@@ -236,14 +230,8 @@ int main(void)
     // Print welcome message. Indicates an initialization has occurred at power-up or with a reset.
     report_init_message();
     checkReset();
-
-
     LedBlink();
-    //Delay(500);
-    //    delay_ms(500); // Paul
-
-    // Start Grbl main loop. Processes program inputs and executes them.
-    protocol_main_loop();
+    protocol_main_loop(); // Start Grbl main loop. Processes program inputs and executes them.
   }
 
   return 0;   /* Never reached */
@@ -252,8 +240,7 @@ int main(void)
 
 void _delay_ms(uint32_t x) {
   u32 temp;
-  SysTick->LOAD = (u32)72000000 / 72000;                     // Loading time
-  //SysTick->LOAD = (u32)72000000 / 8000 * x;                     // fix the ms delay variation
+  SysTick->LOAD = (u32)72000000 / 8000 * x;                     // fix the ms delay variation
   SysTick->VAL = 0x00;                                            // Empty the counter
   SysTick->CTRL = 0x01;                                           // Start from bottom
   do {
