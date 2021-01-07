@@ -85,7 +85,7 @@ void USART1_Configuration(u32 BaudRate) {
   USART_Cmd(USART1, ENABLE);
 }
 
-void LedBlink(void);
+
 void LED_TRACE(char count, int delay);
 
 
@@ -102,18 +102,8 @@ int main(void)
 
   //RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);//paul
 
-#ifdef LEDBLINK
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_StructInit(&GPIO_InitStructure);    // PJH - Ensure structure is correctly initialised
-
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-#endif
   //uint8_t setflagmessage = 0;
-
+  led_init();
   Set_System(); // PJH - this is a call to an empty function intended to set clocks
 
   /*** PJH - Both USART and USB CDC comms are initialised in hardware.
@@ -219,18 +209,18 @@ int main(void)
     if (GPIO_ReadInputDataBit(SERIALSWITCH_PORT, SERIALSWITCH_BIT) == 1) { // Jumper on PC14 missing => USB
       while (Virtual_Com_Port_IsHostPortOpen() == false) {
         delay_ms(1000);
-        LedBlink();
+        led_toggle();
       }
     } else {                                                               // Jumper on PC14 present => USART
       while (USART_GetFlagStatus(USART1, USART_FLAG_IDLE) == 0) {
         delay_ms(500);
-        LedBlink();
+        led_toggle();
       }
     }
     // Print welcome message. Indicates an initialization has occurred at power-up or with a reset.
     report_init_message();
     report_reset_source();
-    LedBlink();
+    led_toggle();
     protocol_main_loop(); // Start Grbl main loop. Processes program inputs and executes them.
   }
 
@@ -252,16 +242,11 @@ void _delay_ms(uint32_t x) {
 
 
 
-void LedBlink(void) {
-  static BitAction nOnFlag = Bit_SET;
-  GPIO_WriteBit(GPIOC, GPIO_Pin_13, nOnFlag); // C13 is connected to led which flashes to demonstrate the program is running
-  nOnFlag = (nOnFlag == Bit_SET) ? Bit_RESET : Bit_SET;
-}
 
 void LED_TRACE(char count, int delay) {
   char x;
   for (x = 0; x < count; x++) {
-    LedBlink();
+    led_toggle();
     delay_ms(delay);
   }
 }

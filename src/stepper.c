@@ -33,10 +33,6 @@ typedef int bool;
 void TIM_Configuration(TIM_TypeDef* TIMER, u16 Period, u16 Prescaler, u8 PP);
 
 
-//#ifdef LEDBLINK // Paul to test isr timing via led gpio13 toggles the ISR on entrance and exit
-//void LedBlink(void);
-//#endif
-
 // Some useful constants.
 #define DT_SEGMENT (1.0f/(ACCELERATION_TICKS_PER_SECOND*60.0f)) // min/segment
 #define REQ_MM_INCREMENT_SCALAR 1.25f
@@ -398,7 +394,6 @@ void TIM2_IRQHandler(void)
 
 
   //GPIO_WriteBit(ISR_PORT, ISR_BIT, Bit_SET); //start isr measure time
-  //LedBlink(); // Paul, enter the isr for oscilloscope
   GPIO_Write(DIRECTION_PORT, (GPIO_ReadOutputData(DIRECTION_PORT) & ~DIRECTION_MASK) | (st.dir_outbits & DIRECTION_MASK));
 
   TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
@@ -418,7 +413,6 @@ void TIM2_IRQHandler(void)
   // Enable step pulse reset timer so that The Stepper Port Reset Interrupt can reset the signal after
   // exactly settings.pulse_microseconds microseconds, independent of the main Timer1 prescaler.
 
-  //  LedBlink(); //start the isr for oscilloscope Paul
   //  GPIO_WriteBit(ISR_PORT, ISR_BIT, Bit_SET);
   NVIC_EnableIRQ(TIM3_IRQn);
 
@@ -607,7 +601,6 @@ void TIM2_IRQHandler(void)
 
 void TIM3_IRQHandler(void) {
   if ((TIM3->SR & 0x0001) != 0) {                // check interrupt source
-    //		LedBlink();
     TIM3->SR &= ~(1 << 0);                        // clear UIF flag
     TIM3->CNT = 0;
     NVIC_DisableIRQ(TIM3_IRQn);

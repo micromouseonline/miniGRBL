@@ -82,6 +82,8 @@ void delay_sec(float seconds, uint8_t mode);
 // Delays variable-defined milliseconds. Compiler compatibility fix for _delay_ms().
 void delay_ms(uint16_t ms);
 
+void led_init();
+void led_toggle(void);
 
 // Computes hypotenuse, avoiding avr-gcc's bloated version and the extra error checking.
 float hypot_f(float x, float y);

@@ -142,6 +142,22 @@ void delay_ms(uint16_t ms) {
   }
 }
 
+void led_init(){
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_StructInit(&GPIO_InitStructure);    // PJH - Ensure structure is correctly initialised
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13;
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+}
+
+void led_toggle(void) {
+  static BitAction nOnFlag = Bit_SET;
+  GPIO_WriteBit(LED_PORT, LED_PIN, nOnFlag); // C13 is connected to led which flashes to demonstrate the program is running
+  nOnFlag = (nOnFlag == Bit_SET) ? Bit_RESET : Bit_SET;
+}
+
 
 // Simple hypotenuse computation function.
 float hypot_f(float x, float y) {

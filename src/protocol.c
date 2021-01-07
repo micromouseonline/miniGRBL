@@ -28,9 +28,6 @@
 
 
 static char line[LINE_BUFFER_SIZE]; // Line to be executed. Zero-terminated.
-#ifdef LEDBLINK
-  void LedBlink(void);
-#endif
 
 static void protocol_exec_rt_suspend();
 
@@ -85,10 +82,7 @@ void protocol_main_loop() {
         }
 
         line[char_counter] = 0; // Set string termination character.
-#ifdef LEDBLINK
-        LedBlink();
-
-#endif
+        led_toggle();
 #ifdef REPORT_ECHO_LINE_RECEIVED
         report_echo_line_received(line);
 #endif

@@ -114,9 +114,12 @@
   #define ResetSpindleDirectionBit()  GPIO_WriteBit(SPINDLE_DIRECTION_PORT, 1 << SPINDLE_DIRECTION_BIT, Bit_RESET)
 #endif
 
-
-
-//example of led blink = GPIO_WriteBit(GPIOC, GPIO_Pin_13, nOnFlag)
+// on board LED as set up in BluePill and minigerbil (minigerbil is inverted)
+#define LED_PORT                      GPIOC
+#define RCC_LED_PORT                  RCC_APB2Periph_GPIOC
+#define LED_PIN                       GPIO_Pin_13
+#define LedOn()                       GPIO_WriteBit(LED_PORT, LED_PIN, Bit_SET)
+#define LedOff()                      GPIO_WriteBit(LED_PORT, LED_PIN, Bit_RESET)
 
 // Define flood and mist coolant enable output pins.
 // a later date if flash and memory space allows.
