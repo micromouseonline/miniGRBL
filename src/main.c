@@ -208,12 +208,12 @@ int main(void)
      */
     if (GPIO_ReadInputDataBit(SERIALSWITCH_PORT, SERIALSWITCH_BIT) == 1) { // Jumper on PC14 missing => USB
       while (Virtual_Com_Port_IsHostPortOpen() == false) {
-        delay_ms(1000);
+        delay_ms(200);
         led_toggle();
       }
     } else {                                                               // Jumper on PC14 present => USART
       while (USART_GetFlagStatus(USART1, USART_FLAG_IDLE) == 0) {
-        delay_ms(500);
+        delay_ms(100);
         led_toggle();
       }
     }
