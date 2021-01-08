@@ -76,7 +76,7 @@
   #endif
   #ifdef DEFAULTS_MG
     #define DEFAULT_STEP_PULSE_MICROSECONDS 10            //$0
-    #define DEFAULT_STEPPER_IDLE_LOCK_TIME 255            //$1 msec (0-254, 255 keeps steppers enabled) 25 better?
+    #define DEFAULT_STEPPER_IDLE_LOCK_TIME 255            //$1 msec (0-254, 255 keeps steppers enabled) never used
     #define DEFAULT_STEPPING_INVERT_MASK 0                //$2
     #define DEFAULT_DIRECTION_INVERT_MASK 1               //$3
     #define DEFAULT_INVERT_LIMIT_PINS 1                   //$5
