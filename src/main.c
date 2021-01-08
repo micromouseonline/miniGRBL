@@ -220,7 +220,7 @@ int main(void)
     // Print welcome message. Indicates an initialization has occurred at power-up or with a reset.
     report_init_message();
     report_reset_source();
-    led_toggle();
+    LedOff();
     protocol_main_loop(); // Start Grbl main loop. Processes program inputs and executes them.
   }
 
