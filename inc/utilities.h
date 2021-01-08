@@ -20,8 +20,8 @@ typedef   enum {
 }
 RESET_TYPE;
 
-void  getResetSource(void);
-void checkReset(void);
+void test_reset_source(void);
+void  report_reset_source(void);
 
 #ifdef	__cplusplus
 }
