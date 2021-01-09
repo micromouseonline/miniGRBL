@@ -99,7 +99,10 @@ int main(void)
   RCC_PCLK1Config(RCC_HCLK_Div2);//paul high speed peripheral bus
   RCC_PCLK2Config(RCC_HCLK_Div1); // low speed peripheral bus
   //SystemInit();
-
+  /*** PJH - do this early so that the laser output is in a known
+   *         state as soon as possible
+   */
+  spindle_init(DEFAULT_MODE);
   //RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);//paul
 
   //uint8_t setflagmessage = 0;
@@ -131,7 +134,6 @@ int main(void)
   settings_init(); // Load Grbl settings from EEPROM
   stepper_init();  // Configure stepper pins and interrupt timers
   system_init();   // Configure pinout pins and pin-change interrupt
-  spindle_init(0); // paul, added to set the spindle timers for pwm
   memset(sys_position, 0, sizeof(sys_position)); // Clear machine position.
 
   // Initialize system state.
