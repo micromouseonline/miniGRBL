@@ -187,7 +187,11 @@ void spindle_init(uint8_t pwm_mode) { // Added the pwm mode, Paul
   TIM_OCInitStruct.TIM_OCMode = TIM_OCMode_PWM1; 		// 0 counting up mode
   TIM_OCInitStruct.TIM_Pulse = 0;     					// init speed is 0
   TIM_OCInitStruct.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_High; // PJH - TIM_OCPolarity_High if PWM drives laser L input
+#ifdef SPINDLE_PWM_INVERTED
+  TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_Low;
+#else
+  TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_High;
+#endif
   TIM_OC4Init(TIM4, &TIM_OCInitStruct);
   TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable);
 

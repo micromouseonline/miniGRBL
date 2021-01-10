@@ -359,6 +359,13 @@
 // The hardware PWM output on pin D11 is required for variable spindle output voltages.
 #define VARIABLE_SPINDLE // Default enabled. Comment to disable.
 
+// Inverts the spindle PWM. Normally the spindle PWM signal will idle low and positive going pulses of
+// varying duty cycle will be used to drive the spindle motor amplifier. For example, a 25% spindle speed
+// would be represented by pulses that are low 75% of the time and high 25% of the time. If this macro
+// is uncommented, the sense of the signal is reversed so that  25% spindle speed would have pulses that are
+// low for 25% of the time and high for 75% of the time.
+// #define SPINDLE_PWM_INVERTED // default is disabled. uncomment to enable
+
 // Used by variable spindle output only. This forces the PWM output to a minimum duty cycle when enabled.
 // The PWM pin will still read 0V when the spindle is disabled. Most users will not need this option, but
 // it may be useful in certain scenarios. This minimum PWM settings coincides with the spindle rpm minimum
